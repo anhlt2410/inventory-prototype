@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản trị kho — Bếp Trường</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#17251C; --muted:#5D6B62; --line:#E3E8E1; --bg:#F4F6F2; --card:#fff;
+  --green:#2F7A4D; --green-soft:#E7F2EA; --amber:#B7791F; --amber-soft:#FCF0DC;
+  --red:#C0392B; --red-soft:#FBE9E7; --blue:#2C6E9B; --blue-soft:#E5F0F7;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Be Vietnam Pro',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--green)}
+
+/* ---------- LOGIN ---------- */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.login-box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:40px;width:380px}
+.login-box .logo{font-size:26px;margin-bottom:6px}
+.login-box h1{font-size:20px;font-weight:800;margin-bottom:4px}
+.login-box p{color:var(--muted);margin-bottom:24px;font-size:13.5px}
+.field{margin-bottom:14px}
+.field label{display:block;font-weight:600;font-size:13px;margin-bottom:6px}
+.field input, .field select{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;font:400 14px 'Be Vietnam Pro';background:#fff}
+.field input:focus{outline:2px solid var(--green);border-color:transparent}
+.btn{border:none;border-radius:10px;padding:11px 16px;font:600 14px 'Be Vietnam Pro';transition:filter .15s}
+.btn:hover{filter:brightness(1.07)}
+.btn-primary{background:var(--green);color:#fff;width:100%}
+.btn-sm{padding:7px 12px;font-size:13px}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn-danger{background:var(--red-soft);color:var(--red)}
+.btn-green{background:var(--green);color:#fff}
+
+/* ---------- SHELL ---------- */
+#app{display:none;min-height:100vh}
+#app.on{display:grid;grid-template-columns:236px 1fr}
+aside{background:#1C3327;color:#D6E4DA;padding:22px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+aside .brand{font-weight:800;color:#fff;font-size:16px;padding:0 10px 22px;display:flex;gap:8px;align-items:center}
+aside nav{display:flex;flex-direction:column;gap:4px;flex:1}
+aside nav button{display:flex;align-items:center;gap:10px;background:none;border:none;color:#AFC4B6;padding:11px 12px;border-radius:10px;font:500 14px 'Be Vietnam Pro';text-align:left;width:100%}
+aside nav button.active{background:rgba(255,255,255,.1);color:#fff;font-weight:600}
+aside nav button:hover{color:#fff}
+aside nav .badge{margin-left:auto;background:#E86A33;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 7px}
+aside .user{border-top:1px solid rgba(255,255,255,.12);padding-top:14px;font-size:13px}
+aside .user b{color:#fff;display:block}
+aside .user button{margin-top:10px;width:100%;background:rgba(255,255,255,.08);border:none;color:#fff;padding:9px;border-radius:9px;font:600 13px 'Be Vietnam Pro'}
+main{padding:28px 32px;max-width:1160px}
+.page{display:none}.page.on{display:block}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.page-head h2{font-size:22px;font-weight:800}
+.page-head p{color:var(--muted);margin-top:3px;font-size:13.5px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ---------- TABLE / CARD ---------- */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{background:#FAFBF9;text-align:left;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:11px 16px;border-bottom:1px solid var(--line)}
+td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FAFBF9}
+.pill{display:inline-block;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
+.pill.g{background:var(--green-soft);color:var(--green)}
+.pill.a{background:var(--amber-soft);color:var(--amber)}
+.pill.b{background:var(--blue-soft);color:var(--blue)}
+.pill.r{background:var(--red-soft);color:var(--red)}
+
+/* ---------- NOTIFICATIONS ---------- */
+.notif{display:flex;gap:14px;padding:16px;border-bottom:1px solid var(--line);align-items:flex-start}
+.notif:last-child{border-bottom:none}
+.notif .ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.notif b{font-weight:600}
+.notif .time{color:var(--muted);font-size:12.5px;margin-top:3px}
+.notif.unread{background:#F6FBF7}
+
+/* ---------- KITCHEN ---------- */
+.kitchen-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.k-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.k-card h3{font-size:16px;font-weight:700}
+.k-card .meta{color:var(--muted);font-size:13px;line-height:1.7}
+.k-card .row{display:flex;gap:8px;margin-top:4px}
+
+/* kitchen detail tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.tabs button{background:none;border:none;padding:10px 16px;font:600 14px 'Be Vietnam Pro';color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.active{color:var(--green);border-color:var(--green)}
+.tabpage{display:none}.tabpage.on{display:block}
+
+/* timeline */
+.day{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:14px;overflow:hidden}
+.day-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:#FAFBF9;border-bottom:1px solid var(--line);cursor:pointer}
+.day-head b{font-size:14.5px}
+.day-body{padding:16px 18px;display:none}
+.day.open .day-body{display:block}
+.menu-line{font-size:14px;margin-bottom:10px}
+.ing{display:grid;grid-template-columns:1fr 110px 1fr;gap:6px 14px;font-size:13.5px}
+.ing div{padding:7px 0;border-bottom:1px dashed var(--line)}
+.ing .h{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--line)}
+
+/* process report */
+.steps{display:flex;flex-direction:column}
+.step{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:none}
+.step .dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.step.done .dot{background:var(--green-soft)}
+.step.doing .dot{background:var(--amber-soft)}
+.step.todo .dot{background:#EEF1ED;color:var(--muted)}
+.step b{font-size:14.5px}
+.step .sub{color:var(--muted);font-size:13px;margin-top:2px}
+.photos{display:flex;gap:8px;margin-top:10px}
+.photo{width:86px;height:64px;border-radius:8px;background:linear-gradient(135deg,#DDE8DF,#C4D6C9);display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--line)}
+
+/* ---------- MODAL / TOAST ---------- */
+.overlay{display:none;position:fixed;inset:0;background:rgba(23,37,28,.45);z-index:50;align-items:center;justify-content:center}
+.overlay.on{display:flex}
+.modal{background:#fff;border-radius:16px;padding:26px;width:min(440px,92vw)}
+.modal h3{font-size:17px;font-weight:800;margin-bottom:16px}
+.modal .foot{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1C3327;color:#fff;padding:12px 20px;border-radius:12px;font-weight:600;font-size:14px;transition:transform .25s ease;z-index:99}
+#toast.on{transform:translateX(-50%) translateY(0)}
+.hint{font-size:12.5px;color:var(--muted);margin-top:8px}
+.back{background:none;border:none;color:var(--muted);font:600 13px 'Be Vietnam Pro';padding:0;margin-bottom:10px}
+.back:hover{color:var(--ink)}
+@media(max-width:860px){#app.on{grid-template-columns:1fr}aside{position:static;height:auto;flex-direction:row;align-items:center;overflow-x:auto}aside nav{flex-direction:row}aside .user{display:none}main{padding:20px}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<section id="login">
+  <div class="login-box">
+    <div class="logo">🏬</div>
+    <h1>Quản trị kho nguyên liệu</h1>
+    <p>Hệ thống điều phối bếp ăn trường học</p>
+    <div class="field"><label>Tên đăng nhập</label><input placeholder="admin" value="admin"></div>
+    <div class="field"><label>Mật khẩu</label><input type="password" placeholder="••••••••" value="123456"></div>
+    <button class="btn btn-primary" onclick="doLogin()">Đăng nhập</button>
+    <p class="hint">Prototype — nhập gì cũng đăng nhập được.</p>
+  </div>
+</section>
+
+<!-- APP -->
+<div id="app">
+  <aside>
+    <div class="brand">🏬 Kho Tổng</div>
+    <nav>
+      <button class="active" data-page="notif" onclick="go('notif',this)">🔔 Thông báo <span class="badge">3</span></button>
+      <button data-page="source" onclick="go('source',this)">📦 Nguồn hàng</button>
+      <button data-page="kitchen" onclick="go('kitchen',this)">🍳 Quản lý bếp</button>
+      <button data-page="parent" onclick="go('parent',this)">👪 Tài khoản PHHS</button>
+    </nav>
+    <div class="user">
+      <b>Nguyễn Quản Trị</b>
+      <span style="color:#AFC4B6">admin@khotong.vn</span>
+      <button onclick="doLogout()">Đăng xuất</button>
+    </div>
+  </aside>
+
+  <main>
+    <!-- ===== THÔNG BÁO ===== -->
+    <div class="page on" id="page-notif">
+      <div class="page-head">
+        <div><h2>Thông báo</h2><p>Hoạt động mới nhất từ các bếp trường</p></div>
+        <button class="btn btn-ghost btn-sm" onclick="toast('Đã đánh dấu tất cả là đã đọc')">Đánh dấu đã đọc</button>
+      </div>
+      <div class="panel" id="notifList"></div>
+    </div>
+
+    <!-- ===== NGUỒN HÀNG ===== -->
+    <div class="page" id="page-source">
+      <div class="page-head">
+        <div><h2>Nguồn hàng</h2><p>Danh mục nguyên liệu, nhà phân phối và truy xuất nguồn gốc</p></div>
+        <div class="actions">
+          <button class="btn btn-green btn-sm" onclick="openModal('m-source')">+ Thêm nguyên liệu</button>
+        </div>
+      </div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Nguyên liệu</th><th>Nhà phân phối</th><th>Xuất xứ</th><th>Truy xuất nguồn gốc</th><th></th></tr></thead>
+          <tbody id="sourceBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== QUẢN LÝ BẾP: DANH SÁCH ===== -->
+    <div class="page" id="page-kitchen">
+      <div class="page-head">
+        <div><h2>Quản lý bếp</h2><p>Mỗi trường một bếp — quản lý thực đơn, tài khoản và báo cáo quy trình</p></div>
+        <button class="btn btn-green btn-sm" onclick="openModal('m-kitchen')">+ Tạo bếp mới</button>
+      </div>
+      <div class="kitchen-grid" id="kitchenGrid"></div>
+    </div>
+
+    <!-- ===== CHI TIẾT BẾP ===== -->
+    <div class="page" id="page-kdetail">
+      <button class="back" onclick="go('kitchen',document.querySelector('[data-page=kitchen]'))">← Quay lại danh sách bếp</button>
+      <div class="page-head">
+        <div><h2 id="kdName">Bếp</h2><p id="kdMeta"></p></div>
+        <div class="actions">
+          <button class="btn btn-ghost btn-sm" onclick="fileImport('Đã import thực đơn tuần từ file Excel (25 dòng)')">⬆ Import thực đơn (Excel)</button>
+          <button class="btn btn-danger btn-sm" onclick="toast('Đã xoá bếp (mock)')">Xoá bếp</button>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="active" onclick="ktab('menu',this)">Timeline thực đơn</button>
+        <button onclick="ktab('report',this)">Báo cáo quy trình</button>
+        <button onclick="ktab('acc',this)">Tài khoản bếp</button>
+      </div>
+
+      <div class="tabpage on" id="ktab-menu" ></div>
+
+      <div class="tabpage" id="ktab-report">
+        <div class="panel" style="padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:8px">
+            <b style="font-size:15px">Bữa trưa · Thứ Hai, 17/08/2026</b>
+            <span class="pill a">Đang chế biến</span>
+          </div>
+          <p style="color:var(--muted);font-size:13px;margin-bottom:14px">Cơm gạo ST25 · Thịt kho trứng cút · Canh cải ngọt nấu tôm · Dưa hấu</p>
+          <div class="steps">
+            <div class="step done">
+              <div class="dot">✅</div>
+              <div style="flex:1">
+                <b>1. Nhập nguyên liệu</b>
+                <div class="sub">Hoàn tất 06:15 · Bếp trưởng Trần Thị Hoa · Đủ 8/8 nguyên liệu theo phiếu xuất kho</div>
+                <div class="photos"><div class="photo">📷</div><div class="photo">📷</div><div class="photo">📷</div></div>
+              </div>
+            </div>
+            <div class="step done">
+              <div class="dot">✅</div>
+              <div style="flex:1">
+                <b>2. Sơ chế</b>
+                <div class="sub">Hoàn tất 07:40 · Rửa, ngâm muối rau củ; sơ chế thịt theo quy trình VSATTP</div>
+                <div class="photos"><div class="photo">📷</div><div class="photo">📷</div></div>
+              </div>
+            </div>
+            <div class="step doing">
+              <div class="dot">🍲</div>
+              <div style="flex:1">
+                <b>3. Chế biến</b>
+                <div class="sub">Bắt đầu 09:10 · Đang nấu — dự kiến hoàn tất 10:30</div>
+                <div class="photos"><div class="photo">📷</div></div>
+              </div>
+            </div>
+            <div class="step todo">
+              <div class="dot">🍱</div>
+              <div style="flex:1"><b>4. Chia khẩu phần</b><div class="sub">Chưa bắt đầu · Dự kiến 10:45</div></div>
+            </div>
+            <div class="step todo">
+              <div class="dot">🧾</div>
+              <div style="flex:1"><b>5. Lưu mẫu &amp; hoàn tất</b><div class="sub">Chưa bắt đầu · Lưu mẫu thức ăn 24h theo quy định</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabpage" id="ktab-acc">
+        <div class="page-head" style="margin-bottom:14px">
+          <p style="color:var(--muted)">Tài khoản đăng nhập app Bếp của trường này</p>
+          <button class="btn btn-green btn-sm" onclick="openModal('m-kacc')">+ Tạo tài khoản bếp</button>
+        </div>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Họ tên</th><th>Tên đăng nhập</th><th>Vai trò</th><th>Trạng thái</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>Trần Thị Hoa</td><td>hoa.tt</td><td>Bếp trưởng</td><td><span class="pill g">Hoạt động</span></td><td><button class="btn btn-danger btn-sm" onclick="toast('Đã xoá tài khoản (mock)')">Xoá</button></td></tr>
+              <tr><td>Lê Văn Minh</td><td>minh.lv</td><td>Nhân viên bếp</td><td><span class="pill g">Hoạt động</span></td><td><button class="btn btn-danger btn-sm" onclick="toast('Đã xoá tài khoản (mock)')">Xoá</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PHHS ===== -->
+    <div class="page" id="page-parent">
+      <div class="page-head">
+        <div><h2>Tài khoản phụ huynh</h2><p>Tên đăng nhập là số điện thoại · Mật khẩu mặc định: <code>bep2026</code></p></div>
+        <div class="actions">
+          <select id="parentSchool" class="btn btn-ghost btn-sm" style="font-weight:500" onchange="renderParents()"></select>
+          <button class="btn btn-green btn-sm" onclick="fileImport('Đã import 42 tài khoản PHHS từ Excel (SĐT làm tên đăng nhập)')">⬆ Import Excel</button>
+        </div>
+      </div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Phụ huynh</th><th>SĐT (tên đăng nhập)</th><th>Học sinh</th><th>Lớp</th><th></th></tr></thead>
+          <tbody id="parentBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODALS -->
+<div class="overlay" id="m-source">
+  <div class="modal">
+    <h3>Thêm nguyên liệu</h3>
+    <div class="field"><label>Tên nguyên liệu</label><input placeholder="VD: Thịt lợn nạc vai"></div>
+    <div class="field"><label>Nhà phân phối</label><input placeholder="VD: CP Việt Nam"></div>
+    <div class="field"><label>Xuất xứ</label><input placeholder="VD: Đồng Nai"></div>
+    <div class="field"><label>Link truy xuất nguồn gốc</label><input placeholder="https://..."></div>
+    <div class="foot"><button class="btn btn-ghost" onclick="closeModal()">Huỷ</button><button class="btn btn-green" onclick="closeModal();toast('Đã thêm nguyên liệu (mock)')">Lưu</button></div>
+  </div>
+</div>
+<div class="overlay" id="m-kitchen">
+  <div class="modal">
+    <h3>Tạo bếp mới</h3>
+    <div class="field"><label>Tên trường</label><input placeholder="VD: Trường TH Kim Liên"></div>
+    <div class="field"><label>Địa chỉ</label><input placeholder="VD: Đống Đa, Hà Nội"></div>
+    <div class="field"><label>Sĩ số phục vụ</label><input placeholder="VD: 850"></div>
+    <div class="foot"><button class="btn btn-ghost" onclick="closeModal()">Huỷ</button><button class="btn btn-green" onclick="closeModal();toast('Đã tạo bếp mới (mock)')">Tạo bếp</button></div>
+  </div>
+</div>
+<div class="overlay" id="m-kacc">
+  <div class="modal">
+    <h3>Tạo tài khoản bếp</h3>
+    <div class="field"><label>Họ tên</label><input placeholder="VD: Phạm Thị Lan"></div>
+    <div class="field"><label>Tên đăng nhập</label><input placeholder="VD: lan.pt"></div>
+    <div class="field"><label>Vai trò</label><select><option>Bếp trưởng</option><option>Nhân viên bếp</option></select></div>
+    <div class="foot"><button class="btn btn-ghost" onclick="closeModal()">Huỷ</button><button class="btn btn-green" onclick="closeModal();toast('Đã tạo tài khoản bếp (mock)')">Tạo tài khoản</button></div>
+  </div>
+</div>
+<div class="overlay" id="m-parent">
+  <div class="modal">
+    <h3>Sửa tài khoản phụ huynh</h3>
+    <div class="field"><label>Họ tên phụ huynh</label><input id="mpName"></div>
+    <div class="field"><label>SĐT (tên đăng nhập)</label><input id="mpPhone"></div>
+    <div class="field"><label>Học sinh</label><input id="mpStudent"></div>
+    <div class="foot"><button class="btn btn-ghost" onclick="closeModal()">Huỷ</button><button class="btn btn-green" onclick="closeModal();toast('Đã lưu thay đổi (mock)')">Lưu</button></div>
+  </div>
+</div>
+
+<input type="file" id="hiddenFile" accept=".xlsx,.xls,.csv" style="display:none">
+<div id="toast"></div>
+
+<script>
+/* ============ MOCK DATA ============ */
+const SOURCES = [
+  ["Gạo ST25","Tập đoàn Lộc Trời","Sóc Trăng","https://truyxuat.vn/gao-st25"],
+  ["Thịt lợn nạc vai","CP Việt Nam","Đồng Nai","https://truyxuat.vn/cp-thit-lon"],
+  ["Trứng cút","Ba Huân","Long An","https://truyxuat.vn/bahuan-trung"],
+  ["Rau cải ngọt","HTX Rau sạch Vân Nội","Đông Anh, Hà Nội","https://truyxuat.vn/vannoi-rau"],
+  ["Tôm thẻ","Minh Phú","Cà Mau","https://truyxuat.vn/minhphu-tom"],
+  ["Dưa hấu","HTX Nông sản Gò Công","Tiền Giang","https://truyxuat.vn/gocong-dua"],
+  ["Dầu ăn Simply","Calofic","Quảng Ninh","https://truyxuat.vn/simply"],
+  ["Đậu phụ","Cơ sở Phú Bình","Thanh Trì, Hà Nội","https://truyxuat.vn/phubinh-dau"],
+];
+const KITCHENS = [
+  {name:"Trường TH Đoàn Thị Điểm", addr:"Nam Từ Liêm, Hà Nội", size:1250, status:"Đang chế biến", s:"a"},
+  {name:"Trường TH Nguyễn Siêu", addr:"Cầu Giấy, Hà Nội", size:980, status:"Đã nhập nguyên liệu", s:"b"},
+  {name:"Trường MN Hoa Sen", addr:"Ba Đình, Hà Nội", size:420, status:"Hoàn tất hôm nay", s:"g"},
+  {name:"Trường TH Kim Đồng", addr:"Hoàn Kiếm, Hà Nội", size:760, status:"Chưa bắt đầu", s:"r"},
+];
+const NOTIFS = [
+  ["🍲","var(--amber-soft)","<b>Bếp TH Đoàn Thị Điểm</b> đã báo cáo bước <b>Chế biến</b> (1 ảnh)","09:12 · Hôm nay",1],
+  ["✅","var(--green-soft)","<b>Bếp MN Hoa Sen</b> đã hoàn tất quy trình bữa trưa (5/5 bước)","08:55 · Hôm nay",1],
+  ["📦","var(--blue-soft)","<b>Bếp TH Nguyễn Siêu</b> đã xác nhận <b>Nhập nguyên liệu</b> — đủ 8/8 mặt hàng","06:32 · Hôm nay",1],
+  ["🧑‍🍳","var(--green-soft)","<b>Bếp TH Kim Đồng</b> đã tiếp nhận thực đơn tuần 34 (17/08 – 21/08)","17:20 · Hôm qua",0],
+  ["📷","var(--amber-soft)","<b>Bếp TH Đoàn Thị Điểm</b> đã báo cáo bước <b>Sơ chế</b> (2 ảnh)","07:41 · Hôm qua",0],
+];
+const MENU = [
+  {d:"Thứ Hai · 17/08", dish:"Cơm gạo ST25 · Thịt kho trứng cút · Canh cải ngọt nấu tôm · Dưa hấu",
+   ing:[["Gạo ST25","95 kg"],["Thịt lợn nạc vai","62 kg"],["Trứng cút","18 kg"],["Rau cải ngọt","40 kg"],["Tôm thẻ","12 kg"],["Dưa hấu","70 kg"]]},
+  {d:"Thứ Ba · 18/08", dish:"Cơm · Gà rang gừng · Canh bí đỏ · Sữa chua",
+   ing:[["Gạo ST25","95 kg"],["Thịt gà ta","68 kg"],["Bí đỏ","45 kg"],["Gừng tươi","3 kg"],["Sữa chua","1.250 hộp"]]},
+  {d:"Thứ Tư · 19/08", dish:"Cơm · Cá basa sốt cà · Rau muống xào tỏi · Chuối",
+   ing:[["Gạo ST25","95 kg"],["Cá basa phi lê","60 kg"],["Cà chua","20 kg"],["Rau muống","42 kg"],["Chuối tây","65 kg"]]},
+  {d:"Thứ Năm · 20/08", dish:"Cơm · Đậu phụ nhồi thịt · Canh chua · Thanh long",
+   ing:[["Gạo ST25","95 kg"],["Đậu phụ","35 kg"],["Thịt lợn xay","28 kg"],["Dứa","15 kg"],["Thanh long","60 kg"]]},
+  {d:"Thứ Sáu · 21/08", dish:"Mì bò bằm · Súp lơ luộc · Bánh flan",
+   ing:[["Mì sợi tươi","70 kg"],["Thịt bò bằm","45 kg"],["Súp lơ xanh","38 kg"],["Bánh flan","1.250 cái"]]},
+];
+const PARENTS = {
+  "Trường TH Đoàn Thị Điểm":[
+    ["Nguyễn Thu Hằng","0912 345 678","Nguyễn Minh Khôi","3A2"],
+    ["Trần Đức Long","0987 654 321","Trần Bảo Ngọc","1B1"],
+    ["Phạm Mai Anh","0903 111 222","Phạm Gia Hân","5A3"],
+    ["Vũ Quốc Bảo","0978 555 666","Vũ Nhật Nam","2C1"],
+  ],
+  "Trường TH Nguyễn Siêu":[
+    ["Đỗ Thanh Tùng","0913 222 333","Đỗ Hà My","4A1"],
+    ["Lê Hồng Nhung","0966 777 888","Lê Tuấn Kiệt","3B2"],
+  ],
+  "Trường MN Hoa Sen":[
+    ["Bùi Thị Thảo","0934 999 000","Bùi An Nhiên","Lá 2"],
+  ],
+};
+
+/* ============ RENDER ============ */
+function renderNotifs(){
+  document.getElementById('notifList').innerHTML = NOTIFS.map(n=>`
+    <div class="notif ${n[4]?'unread':''}">
+      <div class="ic" style="background:${n[1]}">${n[0]}</div>
+      <div><div>${n[2]}</div><div class="time">${n[3]}</div></div>
+    </div>`).join('');
+}
+function renderSources(){
+  document.getElementById('sourceBody').innerHTML = SOURCES.map(s=>`
+    <tr><td><b>${s[0]}</b></td><td>${s[1]}</td><td>${s[2]}</td>
+    <td><a href="#" onclick="toast('Mở trang truy xuất: ${s[3]}');return false">${s[3]}</a></td>
+    <td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="toast('Mở form sửa (mock)')">Sửa</button>
+    <button class="btn btn-danger btn-sm" onclick="toast('Đã xoá nguyên liệu (mock)')">Xoá</button></td></tr>`).join('');
+}
+function renderKitchens(){
+  document.getElementById('kitchenGrid').innerHTML = KITCHENS.map((k,i)=>`
+    <div class="k-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <h3>${k.name}</h3><span class="pill ${k.s}">${k.status}</span>
+      </div>
+      <div class="meta">📍 ${k.addr}<br>👦 ${k.size} suất ăn/ngày · Bữa trưa hôm nay: Thịt kho trứng cút</div>
+      <div class="row">
+        <button class="btn btn-green btn-sm" onclick="openKitchen(${i})">Mở chi tiết</button>
+        <button class="btn btn-ghost btn-sm" onclick="fileImport('Đã import thực đơn cho ${k.name} (25 dòng)')">⬆ Thực đơn</button>
+        <button class="btn btn-danger btn-sm" onclick="toast('Đã xoá bếp (mock)')">Xoá</button>
+      </div>
+    </div>`).join('');
+}
+function renderMenu(){
+  document.getElementById('ktab-menu').innerHTML =
+    `<p style="color:var(--muted);margin-bottom:14px">Tuần 34 · 17/08 – 21/08/2026 · Số lượng nguyên liệu tính cho <b>1.250 suất</b></p>` +
+    MENU.map((m,i)=>`
+    <div class="day ${i===0?'open':''}">
+      <div class="day-head" onclick="this.parentElement.classList.toggle('open')">
+        <b>${m.d}</b><span class="pill ${i===0?'a':'b'}">${i===0?'Hôm nay · đang thực hiện':'Đã phân bổ'}</span>
+      </div>
+      <div class="day-body">
+        <div class="menu-line">🍽️ <b>${m.dish}</b></div>
+        <div class="ing">
+          <div class="h">Nguyên liệu</div><div class="h">Số lượng</div><div class="h">Nguồn</div>
+          ${m.ing.map(x=>`<div>${x[0]}</div><div><b>${x[1]}</b></div><div style="color:var(--muted)">Kho tổng · lô ${170800+Math.floor(Math.random()*90)}</div>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+}
+function renderParents(){
+  const sel = document.getElementById('parentSchool');
+  if(!sel.options.length) Object.keys(PARENTS).forEach(s=>sel.add(new Option(s,s)));
+  const rows = PARENTS[sel.value] || [];
+  document.getElementById('parentBody').innerHTML = rows.map(p=>`
+    <tr><td><b>${p[0]}</b></td><td>${p[1]}</td><td>${p[2]}</td><td>${p[3]}</td>
+    <td style="text-align:right">
+      <button class="btn btn-ghost btn-sm" onclick="editParent('${p[0]}','${p[1]}','${p[2]}')">Sửa</button>
+      <button class="btn btn-danger btn-sm" onclick="toast('Đã xoá tài khoản PHHS (mock)')">Xoá</button>
+    </td></tr>`).join('');
+}
+
+/* ============ ACTIONS ============ */
+function doLogin(){document.getElementById('login').style.display='none';document.getElementById('app').classList.add('on');}
+function doLogout(){document.getElementById('app').classList.remove('on');document.getElementById('login').style.display='flex';toast('Đã đăng xuất');}
+function go(p,btn){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.getElementById('page-'+p).classList.add('on');
+  document.querySelectorAll('aside nav button').forEach(b=>b.classList.remove('active'));
+  if(btn&&btn.dataset.page)btn.classList.add('active');
+}
+function openKitchen(i){
+  const k=KITCHENS[i];
+  document.getElementById('kdName').textContent='🍳 '+k.name;
+  document.getElementById('kdMeta').textContent=`${k.addr} · ${k.size} suất ăn/ngày · Bếp trưởng: Trần Thị Hoa`;
+  go('kdetail');
+  document.querySelector('[data-page=kitchen]').classList.add('active');
+}
+function ktab(t,btn){
+  document.querySelectorAll('.tabpage').forEach(x=>x.classList.remove('on'));
+  document.getElementById('ktab-'+t).classList.add('on');
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function openModal(id){document.getElementById(id).classList.add('on');}
+function closeModal(){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('on'));}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal();}));
+function editParent(n,p,s){
+  document.getElementById('mpName').value=n;
+  document.getElementById('mpPhone').value=p;
+  document.getElementById('mpStudent').value=s;
+  openModal('m-parent');
+}
+function fileImport(msg){
+  const f=document.getElementById('hiddenFile');
+  f.onchange=()=>{toast(msg);f.value='';};
+  f.click();
+}
+let toastTimer;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('on');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('on'),2600);
+}
+
+renderNotifs();renderSources();renderKitchens();renderMenu();renderParents();
+</script>
+</body>
+</html>

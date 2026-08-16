@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bếp Trường — Demo Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#17251C; --muted:#5D6B62; --bg:#F4F6F2; --card:#FFFFFF;
+  --admin:#2F7A4D; --kitchen:#E86A33; --parent:#0FA48A;
+  --radius:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Be Vietnam Pro',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column}
+.wrap{max-width:1080px;margin:0 auto;padding:48px 24px;flex:1;width:100%}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--admin)}
+h1{font-size:clamp(28px,4vw,44px);font-weight:800;line-height:1.15;margin:10px 0 12px}
+.lead{color:var(--muted);max-width:640px;font-size:16px;line-height:1.6}
+.flow{margin:36px 0 8px;display:flex;align-items:center;gap:0;flex-wrap:wrap;font-size:13.5px;font-weight:600;color:var(--muted)}
+.flow span{background:var(--card);border:1px solid #E3E8E1;border-radius:999px;padding:8px 16px}
+.flow i{width:26px;height:1px;background:#C9D2C9;display:inline-block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:36px}
+.card{background:var(--card);border:1px solid #E3E8E1;border-radius:var(--radius);padding:26px;display:flex;flex-direction:column;gap:14px;transition:transform .15s ease, box-shadow .15s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(23,37,28,.08)}
+.chip{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.card h2{font-size:19px;font-weight:700}
+.tag{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.card p{color:var(--muted);font-size:14px;line-height:1.6;flex:1}
+.card ul{list-style:none;color:var(--muted);font-size:13.5px;line-height:1.9;flex:1}
+.card ul li::before{content:"·";margin-right:8px;font-weight:800}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;padding:13px 18px;font:600 15px 'Be Vietnam Pro';color:#fff;cursor:pointer;text-decoration:none;transition:filter .15s}
+.btn:hover{filter:brightness(1.08)}
+.c-admin .chip{background:#E7F2EA;color:var(--admin)} .c-admin .tag{color:var(--admin)} .c-admin .btn{background:var(--admin)}
+.c-kitchen .chip{background:#FDEDE4;color:var(--kitchen)} .c-kitchen .tag{color:var(--kitchen)} .c-kitchen .btn{background:var(--kitchen)}
+.c-parent .chip{background:#E2F5F0;color:var(--parent)} .c-parent .tag{color:var(--parent)} .c-parent .btn{background:var(--parent)}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Demo prototype · Chuỗi cung ứng bếp ăn trường học</div>
+  <h1>Kho nguyên liệu → Bếp trường → Phụ huynh</h1>
+  <p class="lead">Hệ thống minh bạch quy trình bữa ăn học đường: kho tổng quản lý nguồn hàng &amp; thực đơn, bếp các trường báo cáo từng bước chế biến kèm ảnh, phụ huynh theo dõi thực đơn và truy xuất nguồn gốc nguyên liệu.</p>
+
+  <div class="flow">
+    <span>Kho nhập nguyên liệu</span><i></i>
+    <span>Phân bổ thực đơn cho bếp</span><i></i>
+    <span>Bếp báo cáo quy trình</span><i></i>
+    <span>Phụ huynh theo dõi</span>
+  </div>
+
+  <div class="grid">
+    <div class="card c-admin">
+      <div class="chip">🖥️</div>
+      <div><span class="tag">Desktop web · Nội bộ</span><h2>Trang quản trị kho</h2></div>
+      <ul>
+        <li>Quản lý nguồn hàng &amp; link truy xuất</li>
+        <li>Quản lý bếp theo trường, import thực đơn Excel</li>
+        <li>Timeline thực đơn + số lượng nguyên liệu</li>
+        <li>Xem báo cáo quy trình, tài khoản PHHS</li>
+      </ul>
+      <a class="btn" href="admin.html">Mở demo quản trị →</a>
+    </div>
+
+    <div class="card c-kitchen">
+      <div class="chip">👨‍🍳</div>
+      <div><span class="tag">Mobile app · Private</span><h2>App Bếp trường</h2></div>
+      <ul>
+        <li>Timeline thực đơn &amp; nguyên liệu trong ngày</li>
+        <li>Nhật ký bếp</li>
+        <li>Báo cáo công việc: chọn bước, chụp ảnh, gửi</li>
+        <li>Giao diện chữ to, tối giản cho người lớn tuổi</li>
+      </ul>
+      <a class="btn" href="kitchen.html">Mở demo app Bếp →</a>
+    </div>
+
+    <div class="card c-parent">
+      <div class="chip">👪</div>
+      <div><span class="tag">Mobile app · Public</span><h2>App Phụ huynh</h2></div>
+      <ul>
+        <li>Thực đơn hằng ngày + truy xuất nguồn gốc</li>
+        <li>Tiến độ chế biến bữa ăn theo thời gian thực</li>
+        <li>Chỉnh sửa hồ sơ</li>
+        <li>Liên hệ Hồng Anh (gọi trực tiếp)</li>
+      </ul>
+      <a class="btn" href="parent.html">Mở demo app PHHS →</a>
+    </div>
+  </div>
+</div>
+<footer>Prototype demo — mọi dữ liệu là dữ liệu mẫu, không có validation.</footer>
+</body>
+</html>

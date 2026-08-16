@@ -8,46 +8,61 @@
 <style>
 :root{
   --ink:#17251C; --muted:#5D6B62; --line:#E3E8E1; --bg:#F4F6F2; --card:#fff;
-  --green:#2F7A4D; --green-soft:#E7F2EA; --amber:#B7791F; --amber-soft:#FCF0DC;
+  --green:#7CB342; --green-d:#558B2F; --green-soft:#EEF6E4;
+  --grad:linear-gradient(135deg,#8BC34A,#558B2F);
+  --amber:#B7791F; --amber-soft:#FCF0DC;
   --red:#C0392B; --red-soft:#FBE9E7; --blue:#2C6E9B; --blue-soft:#E5F0F7;
 }
 *{margin:0;padding:0;box-sizing:border-box}
+*{scrollbar-width:none;-ms-overflow-style:none}
+*::-webkit-scrollbar{display:none;width:0;height:0}
 body{font-family:'Be Vietnam Pro',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
 button{font-family:inherit;cursor:pointer}
-a{color:var(--green)}
+a{color:var(--green-d)}
 
 /* ---------- LOGIN ---------- */
 #login{min-height:100vh;display:flex;align-items:center;justify-content:center}
 .login-box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:40px;width:380px}
-.login-box .logo{font-size:26px;margin-bottom:6px}
+.login-box .logo-box{width:52px;height:52px;border-radius:14px;margin-bottom:14px}
+.login-box .logo-box svg{width:30px;height:30px}
 .login-box h1{font-size:20px;font-weight:800;margin-bottom:4px}
 .login-box p{color:var(--muted);margin-bottom:24px;font-size:13.5px}
 .field{margin-bottom:14px}
 .field label{display:block;font-weight:600;font-size:13px;margin-bottom:6px}
 .field input, .field select{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;font:400 14px 'Be Vietnam Pro';background:#fff}
 .field input:focus{outline:2px solid var(--green);border-color:transparent}
-.btn{border:none;border-radius:10px;padding:11px 16px;font:600 14px 'Be Vietnam Pro';transition:filter .15s}
-.btn:hover{filter:brightness(1.07)}
-.btn-primary{background:var(--green);color:#fff;width:100%}
+.btn{border:none;border-radius:10px;padding:11px 16px;font:600 14px 'Be Vietnam Pro';transition:filter .15s;display:inline-flex;align-items:center;gap:6px;justify-content:center}
+.btn:hover{filter:brightness(1.05)}
+.btn-primary{background:var(--grad);color:#fff;width:100%}
 .btn-sm{padding:7px 12px;font-size:13px}
 .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
 .btn-danger{background:var(--red-soft);color:var(--red)}
-.btn-green{background:var(--green);color:#fff}
+.btn-green{background:var(--grad);color:#fff}
+.btn-ic{width:15px;height:15px;flex-shrink:0;fill:currentColor}
+
+/* logo box (kho thực phẩm — placeholder, có thể thay sau) */
+.logo-box{background:var(--grad);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 6px rgba(85,139,47,.35)}
+.logo-box svg{fill:#fff}
 
 /* ---------- SHELL ---------- */
 #app{display:none;min-height:100vh}
 #app.on{display:grid;grid-template-columns:236px 1fr}
-aside{background:#1C3327;color:#D6E4DA;padding:22px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-aside .brand{font-weight:800;color:#fff;font-size:16px;padding:0 10px 22px;display:flex;gap:8px;align-items:center}
+aside{background:linear-gradient(185deg,#1C3327,#132019);color:#D6E4DA;padding:22px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+aside .brand{font-weight:800;color:#fff;font-size:16px;padding:0 6px 22px;display:flex;gap:10px;align-items:center}
+aside .brand .logo-box{width:34px;height:34px;border-radius:9px}
+aside .brand .logo-box svg{width:20px;height:20px}
 aside nav{display:flex;flex-direction:column;gap:4px;flex:1}
 aside nav button{display:flex;align-items:center;gap:10px;background:none;border:none;color:#AFC4B6;padding:11px 12px;border-radius:10px;font:500 14px 'Be Vietnam Pro';text-align:left;width:100%}
-aside nav button.active{background:rgba(255,255,255,.1);color:#fff;font-weight:600}
-aside nav button:hover{color:#fff}
+aside nav button svg{width:19px;height:19px;fill:currentColor;flex-shrink:0}
+aside nav button.active{background:var(--grad);color:#fff;font-weight:600}
+aside nav button:hover:not(.active){color:#fff;background:rgba(255,255,255,.06)}
 aside nav .badge{margin-left:auto;background:#E86A33;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 7px}
 aside .user{border-top:1px solid rgba(255,255,255,.12);padding-top:14px;font-size:13px}
 aside .user b{color:#fff;display:block}
 aside .user button{margin-top:10px;width:100%;background:rgba(255,255,255,.08);border:none;color:#fff;padding:9px;border-radius:9px;font:600 13px 'Be Vietnam Pro'}
-main{padding:28px 32px;max-width:1160px}
+aside .user .home-link{display:block;text-align:center;margin-top:10px;background:rgba(255,255,255,.08);color:#fff;padding:9px;border-radius:9px;font:600 13px 'Be Vietnam Pro';text-decoration:none}
+aside .user .home-link:hover{background:rgba(255,255,255,.14)}
+main{padding:28px 32px;max-width:1320px;width:100%;margin:0 auto}
 .page{display:none}.page.on{display:block}
 .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
 .page-head h2{font-size:22px;font-weight:800}
@@ -62,10 +77,39 @@ td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#FAFBF9}
 .pill{display:inline-block;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
-.pill.g{background:var(--green-soft);color:var(--green)}
+.pill.g{background:var(--green-soft);color:var(--green-d)}
 .pill.a{background:var(--amber-soft);color:var(--amber)}
 .pill.b{background:var(--blue-soft);color:var(--blue)}
 .pill.r{background:var(--red-soft);color:var(--red)}
+
+/* ---------- FILTERS ---------- */
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.f-input{padding:9px 12px;border:1px solid var(--line);border-radius:10px;font:500 13.5px 'Be Vietnam Pro';background:#fff;color:var(--ink)}
+.f-input:focus{outline:2px solid var(--green);border-color:transparent}
+.f-check{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:500;color:var(--ink);cursor:pointer;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.f-check input{width:16px;height:16px;accent-color:var(--green)}
+.search{min-width:240px}
+
+/* ---------- TABLE TOOLBAR / PAGINATION ---------- */
+.tbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.total{font-size:13.5px;color:var(--muted)}
+.total b{color:var(--ink)}
+.tbar-right{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:280px}
+.name-link{font-weight:700;color:var(--ink);text-decoration:none;cursor:pointer}
+.name-link:hover{color:var(--green-d);text-decoration:underline}
+.icon-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--muted);margin-left:4px;vertical-align:middle}
+.icon-btn:hover{color:var(--green-d);border-color:var(--green);background:var(--green-soft)}
+.icon-btn.danger:hover{color:var(--red);border-color:var(--red);background:var(--red-soft)}
+.icon-btn svg{width:16px;height:16px;fill:currentColor}
+/* shared tooltip (positioned in body — never clipped by panels) */
+#tip{position:fixed;z-index:200;background:#1C3327;color:#fff;font-size:12px;font-weight:500;line-height:1.5;padding:8px 11px;border-radius:8px;max-width:300px;box-shadow:0 6px 20px rgba(0,0,0,.22);pointer-events:none;opacity:0;transform:translateY(-100%);transition:opacity .12s}
+#tip.on{opacity:1}
+.pager{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--line);background:#FAFBF9;font-size:13px;color:var(--muted)}
+.pager-ctrl{display:flex;align-items:center;gap:8px}
+.pager-ctrl button{width:30px;height:30px;border:1px solid var(--line);background:#fff;border-radius:8px;color:var(--ink);font-size:15px;line-height:1}
+.pager-ctrl button:hover{background:var(--green-soft);border-color:var(--green)}
+.pager-ctrl input{width:46px;padding:6px;text-align:center;border:1px solid var(--line);border-radius:8px;font:600 13px 'Be Vietnam Pro'}
 
 /* ---------- NOTIFICATIONS ---------- */
 .notif{display:flex;gap:14px;padding:16px;border-bottom:1px solid var(--line);align-items:flex-start}
@@ -73,28 +117,23 @@ tr:hover td{background:#FAFBF9}
 .notif .ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
 .notif b{font-weight:600}
 .notif .time{color:var(--muted);font-size:12.5px;margin-top:3px}
-.notif.unread{background:#F6FBF7}
-
-/* ---------- KITCHEN ---------- */
-.kitchen-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.k-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px}
-.k-card h3{font-size:16px;font-weight:700}
-.k-card .meta{color:var(--muted);font-size:13px;line-height:1.7}
-.k-card .row{display:flex;gap:8px;margin-top:4px}
+.notif.unread{background:#F6FBF0}
+.empty{padding:34px 16px;text-align:center;color:var(--muted);font-size:13.5px}
 
 /* kitchen detail tabs */
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px}
 .tabs button{background:none;border:none;padding:10px 16px;font:600 14px 'Be Vietnam Pro';color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
-.tabs button.active{color:var(--green);border-color:var(--green)}
+.tabs button.active{color:var(--green-d);border-color:var(--green)}
 .tabpage{display:none}.tabpage.on{display:block}
 
 /* timeline */
 .day{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:14px;overflow:hidden}
-.day-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:#FAFBF9;border-bottom:1px solid var(--line);cursor:pointer}
+.day-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:#FAFBF9;border-bottom:1px solid var(--line);cursor:pointer;gap:10px}
 .day-head b{font-size:14.5px}
 .day-body{padding:16px 18px;display:none}
 .day.open .day-body{display:block}
-.menu-line{font-size:14px;margin-bottom:10px}
+.menu-line{font-size:14px}
+.day-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .ing{display:grid;grid-template-columns:1fr 110px 1fr;gap:6px 14px;font-size:13.5px}
 .ing div{padding:7px 0;border-bottom:1px dashed var(--line)}
 .ing .h{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--line)}
@@ -112,18 +151,33 @@ tr:hover td{background:#FAFBF9}
 .photos{display:flex;gap:8px;margin-top:10px}
 .photo{width:86px;height:64px;border-radius:8px;background:linear-gradient(135deg,#DDE8DF,#C4D6C9);display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--line)}
 
-/* ---------- MODAL / TOAST ---------- */
-.overlay{display:none;position:fixed;inset:0;background:rgba(23,37,28,.45);z-index:50;align-items:center;justify-content:center}
-.overlay.on{display:flex}
-.modal{background:#fff;border-radius:16px;padding:26px;width:min(440px,92vw)}
-.modal h3{font-size:17px;font-weight:800;margin-bottom:16px}
-.modal .foot{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+/* ---------- DRAWER (right side panel) ---------- */
+.overlay{display:none;position:fixed;inset:0;background:rgba(23,37,28,.45);z-index:50}
+.overlay.on{display:block}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(460px,94vw);background:#fff;box-shadow:-8px 0 30px rgba(0,0,0,.14);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:60;display:flex;flex-direction:column}
+.drawer.on{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:20px 24px;border-bottom:1px solid var(--line)}
+.drawer-head h3{font-size:17px;font-weight:800}
+.drawer-close{background:none;border:none;font-size:20px;color:var(--muted);line-height:1;padding:4px 6px;border-radius:8px}
+.drawer-close:hover{background:var(--bg);color:var(--ink)}
+.drawer-body{padding:22px 24px;overflow-y:auto;flex:1}
+.drawer-foot{display:flex;justify-content:flex-end;gap:8px;padding:16px 24px;border-top:1px solid var(--line)}
+.dropzone{border:2px dashed var(--line);border-radius:14px;padding:30px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.dropzone:hover{border-color:var(--green);background:var(--green-soft)}
+
+/* ---------- CONFIRM MODAL / TOAST ---------- */
+.cmodal-overlay{display:none;position:fixed;inset:0;background:rgba(23,37,28,.45);z-index:70;align-items:center;justify-content:center}
+.cmodal-overlay.on{display:flex}
+.cmodal{background:#fff;border-radius:16px;padding:26px;width:min(400px,92vw)}
+.cmodal h3{font-size:17px;font-weight:800;margin-bottom:10px}
+.cmodal p{color:var(--muted);font-size:14px;line-height:1.6}
+.cmodal .foot{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1C3327;color:#fff;padding:12px 20px;border-radius:12px;font-weight:600;font-size:14px;transition:transform .25s ease;z-index:99}
 #toast.on{transform:translateX(-50%) translateY(0)}
 .hint{font-size:12.5px;color:var(--muted);margin-top:8px}
 .back{background:none;border:none;color:var(--muted);font:600 13px 'Be Vietnam Pro';padding:0;margin-bottom:10px}
 .back:hover{color:var(--ink)}
-@media(max-width:860px){#app.on{grid-template-columns:1fr}aside{position:static;height:auto;flex-direction:row;align-items:center;overflow-x:auto}aside nav{flex-direction:row}aside .user{display:none}main{padding:20px}}
+@media(max-width:860px){#app.on{grid-template-columns:1fr}aside{position:static;height:auto;flex-direction:row;align-items:center;overflow-x:auto}aside .brand{padding:0 8px 0 0}aside nav{flex-direction:row}aside nav .badge{display:none}aside .user{display:none}main{padding:20px}}
 </style>
 </head>
 <body>
@@ -131,29 +185,34 @@ tr:hover td{background:#FAFBF9}
 <!-- LOGIN -->
 <section id="login">
   <div class="login-box">
-    <div class="logo">🏬</div>
+    <span class="logo-box"><svg viewBox="0 0 24 24"><path d="M3 9.4 12 4l9 5.4V20a1 1 0 0 1-1 1h-4v-6H8v6H4a1 1 0 0 1-1-1V9.4Z"/><path d="M13 8.7c1.5-1.5 3.9-1.5 3.9-1.5s0 2.4-1.5 3.9c-.9.9-2.3.9-2.3.9s0-2.3.9-3.3Z" opacity=".85"/></svg></span>
     <h1>Quản trị kho nguyên liệu</h1>
     <p>Hệ thống điều phối bếp ăn trường học</p>
     <div class="field"><label>Tên đăng nhập</label><input placeholder="admin" value="admin"></div>
     <div class="field"><label>Mật khẩu</label><input type="password" placeholder="••••••••" value="123456"></div>
     <button class="btn btn-primary" onclick="doLogin()">Đăng nhập</button>
     <p class="hint">Prototype — nhập gì cũng đăng nhập được.</p>
+    <a href="index.html" class="hint" style="display:block;text-align:center;margin-top:14px;color:var(--green-d);font-weight:600">← Về trang chủ</a>
   </div>
 </section>
 
 <!-- APP -->
 <div id="app">
   <aside>
-    <div class="brand">🏬 Kho Tổng</div>
+    <div class="brand">
+      <span class="logo-box"><svg viewBox="0 0 24 24"><path d="M3 9.4 12 4l9 5.4V20a1 1 0 0 1-1 1h-4v-6H8v6H4a1 1 0 0 1-1-1V9.4Z"/><path d="M13 8.7c1.5-1.5 3.9-1.5 3.9-1.5s0 2.4-1.5 3.9c-.9.9-2.3.9-2.3.9s0-2.3.9-3.3Z" opacity=".85"/></svg></span>
+      <span>Kho Tổng</span>
+    </div>
     <nav>
-      <button class="active" data-page="notif" onclick="go('notif',this)">🔔 Thông báo <span class="badge">3</span></button>
-      <button data-page="source" onclick="go('source',this)">📦 Nguồn hàng</button>
-      <button data-page="kitchen" onclick="go('kitchen',this)">🍳 Quản lý bếp</button>
-      <button data-page="parent" onclick="go('parent',this)">👪 Tài khoản PHHS</button>
+      <button class="active" data-page="notif" onclick="go('notif',this)"><svg viewBox="0 0 24 24"><path d="M12 2a6 6 0 0 0-6 6c0 3.1-.8 5-1.6 6.1-.4.6 0 1.4.7 1.4h13.8c.7 0 1.1-.8.7-1.4C18.8 13 18 11.1 18 8a6 6 0 0 0-6-6Zm0 20a2.8 2.8 0 0 0 2.8-2.6H9.2A2.8 2.8 0 0 0 12 22Z"/></svg><span>Thông báo</span><span class="badge">3</span></button>
+      <button data-page="source" onclick="go('source',this)"><svg viewBox="0 0 24 24"><path d="M12 2 3 6.9v10.2L12 22l9-4.9V6.9L12 2Zm0 2.3 6.1 3.3L12 10.9 5.9 7.6 12 4.3ZM5 9.2l6 3.3v6.9l-6-3.3V9.2Z"/></svg><span>Nguồn hàng</span></button>
+      <button data-page="kitchen" onclick="go('kitchen',this)"><svg viewBox="0 0 24 24"><path d="M7 20h10a1 1 0 0 0 1-1v-5H6v5a1 1 0 0 0 1 1Zm5-18a5 5 0 0 0-4.9 4.1A4 4 0 0 0 6 13.9V13h12v.9a4 4 0 0 0 .9-7.8A5 5 0 0 0 12 2Z"/></svg><span>Quản lý bếp</span></button>
+      <button data-page="parent" onclick="go('parent',this)"><svg viewBox="0 0 24 24"><path d="M8 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm8 .5a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM8 13c-3.3 0-6 1.7-6 3.8V19h12v-2.2C14 14.7 11.3 13 8 13Zm8 .5c-.5 0-1 0-1.4.1 1.2 1 1.9 2.2 1.9 3.7V19H22v-2.2c0-1.9-2.6-3.3-6-3.3Z"/></svg><span>Tài khoản PHHS</span></button>
     </nav>
     <div class="user">
       <b>Nguyễn Quản Trị</b>
       <span style="color:#AFC4B6">admin@khotong.vn</span>
+      <a href="index.html" class="home-link">🏠 Về trang chủ</a>
       <button onclick="doLogout()">Đăng xuất</button>
     </div>
   </aside>
@@ -165,7 +224,29 @@ tr:hover td{background:#FAFBF9}
         <div><h2>Thông báo</h2><p>Hoạt động mới nhất từ các bếp trường</p></div>
         <button class="btn btn-ghost btn-sm" onclick="toast('Đã đánh dấu tất cả là đã đọc')">Đánh dấu đã đọc</button>
       </div>
-      <div class="panel" id="notifList"></div>
+      <div class="filters">
+        <input type="date" id="fDate" class="f-input" onchange="pagerState.notif=1;renderNotifs()">
+        <select id="fKitchen" class="f-input" onchange="pagerState.notif=1;renderNotifs()">
+          <option value="">Tất cả bếp</option>
+          <option value="TH Đoàn Thị Điểm">TH Đoàn Thị Điểm</option>
+          <option value="TH Nguyễn Siêu">TH Nguyễn Siêu</option>
+          <option value="MN Hoa Sen">MN Hoa Sen</option>
+          <option value="TH Kim Đồng">TH Kim Đồng</option>
+        </select>
+        <label class="f-check"><input type="checkbox" id="fUnread" onchange="pagerState.notif=1;renderNotifs()"> Chỉ chưa đọc</label>
+        <div class="total" id="notifTotal" style="margin-left:auto"></div>
+      </div>
+      <div class="panel">
+        <div id="notifList"></div>
+        <div class="pager">
+          <span id="notifRange"></span>
+          <div class="pager-ctrl">
+            <button onclick="pageStep('notif',-1)" title="Trang trước">‹</button>
+            <span>Trang <input id="notifPageInput" onchange="pageGoto('notif',this.value)"> / <b id="notifPages"></b></span>
+            <button onclick="pageStep('notif',1)" title="Trang sau">›</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ===== NGUỒN HÀNG ===== -->
@@ -173,7 +254,15 @@ tr:hover td{background:#FAFBF9}
       <div class="page-head">
         <div><h2>Nguồn hàng</h2><p>Danh mục nguyên liệu, nhà phân phối và truy xuất nguồn gốc</p></div>
         <div class="actions">
-          <button class="btn btn-green btn-sm" onclick="openModal('m-source')">+ Thêm nguyên liệu</button>
+          <button class="btn btn-ghost btn-sm" onclick="openImportPanel('Nhập nguồn hàng từ Excel','Đã import 12 nguồn hàng từ file Excel')"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M12 3 7 8h3v6h4V8h3l-5-5ZM5 17h14v2H5z"/></svg>Import</button>
+          <button class="btn btn-green btn-sm" onclick="openSourcePanel()">+ Thêm nguyên liệu</button>
+        </div>
+      </div>
+      <div class="tbar">
+        <div class="total" id="sourceTotal"></div>
+        <div class="tbar-right">
+          <select id="sourceDist" class="f-input" onchange="pagerState.source=1;renderSources()"><option value="">Tất cả nhà phân phối</option></select>
+          <input class="f-input search" id="sourceSearch" placeholder="🔍 Tìm nguyên liệu, nhà phân phối, xuất xứ, link..." oninput="pagerState.source=1;renderSources()">
         </div>
       </div>
       <div class="panel">
@@ -181,92 +270,73 @@ tr:hover td{background:#FAFBF9}
           <thead><tr><th>Nguyên liệu</th><th>Nhà phân phối</th><th>Xuất xứ</th><th>Truy xuất nguồn gốc</th><th></th></tr></thead>
           <tbody id="sourceBody"></tbody>
         </table>
+        <div class="pager">
+          <span id="sourceRange"></span>
+          <div class="pager-ctrl">
+            <button onclick="pageStep('source',-1)" title="Trang trước">‹</button>
+            <span>Trang <input id="sourcePageInput" onchange="pageGoto('source',this.value)"> / <b id="sourcePages"></b></span>
+            <button onclick="pageStep('source',1)" title="Trang sau">›</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- ===== QUẢN LÝ BẾP: DANH SÁCH ===== -->
     <div class="page" id="page-kitchen">
       <div class="page-head">
-        <div><h2>Quản lý bếp</h2><p>Mỗi trường một bếp — quản lý thực đơn, tài khoản và báo cáo quy trình</p></div>
-        <button class="btn btn-green btn-sm" onclick="openModal('m-kitchen')">+ Tạo bếp mới</button>
+        <div><h2>Quản lý bếp</h2><p>Mỗi trường một bếp — bấm tên bếp để xem chi tiết</p></div>
+        <button class="btn btn-green btn-sm" onclick="openKitchenPanel()">+ Tạo bếp mới</button>
       </div>
-      <div class="kitchen-grid" id="kitchenGrid"></div>
+      <div class="tbar">
+        <div class="total" id="kitchenTotal"></div>
+        <div class="tbar-right">
+          <select id="kitchenStatus" class="f-input" onchange="renderKitchens()"><option value="">Tất cả trạng thái</option></select>
+          <input class="f-input search" id="kitchenSearch" placeholder="🔍 Tìm theo tên trường, địa chỉ..." oninput="renderKitchens()">
+        </div>
+      </div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Tên trường</th><th>Địa chỉ</th><th>Suất ăn/ngày</th><th>Bữa trưa hôm nay</th><th>Trạng thái</th><th style="text-align:right">Thao tác</th></tr></thead>
+          <tbody id="kitchenBody"></tbody>
+        </table>
+        <div class="pager">
+          <span id="kitchenRange"></span>
+          <div class="pager-ctrl">
+            <button onclick="pageStep('kitchen',-1)" title="Trang trước">‹</button>
+            <span>Trang <input id="kitchenPageInput" onchange="pageGoto('kitchen',this.value)"> / <b id="kitchenPages"></b></span>
+            <button onclick="pageStep('kitchen',1)" title="Trang sau">›</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- ===== CHI TIẾT BẾP ===== -->
+    <!-- ===== CHI TIẾT BẾP (giữ là page riêng) ===== -->
     <div class="page" id="page-kdetail">
       <button class="back" onclick="go('kitchen',document.querySelector('[data-page=kitchen]'))">← Quay lại danh sách bếp</button>
       <div class="page-head">
         <div><h2 id="kdName">Bếp</h2><p id="kdMeta"></p></div>
         <div class="actions">
-          <button class="btn btn-ghost btn-sm" onclick="fileImport('Đã import thực đơn tuần từ file Excel (25 dòng)')">⬆ Import thực đơn (Excel)</button>
-          <button class="btn btn-danger btn-sm" onclick="toast('Đã xoá bếp (mock)')">Xoá bếp</button>
+          <button class="btn btn-ghost btn-sm" onclick="fileImport('Đã import thực đơn tuần từ file Excel (25 dòng)')"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M12 3 7 8h3v6h4V8h3l-5-5ZM5 17h14v2H5z"/></svg>Import thực đơn</button>
+          <button class="btn btn-ghost btn-sm" onclick="openKitchenPanel(curKitchen)"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25ZM20.7 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z"/></svg>Sửa bếp</button>
+          <button class="btn btn-danger btn-sm" onclick="confirmDialog('Xoá bếp','Xoá bếp này khỏi hệ thống? Thao tác không thể hoàn tác.','Xoá bếp',()=>{toast('Đã xoá bếp (mock)');go('kitchen',document.querySelector('[data-page=kitchen]'))})">Xoá bếp</button>
         </div>
       </div>
       <div class="tabs">
-        <button class="active" onclick="ktab('menu',this)">Timeline thực đơn</button>
-        <button onclick="ktab('report',this)">Báo cáo quy trình</button>
+        <button class="active" onclick="ktab('menu',this)">Danh sách thực đơn</button>
         <button onclick="ktab('acc',this)">Tài khoản bếp</button>
       </div>
 
-      <div class="tabpage on" id="ktab-menu" ></div>
-
-      <div class="tabpage" id="ktab-report">
-        <div class="panel" style="padding:20px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:8px">
-            <b style="font-size:15px">Bữa trưa · Thứ Hai, 17/08/2026</b>
-            <span class="pill a">Đang chế biến</span>
-          </div>
-          <p style="color:var(--muted);font-size:13px;margin-bottom:14px">Cơm gạo ST25 · Thịt kho trứng cút · Canh cải ngọt nấu tôm · Dưa hấu</p>
-          <div class="steps">
-            <div class="step done">
-              <div class="dot">✅</div>
-              <div style="flex:1">
-                <b>1. Nhập nguyên liệu</b>
-                <div class="sub">Hoàn tất 06:15 · Bếp trưởng Trần Thị Hoa · Đủ 8/8 nguyên liệu theo phiếu xuất kho</div>
-                <div class="photos"><div class="photo">📷</div><div class="photo">📷</div><div class="photo">📷</div></div>
-              </div>
-            </div>
-            <div class="step done">
-              <div class="dot">✅</div>
-              <div style="flex:1">
-                <b>2. Sơ chế</b>
-                <div class="sub">Hoàn tất 07:40 · Rửa, ngâm muối rau củ; sơ chế thịt theo quy trình VSATTP</div>
-                <div class="photos"><div class="photo">📷</div><div class="photo">📷</div></div>
-              </div>
-            </div>
-            <div class="step doing">
-              <div class="dot">🍲</div>
-              <div style="flex:1">
-                <b>3. Chế biến</b>
-                <div class="sub">Bắt đầu 09:10 · Đang nấu — dự kiến hoàn tất 10:30</div>
-                <div class="photos"><div class="photo">📷</div></div>
-              </div>
-            </div>
-            <div class="step todo">
-              <div class="dot">🍱</div>
-              <div style="flex:1"><b>4. Chia khẩu phần</b><div class="sub">Chưa bắt đầu · Dự kiến 10:45</div></div>
-            </div>
-            <div class="step todo">
-              <div class="dot">🧾</div>
-              <div style="flex:1"><b>5. Lưu mẫu &amp; hoàn tất</b><div class="sub">Chưa bắt đầu · Lưu mẫu thức ăn 24h theo quy định</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="tabpage on" id="ktab-menu"></div>
 
       <div class="tabpage" id="ktab-acc">
         <div class="page-head" style="margin-bottom:14px">
           <p style="color:var(--muted)">Tài khoản đăng nhập app Bếp của trường này</p>
-          <button class="btn btn-green btn-sm" onclick="openModal('m-kacc')">+ Tạo tài khoản bếp</button>
+          <button class="btn btn-green btn-sm" onclick="openKaccPanel()">+ Tạo tài khoản bếp</button>
         </div>
         <div class="panel">
           <table>
             <thead><tr><th>Họ tên</th><th>Tên đăng nhập</th><th>Vai trò</th><th>Trạng thái</th><th></th></tr></thead>
-            <tbody>
-              <tr><td>Trần Thị Hoa</td><td>hoa.tt</td><td>Bếp trưởng</td><td><span class="pill g">Hoạt động</span></td><td><button class="btn btn-danger btn-sm" onclick="toast('Đã xoá tài khoản (mock)')">Xoá</button></td></tr>
-              <tr><td>Lê Văn Minh</td><td>minh.lv</td><td>Nhân viên bếp</td><td><span class="pill g">Hoạt động</span></td><td><button class="btn btn-danger btn-sm" onclick="toast('Đã xoá tài khoản (mock)')">Xoá</button></td></tr>
-            </tbody>
+            <tbody id="kaccBody"></tbody>
           </table>
         </div>
       </div>
@@ -276,9 +346,13 @@ tr:hover td{background:#FAFBF9}
     <div class="page" id="page-parent">
       <div class="page-head">
         <div><h2>Tài khoản phụ huynh</h2><p>Tên đăng nhập là số điện thoại · Mật khẩu mặc định: <code>bep2026</code></p></div>
-        <div class="actions">
-          <select id="parentSchool" class="btn btn-ghost btn-sm" style="font-weight:500" onchange="renderParents()"></select>
-          <button class="btn btn-green btn-sm" onclick="fileImport('Đã import 42 tài khoản PHHS từ Excel (SĐT làm tên đăng nhập)')">⬆ Import Excel</button>
+        <button class="btn btn-green btn-sm" onclick="openParentPanel()">+ Thêm tài khoản</button>
+      </div>
+      <div class="tbar">
+        <div class="total" id="parentTotal"></div>
+        <div class="tbar-right">
+          <select id="parentSchool" class="f-input" onchange="pagerState.parent=1;renderParents()"></select>
+          <input class="f-input search" id="parentSearch" placeholder="🔍 Tìm theo tên phụ huynh, học sinh..." oninput="pagerState.parent=1;renderParents()">
         </div>
       </div>
       <div class="panel">
@@ -286,51 +360,38 @@ tr:hover td{background:#FAFBF9}
           <thead><tr><th>Phụ huynh</th><th>SĐT (tên đăng nhập)</th><th>Học sinh</th><th>Lớp</th><th></th></tr></thead>
           <tbody id="parentBody"></tbody>
         </table>
+        <div class="pager">
+          <span id="parentRange"></span>
+          <div class="pager-ctrl">
+            <button onclick="pageStep('parent',-1)" title="Trang trước">‹</button>
+            <span>Trang <input id="parentPageInput" onchange="pageGoto('parent',this.value)"> / <b id="parentPages"></b></span>
+            <button onclick="pageStep('parent',1)" title="Trang sau">›</button>
+          </div>
+        </div>
       </div>
     </div>
   </main>
 </div>
 
-<!-- MODALS -->
-<div class="overlay" id="m-source">
-  <div class="modal">
-    <h3>Thêm nguyên liệu</h3>
-    <div class="field"><label>Tên nguyên liệu</label><input placeholder="VD: Thịt lợn nạc vai"></div>
-    <div class="field"><label>Nhà phân phối</label><input placeholder="VD: CP Việt Nam"></div>
-    <div class="field"><label>Xuất xứ</label><input placeholder="VD: Đồng Nai"></div>
-    <div class="field"><label>Link truy xuất nguồn gốc</label><input placeholder="https://..."></div>
-    <div class="foot"><button class="btn btn-ghost" onclick="closeModal()">Huỷ</button><button class="btn btn-green" onclick="closeModal();toast('Đã thêm nguyên liệu (mock)')">Lưu</button></div>
-  </div>
+<!-- DRAWER (right side panel dùng chung) -->
+<div class="overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head"><h3 id="drawerTitle"></h3><button class="drawer-close" onclick="closeDrawer()">✕</button></div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot" id="drawerFoot"></div>
 </div>
-<div class="overlay" id="m-kitchen">
-  <div class="modal">
-    <h3>Tạo bếp mới</h3>
-    <div class="field"><label>Tên trường</label><input placeholder="VD: Trường TH Kim Liên"></div>
-    <div class="field"><label>Địa chỉ</label><input placeholder="VD: Đống Đa, Hà Nội"></div>
-    <div class="field"><label>Sĩ số phục vụ</label><input placeholder="VD: 850"></div>
-    <div class="foot"><button class="btn btn-ghost" onclick="closeModal()">Huỷ</button><button class="btn btn-green" onclick="closeModal();toast('Đã tạo bếp mới (mock)')">Tạo bếp</button></div>
-  </div>
-</div>
-<div class="overlay" id="m-kacc">
-  <div class="modal">
-    <h3>Tạo tài khoản bếp</h3>
-    <div class="field"><label>Họ tên</label><input placeholder="VD: Phạm Thị Lan"></div>
-    <div class="field"><label>Tên đăng nhập</label><input placeholder="VD: lan.pt"></div>
-    <div class="field"><label>Vai trò</label><select><option>Bếp trưởng</option><option>Nhân viên bếp</option></select></div>
-    <div class="foot"><button class="btn btn-ghost" onclick="closeModal()">Huỷ</button><button class="btn btn-green" onclick="closeModal();toast('Đã tạo tài khoản bếp (mock)')">Tạo tài khoản</button></div>
-  </div>
-</div>
-<div class="overlay" id="m-parent">
-  <div class="modal">
-    <h3>Sửa tài khoản phụ huynh</h3>
-    <div class="field"><label>Họ tên phụ huynh</label><input id="mpName"></div>
-    <div class="field"><label>SĐT (tên đăng nhập)</label><input id="mpPhone"></div>
-    <div class="field"><label>Học sinh</label><input id="mpStudent"></div>
-    <div class="foot"><button class="btn btn-ghost" onclick="closeModal()">Huỷ</button><button class="btn btn-green" onclick="closeModal();toast('Đã lưu thay đổi (mock)')">Lưu</button></div>
+
+<!-- CONFIRM MODAL (chỉ dùng cho xác nhận xoá) -->
+<div class="cmodal-overlay" id="confirmOverlay" onclick="if(event.target===this)closeConfirm()">
+  <div class="cmodal">
+    <h3 id="confirmTitle">Xác nhận</h3>
+    <p id="confirmMsg"></p>
+    <div class="foot"><button class="btn btn-ghost" onclick="closeConfirm()">Huỷ</button><button class="btn btn-danger" id="confirmOk">Xoá</button></div>
   </div>
 </div>
 
 <input type="file" id="hiddenFile" accept=".xlsx,.xls,.csv" style="display:none">
+<div id="tip"></div>
 <div id="toast"></div>
 
 <script>
@@ -344,19 +405,40 @@ const SOURCES = [
   ["Dưa hấu","HTX Nông sản Gò Công","Tiền Giang","https://truyxuat.vn/gocong-dua"],
   ["Dầu ăn Simply","Calofic","Quảng Ninh","https://truyxuat.vn/simply"],
   ["Đậu phụ","Cơ sở Phú Bình","Thanh Trì, Hà Nội","https://truyxuat.vn/phubinh-dau"],
+  ["Thịt gà ta","CP Việt Nam","Bình Phước","https://truyxuat.vn/cp-ga"],
+  ["Cá basa phi lê","Vĩnh Hoàn","Đồng Tháp","https://truyxuat.vn/vinhhoan-basa"],
+  ["Sữa tươi học đường","Vinamilk","Nghệ An","https://truyxuat.vn/vinamilk-sua"],
+  ["Bí đỏ","HTX Rau sạch Vân Nội","Đông Anh, Hà Nội","https://truyxuat.vn/vannoi-bido"],
+  ["Cà chua","HTX Rau sạch Vân Nội","Đông Anh, Hà Nội","https://truyxuat.vn/vannoi-cachua"],
+  ["Thịt bò","Vissan","TP.HCM","https://truyxuat.vn/vissan-bo"],
+  ["Nước mắm","Nam Ngư","Phú Quốc, Kiên Giang","https://truyxuat.vn/namngu"],
 ];
 const KITCHENS = [
-  {name:"Trường TH Đoàn Thị Điểm", addr:"Nam Từ Liêm, Hà Nội", size:1250, status:"Đang chế biến", s:"a"},
-  {name:"Trường TH Nguyễn Siêu", addr:"Cầu Giấy, Hà Nội", size:980, status:"Đã nhập nguyên liệu", s:"b"},
-  {name:"Trường MN Hoa Sen", addr:"Ba Đình, Hà Nội", size:420, status:"Hoàn tất hôm nay", s:"g"},
-  {name:"Trường TH Kim Đồng", addr:"Hoàn Kiếm, Hà Nội", size:760, status:"Chưa bắt đầu", s:"r"},
+  {name:"Trường TH Đoàn Thị Điểm", addr:"Nam Từ Liêm, Hà Nội", size:1250, status:"Đang chế biến", s:"a", lunch:"Cơm gạo ST25 · Thịt kho trứng cút · Canh cải ngọt nấu tôm · Đậu phụ sốt cà chua · Dưa hấu tráng miệng"},
+  {name:"Trường TH Nguyễn Siêu", addr:"Cầu Giấy, Hà Nội", size:980, status:"Đã nhập nguyên liệu", s:"b", lunch:"Cơm tấm · Gà rang gừng · Canh bí đỏ hầm xương · Rau muống luộc chấm kho quẹt · Sữa chua nếp cẩm"},
+  {name:"Trường MN Hoa Sen", addr:"Ba Đình, Hà Nội", size:420, status:"Hoàn tất hôm nay", s:"g", lunch:"Cháo thịt bằm rau củ · Cá basa sốt cà chua · Trứng đúc thịt · Canh rau ngót nấu tôm · Chuối tây"},
+  {name:"Trường TH Kim Đồng", addr:"Hoàn Kiếm, Hà Nội", size:760, status:"Chưa bắt đầu", s:"r", lunch:"Cơm · Đậu phụ nhồi thịt sốt cà · Canh chua cá lóc · Su su xào tỏi · Thanh long ruột đỏ tráng miệng"},
+  {name:"Trường TH Kim Liên", addr:"Đống Đa, Hà Nội", size:1100, status:"Đang chế biến", s:"a", lunch:"Cơm · Sườn xào chua ngọt · Canh rau cải nấu thịt băm · Trứng chiên lá hẹ · Nho ngọt tráng miệng"},
+  {name:"Trường TH Cát Linh", addr:"Đống Đa, Hà Nội", size:890, status:"Đã nhập nguyên liệu", s:"b", lunch:"Cơm · Tôm rim thịt ba chỉ · Canh cua rau đay mồng tơi · Đậu bắp luộc · Táo Envy tráng miệng"},
+  {name:"Trường MN Việt Bun", addr:"Hai Bà Trưng, Hà Nội", size:360, status:"Hoàn tất hôm nay", s:"g", lunch:"Cháo gà hạt sen · Chả lá lốt · Canh mồng tơi nấu tôm · Sữa chua hoa quả tráng miệng"},
+  {name:"Trường TH Thành Công", addr:"Ba Đình, Hà Nội", size:1020, status:"Chưa bắt đầu", s:"r", lunch:"Cơm · Cá thu sốt cà chua · Thịt gà kho gừng · Canh bí xanh nấu xương · Dưa lê tráng miệng"},
+  {name:"Trường TH Trung Tự", addr:"Đống Đa, Hà Nội", size:640, status:"Đang chế biến", s:"a", lunch:"Cơm · Bò xào rau củ thập cẩm · Canh ngao chua nấu dứa · Rau muống xào tỏi · Chuối tiêu"},
+  {name:"Trường TH Ngọc Hà", addr:"Ba Đình, Hà Nội", size:720, status:"Đã nhập nguyên liệu", s:"b", lunch:"Cơm · Thịt viên sốt cà chua · Canh khoai tây cà rốt hầm xương · Su hào luộc · Cam ngọt"},
+  {name:"Trường MN Sao Mai", addr:"Cầu Giấy, Hà Nội", size:410, status:"Hoàn tất hôm nay", s:"g", lunch:"Cháo tôm bí đỏ · Trứng cút kho thịt · Canh rau ngót nấu thịt băm · Váng sữa · Lê Hàn"},
 ];
+/* n = [icon, bg, html, time, unread, date] */
 const NOTIFS = [
-  ["🍲","var(--amber-soft)","<b>Bếp TH Đoàn Thị Điểm</b> đã báo cáo bước <b>Chế biến</b> (1 ảnh)","09:12 · Hôm nay",1],
-  ["✅","var(--green-soft)","<b>Bếp MN Hoa Sen</b> đã hoàn tất quy trình bữa trưa (5/5 bước)","08:55 · Hôm nay",1],
-  ["📦","var(--blue-soft)","<b>Bếp TH Nguyễn Siêu</b> đã xác nhận <b>Nhập nguyên liệu</b> — đủ 8/8 mặt hàng","06:32 · Hôm nay",1],
-  ["🧑‍🍳","var(--green-soft)","<b>Bếp TH Kim Đồng</b> đã tiếp nhận thực đơn tuần 34 (17/08 – 21/08)","17:20 · Hôm qua",0],
-  ["📷","var(--amber-soft)","<b>Bếp TH Đoàn Thị Điểm</b> đã báo cáo bước <b>Sơ chế</b> (2 ảnh)","07:41 · Hôm qua",0],
+  ["🍲","var(--amber-soft)","<b>Bếp TH Đoàn Thị Điểm</b> đã báo cáo bước <b>Chế biến</b> (1 ảnh)","09:12 · Hôm nay",1,"2026-08-16"],
+  ["✅","var(--green-soft)","<b>Bếp MN Hoa Sen</b> đã hoàn tất quy trình bữa trưa (5/5 bước)","08:55 · Hôm nay",1,"2026-08-16"],
+  ["📦","var(--blue-soft)","<b>Bếp TH Nguyễn Siêu</b> đã xác nhận <b>Nhập nguyên liệu</b> — đủ 8/8 mặt hàng","06:32 · Hôm nay",1,"2026-08-16"],
+  ["🧑‍🍳","var(--green-soft)","<b>Bếp TH Kim Đồng</b> đã tiếp nhận thực đơn tuần 34 (17/08 – 21/08)","17:20 · Hôm qua",0,"2026-08-15"],
+  ["📷","var(--amber-soft)","<b>Bếp TH Đoàn Thị Điểm</b> đã báo cáo bước <b>Sơ chế</b> (2 ảnh)","07:41 · Hôm qua",0,"2026-08-15"],
+  ["🍱","var(--blue-soft)","<b>Bếp TH Kim Liên</b> đã báo cáo bước <b>Chia khẩu phần</b> (2 ảnh)","10:05 · Hôm nay",1,"2026-08-16"],
+  ["✅","var(--green-soft)","<b>Bếp TH Cát Linh</b> đã hoàn tất quy trình bữa trưa (5/5 bước)","11:20 · Hôm nay",1,"2026-08-16"],
+  ["📦","var(--blue-soft)","<b>Bếp TH Thành Công</b> đã xác nhận <b>Nhập nguyên liệu</b> — đủ 9/9 mặt hàng","06:48 · Hôm nay",1,"2026-08-16"],
+  ["📷","var(--amber-soft)","<b>Bếp MN Việt Bun</b> đã báo cáo bước <b>Sơ chế</b> (3 ảnh)","07:15 · Hôm nay",0,"2026-08-16"],
+  ["🧑‍🍳","var(--green-soft)","<b>Bếp TH Trung Tự</b> đã tiếp nhận thực đơn tuần 34 (17/08 – 21/08)","16:40 · Hôm qua",0,"2026-08-15"],
+  ["🍲","var(--amber-soft)","<b>Bếp TH Ngọc Hà</b> đã báo cáo bước <b>Chế biến</b> (1 ảnh)","09:30 · Hôm qua",0,"2026-08-15"],
 ];
 const MENU = [
   {d:"Thứ Hai · 17/08", dish:"Cơm gạo ST25 · Thịt kho trứng cút · Canh cải ngọt nấu tôm · Dưa hấu",
@@ -370,12 +452,31 @@ const MENU = [
   {d:"Thứ Sáu · 21/08", dish:"Mì bò bằm · Súp lơ luộc · Bánh flan",
    ing:[["Mì sợi tươi","70 kg"],["Thịt bò bằm","45 kg"],["Súp lơ xanh","38 kg"],["Bánh flan","1.250 cái"]]},
 ];
+/* Quy trình 5 bước chuẩn */
+const REPORT_STEPS = [
+  {cls:"done",ic:"✅",t:"1. Nhập nguyên liệu",sub:"Hoàn tất 06:15 · Bếp trưởng Trần Thị Hoa · Đủ 8/8 nguyên liệu theo phiếu xuất kho",ph:3},
+  {cls:"done",ic:"✅",t:"2. Sơ chế",sub:"Hoàn tất 07:40 · Rửa, ngâm muối rau củ; sơ chế thịt theo quy trình VSATTP",ph:2},
+  {cls:"doing",ic:"🍲",t:"3. Chế biến",sub:"Bắt đầu 09:10 · Đang nấu — dự kiến hoàn tất 10:30",ph:1},
+  {cls:"todo",ic:"🍱",t:"4. Chia khẩu phần",sub:"Chưa bắt đầu · Dự kiến 10:45",ph:0},
+  {cls:"todo",ic:"🧾",t:"5. Lưu mẫu & hoàn tất",sub:"Chưa bắt đầu · Lưu mẫu thức ăn 24h theo quy định",ph:0},
+];
+const KACC = [
+  ["Trần Thị Hoa","hoa.tt","Bếp trưởng"],
+  ["Lê Văn Minh","minh.lv","Nhân viên bếp"],
+];
 const PARENTS = {
   "Trường TH Đoàn Thị Điểm":[
     ["Nguyễn Thu Hằng","0912 345 678","Nguyễn Minh Khôi","3A2"],
     ["Trần Đức Long","0987 654 321","Trần Bảo Ngọc","1B1"],
     ["Phạm Mai Anh","0903 111 222","Phạm Gia Hân","5A3"],
     ["Vũ Quốc Bảo","0978 555 666","Vũ Nhật Nam","2C1"],
+    ["Hoàng Văn Nam","0901 234 567","Hoàng Bảo An","4A2"],
+    ["Ngô Thị Lan","0912 987 654","Ngô Minh Châu","2A1"],
+    ["Đặng Quốc Việt","0938 456 789","Đặng Gia Bảo","5B2"],
+    ["Lý Thu Hà","0967 321 654","Lý Nhật Minh","1A3"],
+    ["Phan Văn Đức","0905 678 123","Phan Thảo Vy","3B1"],
+    ["Trịnh Mai Phương","0978 234 561","Trịnh Đức Huy","4C2"],
+    ["Cao Thị Hồng","0913 654 987","Cao Bảo Ngọc","2B3"],
   ],
   "Trường TH Nguyễn Siêu":[
     ["Đỗ Thanh Tùng","0913 222 333","Đỗ Hà My","4A1"],
@@ -385,35 +486,95 @@ const PARENTS = {
     ["Bùi Thị Thảo","0934 999 000","Bùi An Nhiên","Lá 2"],
   ],
 };
+let curParentRows = [];
 
 /* ============ RENDER ============ */
 function renderNotifs(){
-  document.getElementById('notifList').innerHTML = NOTIFS.map(n=>`
+  const d=document.getElementById('fDate').value;
+  const k=document.getElementById('fKitchen').value;
+  const unread=document.getElementById('fUnread').checked;
+  const rows=NOTIFS.filter(n=>(!d||n[5]===d)&&(!k||n[2].includes(k))&&(!unread||n[4]));
+  const info=paginate('notif',rows);
+  const el=document.getElementById('notifList');
+  el.innerHTML = info.slice.length ? info.slice.map(n=>`
     <div class="notif ${n[4]?'unread':''}">
       <div class="ic" style="background:${n[1]}">${n[0]}</div>
       <div><div>${n[2]}</div><div class="time">${n[3]}</div></div>
-    </div>`).join('');
+    </div>`).join('') : `<div class="empty">Không có thông báo khớp bộ lọc.</div>`;
+  drawPager('notif',info,'thông báo');
+}
+/* ---- pagination dùng chung (source / kitchen / parent) ---- */
+const pagerState={notif:1,source:1,kitchen:1,parent:1};
+const pagerPages={notif:1,source:1,kitchen:1,parent:1};
+const PER={notif:8,source:8,kitchen:8,parent:8};
+function paginate(name,list){
+  const per=PER[name];
+  const pages=Math.max(1,Math.ceil(list.length/per));
+  if(pagerState[name]>pages)pagerState[name]=pages;
+  pagerPages[name]=pages;
+  const page=pagerState[name], start=(page-1)*per;
+  return {slice:list.slice(start,start+per),start,per,pages,page,total:list.length};
+}
+function drawPager(name,info,unit){
+  document.getElementById(name+'Total').innerHTML=`Tổng: <b>${info.total}</b> ${unit}`;
+  document.getElementById(name+'Range').textContent=info.total?`Hiển thị ${info.start+1}–${Math.min(info.start+info.per,info.total)} trên ${info.total}`:'Không có dữ liệu';
+  document.getElementById(name+'Pages').textContent=info.pages;
+  document.getElementById(name+'PageInput').value=info.page;
+}
+const renderByName={notif:()=>renderNotifs(),source:()=>renderSources(),kitchen:()=>renderKitchens(),parent:()=>renderParents()};
+function pageStep(name,d){pagerState[name]=Math.min(pagerPages[name],Math.max(1,pagerState[name]+d));renderByName[name]();}
+function pageGoto(name,v){pagerState[name]=Math.min(pagerPages[name],Math.max(1,parseInt(v)||1));renderByName[name]();}
+
+function initSourceFilters(){
+  const sel=document.getElementById('sourceDist');
+  if(sel.options.length>1)return;
+  [...new Set(SOURCES.map(s=>s[1]))].forEach(d=>sel.add(new Option(d,d)));
 }
 function renderSources(){
-  document.getElementById('sourceBody').innerHTML = SOURCES.map(s=>`
+  initSourceFilters();
+  const q=(document.getElementById('sourceSearch').value||'').toLowerCase().trim();
+  const dist=document.getElementById('sourceDist').value;
+  const list=SOURCES.map((s,i)=>({s,i})).filter(o=>
+    (!q||o.s.join(' ').toLowerCase().includes(q)) && (!dist||o.s[1]===dist));
+  const info=paginate('source',list);
+  document.getElementById('sourceBody').innerHTML = info.slice.length ? info.slice.map(({s,i})=>`
     <tr><td><b>${s[0]}</b></td><td>${s[1]}</td><td>${s[2]}</td>
     <td><a href="#" onclick="toast('Mở trang truy xuất: ${s[3]}');return false">${s[3]}</a></td>
-    <td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="toast('Mở form sửa (mock)')">Sửa</button>
-    <button class="btn btn-danger btn-sm" onclick="toast('Đã xoá nguyên liệu (mock)')">Xoá</button></td></tr>`).join('');
+    <td style="text-align:right">
+      <button class="btn btn-ghost btn-sm" onclick="openSourcePanel(${i})">Sửa</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDialog('Xoá nguyên liệu','Xoá ${s[0]} khỏi danh mục nguồn hàng?','Xoá',()=>toast('Đã xoá nguyên liệu (mock)'))">Xoá</button>
+    </td></tr>`).join('') : `<tr><td colspan="5"><div class="empty">Không tìm thấy nguyên liệu.</div></td></tr>`;
+  drawPager('source',info,'nguyên liệu');
+}
+function initKitchenFilters(){
+  const sel=document.getElementById('kitchenStatus');
+  if(sel.options.length>1)return;
+  [...new Set(KITCHENS.map(k=>k.status))].forEach(s=>sel.add(new Option(s,s)));
 }
 function renderKitchens(){
-  document.getElementById('kitchenGrid').innerHTML = KITCHENS.map((k,i)=>`
-    <div class="k-card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <h3>${k.name}</h3><span class="pill ${k.s}">${k.status}</span>
-      </div>
-      <div class="meta">📍 ${k.addr}<br>👦 ${k.size} suất ăn/ngày · Bữa trưa hôm nay: Thịt kho trứng cút</div>
-      <div class="row">
-        <button class="btn btn-green btn-sm" onclick="openKitchen(${i})">Mở chi tiết</button>
-        <button class="btn btn-ghost btn-sm" onclick="fileImport('Đã import thực đơn cho ${k.name} (25 dòng)')">⬆ Thực đơn</button>
-        <button class="btn btn-danger btn-sm" onclick="toast('Đã xoá bếp (mock)')">Xoá</button>
-      </div>
-    </div>`).join('');
+  initKitchenFilters();
+  const q=(document.getElementById('kitchenSearch').value||'').toLowerCase().trim();
+  const st=document.getElementById('kitchenStatus').value;
+  const list=KITCHENS.map((k,i)=>({k,i})).filter(o=>
+    (!q||`${o.k.name} ${o.k.addr} ${o.k.status} ${o.k.lunch}`.toLowerCase().includes(q)) && (!st||o.k.status===st));
+  const info=paginate('kitchen',list);
+  const pen=`<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25ZM20.7 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z"/></svg>`;
+  const up=`<svg viewBox="0 0 24 24"><path d="M12 3 7 8h3v6h4V8h3l-5-5ZM5 17h14v2H5z"/></svg>`;
+  const trash=`<svg viewBox="0 0 24 24"><path d="M6 7h12l-1 14H7L6 7Zm3-3h6l1 2h4v2H4V6h4l1-2Z"/></svg>`;
+  document.getElementById('kitchenBody').innerHTML = info.slice.length ? info.slice.map(({k,i})=>`
+    <tr>
+      <td><a class="name-link clamp2" data-tip="${k.name}" onclick="openKitchen(${i})">${k.name}</a></td>
+      <td><div class="clamp2" data-tip="${k.addr}">${k.addr}</div></td>
+      <td style="white-space:nowrap">${k.size} suất/ngày</td>
+      <td><div class="clamp2" data-tip="${k.lunch}">${k.lunch}</div></td>
+      <td><span class="pill ${k.s}">${k.status}</span></td>
+      <td style="text-align:right;white-space:nowrap">
+        <button class="icon-btn" data-tip="Sửa bếp" onclick="openKitchenPanel(${i})">${pen}</button>
+        <button class="icon-btn" data-tip="Import thực đơn" onclick="fileImport('Đã import thực đơn cho ${k.name} (25 dòng)')">${up}</button>
+        <button class="icon-btn danger" data-tip="Xoá bếp" onclick="confirmDialog('Xoá bếp','Xoá bếp ${k.name}?','Xoá bếp',()=>toast('Đã xoá bếp (mock)'))">${trash}</button>
+      </td>
+    </tr>`).join('') : `<tr><td colspan="6"><div class="empty">Không tìm thấy bếp.</div></td></tr>`;
+  drawPager('kitchen',info,'bếp');
 }
 function renderMenu(){
   document.getElementById('ktab-menu').innerHTML =
@@ -424,7 +585,10 @@ function renderMenu(){
         <b>${m.d}</b><span class="pill ${i===0?'a':'b'}">${i===0?'Hôm nay · đang thực hiện':'Đã phân bổ'}</span>
       </div>
       <div class="day-body">
-        <div class="menu-line">🍽️ <b>${m.dish}</b></div>
+        <div class="day-tools">
+          <div class="menu-line">🍽️ <b>${m.dish}</b></div>
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openReportPanel(${i})">📋 Xem báo cáo</button>
+        </div>
         <div class="ing">
           <div class="h">Nguyên liệu</div><div class="h">Số lượng</div><div class="h">Nguồn</div>
           ${m.ing.map(x=>`<div>${x[0]}</div><div><b>${x[1]}</b></div><div style="color:var(--muted)">Kho tổng · lô ${170800+Math.floor(Math.random()*90)}</div>`).join('')}
@@ -432,16 +596,104 @@ function renderMenu(){
       </div>
     </div>`).join('');
 }
+function renderKacc(){
+  document.getElementById('kaccBody').innerHTML = KACC.map((a,i)=>`
+    <tr><td><b>${a[0]}</b></td><td>${a[1]}</td><td>${a[2]}</td><td><span class="pill g">Hoạt động</span></td>
+    <td style="text-align:right">
+      <button class="btn btn-ghost btn-sm" onclick="openKaccPanel(${i})">Sửa</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDialog('Xoá tài khoản','Xoá tài khoản bếp ${a[0]}?','Xoá',()=>toast('Đã xoá tài khoản (mock)'))">Xoá</button>
+    </td></tr>`).join('');
+}
 function renderParents(){
   const sel = document.getElementById('parentSchool');
   if(!sel.options.length) Object.keys(PARENTS).forEach(s=>sel.add(new Option(s,s)));
-  const rows = PARENTS[sel.value] || [];
-  document.getElementById('parentBody').innerHTML = rows.map(p=>`
+  curParentRows = PARENTS[sel.value] || [];
+  const q=(document.getElementById('parentSearch').value||'').toLowerCase().trim();
+  const list=curParentRows.map((p,i)=>({p,i})).filter(o=>!q||`${o.p[0]} ${o.p[2]}`.toLowerCase().includes(q));
+  const info=paginate('parent',list);
+  document.getElementById('parentBody').innerHTML = info.slice.length ? info.slice.map(({p,i})=>`
     <tr><td><b>${p[0]}</b></td><td>${p[1]}</td><td>${p[2]}</td><td>${p[3]}</td>
     <td style="text-align:right">
-      <button class="btn btn-ghost btn-sm" onclick="editParent('${p[0]}','${p[1]}','${p[2]}')">Sửa</button>
-      <button class="btn btn-danger btn-sm" onclick="toast('Đã xoá tài khoản PHHS (mock)')">Xoá</button>
-    </td></tr>`).join('');
+      <button class="btn btn-ghost btn-sm" onclick="openParentPanel(${i})">Sửa</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDialog('Xoá tài khoản','Xoá tài khoản phụ huynh ${p[0]}?','Xoá',()=>toast('Đã xoá tài khoản PHHS (mock)'))">Xoá</button>
+    </td></tr>`).join('') : `<tr><td colspan="5"><div class="empty">Không tìm thấy tài khoản.</div></td></tr>`;
+  drawPager('parent',info,'tài khoản');
+}
+
+/* ============ DRAWER PANELS ============ */
+function openSourcePanel(i){
+  const edit = i!=null, s = edit?SOURCES[i]:['','','',''];
+  openDrawer(edit?'Sửa nguyên liệu':'Thêm nguyên liệu',`
+    <div class="field"><label>Tên nguyên liệu</label><input value="${s[0]}" placeholder="VD: Thịt lợn nạc vai"></div>
+    <div class="field"><label>Nhà phân phối</label><input value="${s[1]}" placeholder="VD: CP Việt Nam"></div>
+    <div class="field"><label>Xuất xứ</label><input value="${s[2]}" placeholder="VD: Đồng Nai"></div>
+    <div class="field"><label>Link truy xuất nguồn gốc</label><input value="${s[3]}" placeholder="https://..."></div>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
+     <button class="btn btn-green" onclick="closeDrawer();toast('${edit?'Đã lưu thay đổi (mock)':'Đã thêm nguyên liệu (mock)'}')">${edit?'Lưu':'Thêm'}</button>`);
+}
+function openImportPanel(title,msg){
+  openDrawer(title,`
+    <p style="color:var(--muted);font-size:13.5px;margin-bottom:16px">Tải lên file Excel (.xlsx/.xls) hoặc CSV theo mẫu. Hệ thống sẽ nhập dữ liệu vào danh mục.</p>
+    <div class="dropzone" onclick="fileImport('${msg}')">
+      <div style="font-size:30px">📄</div>
+      <b>Chọn file để nhập</b>
+      <span style="color:var(--muted);font-size:13px">hoặc kéo thả file vào đây</span>
+    </div>
+    <a href="#" onclick="toast('Đang tải file mẫu (mock)');return false" style="display:inline-block;margin-top:14px;font-weight:600;font-size:13.5px">⬇ Tải file mẫu Excel</a>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Đóng</button>
+     <button class="btn btn-green" onclick="fileImport('${msg}')">Chọn file</button>`);
+}
+function openKitchenPanel(i){
+  const edit = i!=null, k = edit?KITCHENS[i]:{name:'',addr:'',size:''};
+  openDrawer(edit?'Sửa thông tin bếp':'Tạo bếp mới',`
+    <div class="field"><label>Tên trường</label><input value="${k.name}" placeholder="VD: Trường TH Kim Liên"></div>
+    <div class="field"><label>Địa chỉ</label><input value="${k.addr}" placeholder="VD: Đống Đa, Hà Nội"></div>
+    <div class="field"><label>Sĩ số phục vụ</label><input value="${k.size}" placeholder="VD: 850"></div>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
+     <button class="btn btn-green" onclick="closeDrawer();toast('${edit?'Đã lưu thông tin bếp (mock)':'Đã tạo bếp mới (mock)'}')">${edit?'Lưu':'Tạo bếp'}</button>`);
+}
+function openKaccPanel(i){
+  const edit = i!=null, d = edit?KACC[i]:['','','Bếp trưởng'];
+  openDrawer(edit?'Sửa tài khoản bếp':'Tạo tài khoản bếp',`
+    <div class="field"><label>Họ tên</label><input value="${d[0]}" placeholder="VD: Phạm Thị Lan"></div>
+    <div class="field"><label>Tên đăng nhập</label><input value="${d[1]}" placeholder="VD: lan.pt"></div>
+    <div class="field"><label>Mật khẩu</label><input type="password" value="${edit?'123456':''}" placeholder="••••••••"></div>
+    <div class="field"><label>Vai trò</label><select><option ${d[2]==='Bếp trưởng'?'selected':''}>Bếp trưởng</option><option ${d[2]==='Nhân viên bếp'?'selected':''}>Nhân viên bếp</option></select></div>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
+     <button class="btn btn-green" onclick="closeDrawer();toast('${edit?'Đã lưu tài khoản bếp (mock)':'Đã tạo tài khoản bếp (mock)'}')">${edit?'Lưu':'Tạo tài khoản'}</button>`);
+}
+function openParentPanel(i){
+  const edit = i!=null, d = edit?curParentRows[i]:['','','',''];
+  const cur = document.getElementById('parentSchool').value;
+  const opts = Object.keys(PARENTS).map(s=>`<option ${s===cur?'selected':''}>${s}</option>`).join('');
+  openDrawer(edit?'Sửa tài khoản phụ huynh':'Thêm tài khoản phụ huynh',`
+    <div class="field"><label>Tên phụ huynh</label><input value="${d[0]}" placeholder="VD: Nguyễn Thu Hằng"></div>
+    <div class="field"><label>Tên học sinh</label><input value="${d[2]}" placeholder="VD: Nguyễn Minh Khôi"></div>
+    <div class="field"><label>SĐT (tên đăng nhập)</label><input value="${d[1]}" placeholder="0912 345 678"></div>
+    <div class="field"><label>Mật khẩu</label><input type="password" value="${edit?'bep2026':''}" placeholder="••••••••"></div>
+    <div class="field"><label>Trường</label><select>${opts}</select></div>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
+     <button class="btn btn-green" onclick="closeDrawer();toast('${edit?'Đã lưu thay đổi (mock)':'Đã thêm tài khoản PHHS (mock)'}')">${edit?'Lưu':'Thêm tài khoản'}</button>`);
+}
+function openReportPanel(i){
+  const m = MENU[i];
+  const steps = REPORT_STEPS.map(s=>`
+    <div class="step ${s.cls}">
+      <div class="dot">${s.ic}</div>
+      <div style="flex:1">
+        <b>${s.t}</b>
+        <div class="sub">${s.sub}</div>
+        ${s.ph?`<div class="photos">${'<div class="photo">📷</div>'.repeat(s.ph)}</div>`:''}
+      </div>
+    </div>`).join('');
+  openDrawer('Báo cáo quy trình',`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:8px">
+      <b style="font-size:15px">Bữa trưa · ${m.d}/2026</b>
+      <span class="pill a">Đang chế biến</span>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px">${m.dish}</p>
+    <div class="steps">${steps}</div>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Đóng</button>`);
 }
 
 /* ============ ACTIONS ============ */
@@ -453,10 +705,13 @@ function go(p,btn){
   document.querySelectorAll('aside nav button').forEach(b=>b.classList.remove('active'));
   if(btn&&btn.dataset.page)btn.classList.add('active');
 }
+let curKitchen=null;
 function openKitchen(i){
+  curKitchen=i;
   const k=KITCHENS[i];
   document.getElementById('kdName').textContent='🍳 '+k.name;
   document.getElementById('kdMeta').textContent=`${k.addr} · ${k.size} suất ăn/ngày · Bếp trưởng: Trần Thị Hoa`;
+  renderKacc();
   go('kdetail');
   document.querySelector('[data-page=kitchen]').classList.add('active');
 }
@@ -466,18 +721,29 @@ function ktab(t,btn){
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
-function openModal(id){document.getElementById(id).classList.add('on');}
-function closeModal(){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('on'));}
-document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal();}));
-function editParent(n,p,s){
-  document.getElementById('mpName').value=n;
-  document.getElementById('mpPhone').value=p;
-  document.getElementById('mpStudent').value=s;
-  openModal('m-parent');
+function openDrawer(title,body,foot){
+  document.getElementById('drawerTitle').textContent=title;
+  document.getElementById('drawerBody').innerHTML=body;
+  document.getElementById('drawerFoot').innerHTML=foot;
+  document.getElementById('drawerOverlay').classList.add('on');
+  document.getElementById('drawer').classList.add('on');
 }
+function closeDrawer(){
+  document.getElementById('drawerOverlay').classList.remove('on');
+  document.getElementById('drawer').classList.remove('on');
+}
+function confirmDialog(title,msg,okLabel,onOk){
+  document.getElementById('confirmTitle').textContent=title;
+  document.getElementById('confirmMsg').textContent=msg;
+  const ok=document.getElementById('confirmOk');
+  ok.textContent=okLabel||'Xoá';
+  ok.onclick=()=>{closeConfirm();onOk&&onOk();};
+  document.getElementById('confirmOverlay').classList.add('on');
+}
+function closeConfirm(){document.getElementById('confirmOverlay').classList.remove('on');}
 function fileImport(msg){
   const f=document.getElementById('hiddenFile');
-  f.onchange=()=>{toast(msg);f.value='';};
+  f.onchange=()=>{closeDrawer();toast(msg);f.value='';};
   f.click();
 }
 let toastTimer;
@@ -486,6 +752,22 @@ function toast(msg){
   t.textContent=msg;t.classList.add('on');
   clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('on'),2600);
 }
+
+/* ---- tooltip dùng chung (đặt trong body nên không bị panel cắt) ---- */
+const tipEl=document.getElementById('tip');
+function showTip(target){
+  const txt=target.getAttribute('data-tip');
+  if(!txt)return;
+  tipEl.textContent=txt;
+  tipEl.classList.add('on');
+  const r=target.getBoundingClientRect();
+  const w=tipEl.offsetWidth;
+  const left=Math.max(8,Math.min(r.left,window.innerWidth-w-8));
+  tipEl.style.left=left+'px';
+  tipEl.style.top=(r.top-6)+'px';
+}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(t);});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tipEl.classList.remove('on');});
 
 renderNotifs();renderSources();renderKitchens();renderMenu();renderParents();
 </script>

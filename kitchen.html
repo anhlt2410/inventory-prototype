@@ -7,89 +7,135 @@
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#26221E; --muted:#7A736B; --line:#EAE4DC; --bg:#FBF8F4; --card:#fff;
-  --orange:#E86A33; --orange-soft:#FDEDE4; --green:#2F7A4D; --green-soft:#E7F2EA;
+  --ink:#26221E; --muted:#7A736B; --line:#ECE6DE; --bg:#FBF8F4; --card:#fff;
+  --orange:#E86A33; --orange-dk:#D2571F; --orange-soft:#FDEDE4; --green:#2F7A4D; --green-soft:#E7F2EA;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Be Vietnam Pro',system-ui,sans-serif;background:#2b2b2b;color:var(--ink)}
+*{scrollbar-width:none;-ms-overflow-style:none}
+*::-webkit-scrollbar{display:none;width:0;height:0}
+body{font-family:'Be Vietnam Pro',system-ui,sans-serif;background:#1f1f1f;color:var(--ink)}
 button{font-family:inherit;cursor:pointer}
 
-/* phone frame on desktop */
-.frame{max-width:420px;margin:0 auto;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;position:relative}
+/* phone frame — FIXED height, nội dung cuộn bên trong */
+.frame{max-width:420px;margin:0 auto;background:var(--bg);height:100vh;display:flex;flex-direction:column;position:relative;overflow:hidden}
 @media(min-width:480px){
-  body{padding:28px 0}
-  .frame{min-height:calc(100vh - 56px);border-radius:38px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);border:8px solid #111}
+  body{padding:28px 0;background:#232323}
+  .frame{height:min(calc(100vh - 56px),880px);border-radius:42px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55);border:9px solid #0c0c0c}
 }
 
 /* base — LARGE type for elderly users */
-.screen{display:none;flex:1;flex-direction:column;overflow-y:auto}
+.screen{display:none;flex:1;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .screen.on{display:flex}
-.head{padding:22px 20px 14px;background:var(--card);border-bottom:1px solid var(--line)}
+.head{padding:22px 20px 16px;background:linear-gradient(180deg,#fff,#FCFAF7);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
 .head h1{font-size:22px;font-weight:800}
-.head p{color:var(--muted);font-size:15px;margin-top:2px}
-.content{padding:18px 16px 110px;flex:1}
+.head p{color:var(--muted);font-size:15px;margin-top:3px}
+.content{padding:18px 16px 130px;flex:1}
 .btn{border:none;border-radius:16px;font:700 19px 'Be Vietnam Pro';padding:18px;width:100%;min-height:60px}
-.btn-orange{background:var(--orange);color:#fff}
+.btn-orange{background:linear-gradient(145deg,#F0793F,var(--orange-dk));color:#fff;box-shadow:0 8px 20px rgba(210,87,31,.28)}
+.btn-orange:active{transform:translateY(1px)}
 .btn-outline{background:#fff;border:2px solid var(--line);color:var(--ink)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 4px 16px rgba(38,34,30,.04)}
 
 /* login */
-#login .content{display:flex;flex-direction:column;justify-content:center;padding:24px}
-#login .logo{font-size:52px;text-align:center;margin-bottom:10px}
+#login .content{display:flex;flex-direction:column;justify-content:center;padding:24px;padding-bottom:24px}
+#login .logo{font-size:56px;text-align:center;margin-bottom:10px}
 #login h1{font-size:26px;font-weight:800;text-align:center}
 #login .sub{text-align:center;color:var(--muted);font-size:16px;margin:6px 0 30px}
 .field{margin-bottom:16px}
 .field label{display:block;font-weight:700;font-size:16px;margin-bottom:8px}
 .field input{width:100%;padding:16px;border:2px solid var(--line);border-radius:14px;font:400 18px 'Be Vietnam Pro';background:#fff}
+.field input:focus{outline:none;border-color:var(--orange)}
 .hint{text-align:center;color:var(--muted);font-size:13px;margin-top:14px}
 
 /* tabs bottom nav */
-.nav{display:none;position:absolute;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);padding:10px 8px calc(12px + env(safe-area-inset-bottom));grid-template-columns:1fr 1fr 1fr}
+.nav{display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px 8px calc(12px + env(safe-area-inset-bottom));grid-template-columns:1fr 1fr 1fr;box-shadow:0 -6px 24px rgba(38,34,30,.06);z-index:20}
 .nav.on{display:grid}
-.nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;font:600 13px 'Be Vietnam Pro';color:var(--muted);padding:6px;border-radius:12px}
+.nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;font:600 13px 'Be Vietnam Pro';color:var(--muted);padding:8px 6px;border-radius:14px;transition:.15s}
 .nav button .i{font-size:26px}
-.nav button.active{color:var(--orange)}
+.nav button.active{color:var(--orange);background:var(--orange-soft)}
 
-/* menu timeline */
-.today{background:var(--orange-soft);border:2px solid var(--orange);border-radius:18px;padding:18px;margin-bottom:14px}
-.today .tag{color:var(--orange);font-weight:800;font-size:14px;letter-spacing:.04em}
-.today h2{font-size:20px;font-weight:800;margin:6px 0 4px;line-height:1.4}
-.day-item{display:flex;gap:14px;padding:14px 4px;border-bottom:1px solid var(--line);font-size:16px}
-.day-item:last-child{border:none}
-.day-item .d{font-weight:800;min-width:64px;color:var(--muted);font-size:15px;padding-top:2px}
-.ing-list{margin-top:12px}
-.ing-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px dashed var(--line);font-size:17px}
+/* menu */
+.today{background:linear-gradient(158deg,#FFF3EB,#FDE7DA);border:1.5px solid #F6C6AC;border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:0 8px 24px rgba(210,87,31,.10)}
+.today .tag{color:var(--orange-dk);font-weight:800;font-size:13px;letter-spacing:.05em}
+.today h2{font-size:20px;font-weight:800;margin:8px 0 6px;line-height:1.4}
+.pill{display:inline-block;background:#fff;color:var(--orange-dk);font-weight:800;font-size:14px;padding:5px 12px;border-radius:999px;border:1px solid #F6C6AC}
+.ing-list{margin-top:14px;background:rgba(255,255,255,.6);border-radius:14px;padding:4px 14px}
+.ing-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px dashed #F0D3C1;font-size:17px}
 .ing-row:last-child{border:none}
 .ing-row b{font-weight:700}
-.section-title{font-size:16px;font-weight:800;color:var(--muted);margin:20px 4px 10px;text-transform:uppercase;letter-spacing:.04em;font-size:14px}
+.section-title{font-size:14px;font-weight:800;color:var(--muted);margin:22px 4px 10px;text-transform:uppercase;letter-spacing:.05em}
+.day-item{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:none;padding:15px 4px;border-bottom:1px solid var(--line);font-size:16px;color:var(--ink)}
+.day-item:last-child{border:none}
+.day-item .d{font-weight:800;min-width:56px;color:var(--orange-dk);font-size:15px}
+.day-item .m{flex:1;line-height:1.4}
+.day-item .chev{color:var(--muted);font-size:22px}
+.day-item:active{opacity:.6}
 
-/* log */
-.log{display:flex;gap:14px;padding:16px 4px;border-bottom:1px solid var(--line)}
-.log .ic{font-size:28px}
-.log b{font-size:17px}
-.log .t{color:var(--muted);font-size:14px;margin-top:2px}
+/* log list */
+.filter{display:flex;gap:10px;align-items:center;margin-bottom:14px}
+.filter input[type=date]{flex:1;padding:12px 14px;border:2px solid var(--line);border-radius:14px;font:600 16px 'Be Vietnam Pro';background:#fff;color:var(--ink)}
+.filter input[type=date]:focus{outline:none;border-color:var(--orange)}
+.filter .clr{background:#fff;border:2px solid var(--line);border-radius:14px;padding:0 16px;min-height:48px;font:700 15px 'Be Vietnam Pro';color:var(--muted)}
+.log-card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px;color:var(--ink);box-shadow:0 4px 16px rgba(38,34,30,.04)}
+.log-card:active{opacity:.65}
+.log-card .ic{font-size:30px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:14px;flex-shrink:0}
+.log-card .info{flex:1;min-width:0}
+.log-card .info b{font-size:16px;display:block}
+.log-card .info .dish{color:var(--muted);font-size:14px;margin-top:3px;line-height:1.4}
+.log-card .chev{color:var(--muted);font-size:22px}
+.badge{display:inline-block;font-weight:800;font-size:12px;padding:3px 10px;border-radius:999px;margin-top:6px}
+.badge.done{background:var(--green-soft);color:var(--green)}
+.badge.progress{background:var(--orange-soft);color:var(--orange-dk)}
+.empty{text-align:center;color:var(--muted);padding:50px 20px;font-size:16px}
+
+/* log detail — steps as timeline */
+.step-row{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.step-row:last-child{border:none}
+.step-row .ic{font-size:26px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--bg);flex-shrink:0}
+.step-row.ok .ic{background:var(--green-soft)}
+.step-row.cur .ic{background:var(--orange-soft)}
+.step-row .b{flex:1}
+.step-row .b b{font-size:17px}
+.step-row .b .t{color:var(--muted);font-size:14px;margin-top:3px;line-height:1.4}
+.step-row .mk{font-size:22px;align-self:center}
 
 /* report */
-.step-btn{display:flex;align-items:center;gap:14px;width:100%;background:#fff;border:2px solid var(--line);border-radius:18px;padding:18px;margin-bottom:12px;font:700 19px 'Be Vietnam Pro';text-align:left;color:var(--ink)}
+.step-btn{display:flex;align-items:center;gap:14px;width:100%;background:#fff;border:2px solid var(--line);border-radius:18px;padding:18px;margin-bottom:12px;font:700 19px 'Be Vietnam Pro';text-align:left;color:var(--ink);box-shadow:0 3px 12px rgba(38,34,30,.04);transition:.15s}
 .step-btn .i{font-size:30px}
 .step-btn small{display:block;font-weight:500;color:var(--muted);font-size:14px;margin-top:2px}
-.step-btn.picked{border-color:var(--orange);background:var(--orange-soft)}
+.step-btn.picked{border-color:var(--orange);background:linear-gradient(150deg,#FFF3EB,#FDE7DA);box-shadow:0 8px 20px rgba(210,87,31,.14)}
 .step-btn:disabled{opacity:.45}
-.photo-zone{border:3px dashed var(--line);border-radius:18px;padding:34px 16px;text-align:center;color:var(--muted);font-size:17px;background:#fff;margin-bottom:14px}
+.photo-zone{border:2.5px dashed #E7B896;border-radius:18px;padding:34px 16px;text-align:center;color:var(--orange-dk);font-size:17px;font-weight:700;background:linear-gradient(160deg,#FFF7F1,#FDEEE4);margin-bottom:14px}
 .photo-zone .i{font-size:44px;display:block;margin-bottom:8px}
-.thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.note-input{width:100%;padding:14px;border:2px solid var(--line);border-radius:14px;font:400 16px 'Be Vietnam Pro';background:#fff;min-height:76px;resize:none;margin-bottom:16px;line-height:1.5}
+.note-input:focus{outline:none;border-color:var(--orange)}
+.thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
 .thumb{width:92px;height:92px;border-radius:14px;object-fit:cover;border:2px solid var(--line)}
-.success{text-align:center;padding:60px 20px}
+.success{text-align:center;padding:56px 20px}
 .success .i{font-size:72px}
 .success h2{font-size:24px;font-weight:800;margin:14px 0 8px}
 .success p{color:var(--muted);font-size:17px;line-height:1.6}
-.back{background:none;border:none;color:var(--orange);font:700 17px 'Be Vietnam Pro';padding:0 0 14px}
-#toast{position:absolute;bottom:104px;left:16px;right:16px;background:#26221E;color:#fff;padding:15px 18px;border-radius:14px;font-weight:700;font-size:16px;text-align:center;transform:translateY(180px);transition:transform .25s;z-index:99}
+.back{background:none;border:none;color:var(--orange-dk);font:700 17px 'Be Vietnam Pro';padding:4px 0 14px;display:flex;align-items:center;gap:6px}
+.home-btn{position:absolute;top:14px;right:14px;z-index:100;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:999px;padding:9px 14px;font:700 14px 'Be Vietnam Pro';color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.1);display:flex;align-items:center;gap:6px;text-decoration:none}
+
+/* modal — bottom sheet */
+.modal{position:absolute;inset:0;background:rgba(24,18,12,.5);display:flex;align-items:flex-end;z-index:300;opacity:0;visibility:hidden;transition:opacity .22s}
+.modal.on{opacity:1;visibility:visible}
+.sheet{background:var(--card);width:100%;border-radius:28px 28px 0 0;padding:14px 20px calc(26px + env(safe-area-inset-bottom));max-height:90%;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);box-shadow:0 -12px 44px rgba(0,0,0,.25)}
+.modal.on .sheet{transform:translateY(0)}
+.grab{width:44px;height:5px;background:var(--line);border-radius:999px;margin:2px auto 14px}
+.sheet-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:6px}
+.sheet-head .x{background:var(--bg);border:none;width:40px;height:40px;border-radius:999px;font-size:20px;color:var(--muted);flex-shrink:0}
+.sheet .tag{color:var(--orange-dk);font-weight:800;font-size:13px;letter-spacing:.05em}
+.sheet h2{font-size:20px;font-weight:800;margin:6px 0 4px;line-height:1.4}
+
+#toast{position:absolute;bottom:104px;left:16px;right:16px;background:#26221E;color:#fff;padding:15px 18px;border-radius:14px;font-weight:700;font-size:16px;text-align:center;transform:translateY(200px);transition:transform .25s;z-index:400;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 #toast.on{transform:translateY(0)}
 </style>
 </head>
 <body>
 <div class="frame">
+  <a href="index.html" class="home-btn" title="Về trang chủ">🏠 Trang chủ</a>
 
   <!-- LOGIN -->
   <div class="screen on" id="login">
@@ -108,15 +154,15 @@ button{font-family:inherit;cursor:pointer}
   <div class="screen" id="s-menu">
     <div class="head">
       <h1>Thực đơn</h1>
-      <p>Xin chào, cô Hoa 👋 · <a href="#" onclick="logout();return false" style="color:var(--orange);font-weight:700">Đăng xuất</a></p>
+      <p>Xin chào, cô Hoa 👋 · <a href="#" onclick="logout();return false" style="color:var(--orange-dk);font-weight:700">Đăng xuất</a></p>
     </div>
     <div class="content">
       <div class="today">
         <div class="tag">HÔM NAY · THỨ HAI 17/08</div>
         <h2>Cơm · Thịt kho trứng cút · Canh cải nấu tôm · Dưa hấu</h2>
-        <div style="font-size:16px;font-weight:700">1.250 suất ăn</div>
+        <span class="pill">1.250 suất ăn</span>
         <div class="ing-list">
-          <div class="section-title" style="margin:14px 0 4px">Nguyên liệu nhận trong ngày</div>
+          <div class="section-title" style="margin:12px 0 2px">Nguyên liệu nhận trong ngày</div>
           <div class="ing-row"><span>Gạo ST25</span><b>95 kg</b></div>
           <div class="ing-row"><span>Thịt lợn nạc vai</span><b>62 kg</b></div>
           <div class="ing-row"><span>Trứng cút</span><b>18 kg</b></div>
@@ -126,26 +172,27 @@ button{font-family:inherit;cursor:pointer}
         </div>
       </div>
       <div class="section-title">Các ngày tiếp theo</div>
-      <div class="card">
-        <div class="day-item"><span class="d">Thứ 3</span><span>Cơm · Gà rang gừng · Canh bí đỏ · Sữa chua</span></div>
-        <div class="day-item"><span class="d">Thứ 4</span><span>Cơm · Cá basa sốt cà · Rau muống xào · Chuối</span></div>
-        <div class="day-item"><span class="d">Thứ 5</span><span>Cơm · Đậu phụ nhồi thịt · Canh chua · Thanh long</span></div>
-        <div class="day-item"><span class="d">Thứ 6</span><span>Mì bò bằm · Súp lơ luộc · Bánh flan</span></div>
-      </div>
+      <div class="card" id="upcomingList" style="padding:6px 16px"></div>
     </div>
   </div>
 
-  <!-- NHẬT KÝ -->
+  <!-- NHẬT KÝ (danh sách) -->
   <div class="screen" id="s-log">
-    <div class="head"><h1>Nhật ký bếp</h1><p>Hoạt động đã ghi nhận</p></div>
+    <div class="head"><h1>Nhật ký bếp</h1><p>Xem lại theo từng ngày</p></div>
     <div class="content">
-      <div class="card" style="padding:6px 16px">
-        <div class="log"><div class="ic">🍲</div><div><b>Đã báo cáo: Chế biến</b><div class="t">09:12 hôm nay · 1 ảnh · cô Hoa</div></div></div>
-        <div class="log"><div class="ic">🔪</div><div><b>Đã báo cáo: Sơ chế</b><div class="t">07:41 hôm nay · 2 ảnh · chú Minh</div></div></div>
-        <div class="log"><div class="ic">📦</div><div><b>Đã báo cáo: Nhập nguyên liệu</b><div class="t">06:15 hôm nay · 3 ảnh · đủ 8/8 mặt hàng</div></div></div>
-        <div class="log"><div class="ic">✅</div><div><b>Hoàn tất bữa trưa Thứ Sáu</b><div class="t">11:05 · 15/08 · 5/5 bước</div></div></div>
-        <div class="log" style="border:none"><div class="ic">🧾</div><div><b>Đã nhận thực đơn tuần 34</b><div class="t">17:20 · 15/08 · từ Kho tổng</div></div></div>
+      <div class="filter">
+        <input type="date" id="logDate" onchange="renderLogList()">
+        <button class="clr" onclick="clearFilter()">Tất cả</button>
       </div>
+      <div id="logList"></div>
+    </div>
+  </div>
+
+  <!-- NHẬT KÝ (chi tiết 1 ngày) -->
+  <div class="screen" id="s-logdetail">
+    <div class="content">
+      <button class="back" onclick="tab('log',navBtn('log'))">← Danh sách nhật ký</button>
+      <div id="logDetailBody"></div>
     </div>
   </div>
 
@@ -156,9 +203,14 @@ button{font-family:inherit;cursor:pointer}
   </div>
 
   <div class="nav" id="nav">
-    <button class="active" onclick="tab('menu',this)"><span class="i">🍽️</span>Thực đơn</button>
-    <button onclick="tab('log',this)"><span class="i">📖</span>Nhật ký</button>
-    <button onclick="tab('report',this)"><span class="i">📷</span>Báo cáo</button>
+    <button class="active" data-tab="menu" onclick="tab('menu',this)"><span class="i">🍽️</span>Thực đơn</button>
+    <button data-tab="log" onclick="tab('log',this)"><span class="i">📖</span>Nhật ký</button>
+    <button data-tab="report" onclick="tab('report',this)"><span class="i">📷</span>Báo cáo</button>
+  </div>
+
+  <!-- modal bottom sheet -->
+  <div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+    <div class="sheet" id="sheet"></div>
   </div>
 
   <input type="file" id="cam" accept="image/*" capture="environment" style="display:none">
@@ -166,25 +218,168 @@ button{font-family:inherit;cursor:pointer}
 </div>
 
 <script>
+/* ===== Dữ liệu ===== */
+// Các ngày tiếp theo trong tuần (Thực đơn) — bấm để mở modal
+const UPCOMING=[
+  {dow:'Thứ Ba', date:'18/08', dish:'Cơm · Gà rang gừng · Canh bí đỏ · Sữa chua', portions:'1.250 suất',
+   ing:[['Gạo ST25','95 kg'],['Gà ta làm sạch','55 kg'],['Gừng tươi','4 kg'],['Bí đỏ','45 kg'],['Sữa chua','1.250 hộp']]},
+  {dow:'Thứ Tư', date:'19/08', dish:'Cơm · Cá basa sốt cà · Rau muống xào · Chuối', portions:'1.250 suất',
+   ing:[['Gạo ST25','95 kg'],['Cá basa phi lê','58 kg'],['Cà chua','30 kg'],['Rau muống','45 kg'],['Chuối tiêu','1.250 quả']]},
+  {dow:'Thứ Năm', date:'20/08', dish:'Cơm · Đậu phụ nhồi thịt · Canh chua · Thanh long', portions:'1.250 suất',
+   ing:[['Gạo ST25','95 kg'],['Đậu phụ','60 kg'],['Thịt lợn xay','25 kg'],['Cá + dứa (canh chua)','30 kg'],['Thanh long','75 kg']]},
+  {dow:'Thứ Sáu', date:'21/08', dish:'Mì bò bằm · Súp lơ luộc · Bánh flan', portions:'1.250 suất',
+   ing:[['Mì trứng','80 kg'],['Thịt bò bằm','40 kg'],['Súp lơ xanh','50 kg'],['Trứng + sữa (flan)','1.250 phần']]},
+];
+
+// Lịch sử nhật ký (mới nhất trước). isoDate dùng cho bộ lọc.
+const LOGS=[
+  {dow:'Thứ Hai', date:'17/08', iso:'2026-08-17', today:true, ic:'🍲',
+   dish:'Cơm · Thịt kho trứng cút · Canh cải nấu tôm', status:'progress',
+   steps:[
+     ['📦','Nhập nguyên liệu','06:15','done','Đủ 8/8 mặt hàng · 3 ảnh · cô Hoa'],
+     ['🔪','Sơ chế','07:41','done','2 ảnh · chú Minh'],
+     ['🍲','Chế biến','09:12','done','1 ảnh · cô Hoa'],
+     ['🍱','Chia khẩu phần','','cur','Đang thực hiện'],
+     ['🧾','Lưu mẫu & hoàn tất','','todo','Chưa bắt đầu'],
+   ]},
+  {dow:'Thứ Sáu', date:'15/08', iso:'2026-08-15', ic:'✅',
+   dish:'Cơm · Trứng chiên thịt · Canh rau ngót · Xoài', status:'done',
+   steps:[
+     ['📦','Nhập nguyên liệu','06:10','done','Đủ 7/7 mặt hàng · 3 ảnh · cô Hoa'],
+     ['🔪','Sơ chế','07:35','done','2 ảnh · chú Minh'],
+     ['🍲','Chế biến','09:05','done','2 ảnh · cô Hoa'],
+     ['🍱','Chia khẩu phần','10:40','done','1 ảnh · cả tổ'],
+     ['🧾','Lưu mẫu & hoàn tất','11:05','done','Lưu mẫu 24h · 1 ảnh'],
+   ]},
+  {dow:'Thứ Năm', date:'14/08', iso:'2026-08-14', ic:'✅',
+   dish:'Cơm · Thịt gà kho · Canh mồng tơi · Sữa chua', status:'done',
+   steps:[
+     ['📦','Nhập nguyên liệu','06:12','done','Đủ 8/8 mặt hàng · 2 ảnh · cô Hoa'],
+     ['🔪','Sơ chế','07:38','done','2 ảnh · chú Minh'],
+     ['🍲','Chế biến','09:00','done','1 ảnh · cô Hoa'],
+     ['🍱','Chia khẩu phần','10:35','done','1 ảnh · cả tổ'],
+     ['🧾','Lưu mẫu & hoàn tất','11:02','done','Lưu mẫu 24h · 1 ảnh'],
+   ]},
+  {dow:'Thứ Tư', date:'13/08', iso:'2026-08-13', ic:'✅',
+   dish:'Cơm · Cá kho tộ · Canh cải · Chuối', status:'done',
+   steps:[
+     ['📦','Nhập nguyên liệu','06:14','done','Đủ 7/7 mặt hàng · 3 ảnh · cô Hoa'],
+     ['🔪','Sơ chế','07:40','done','2 ảnh · chú Minh'],
+     ['🍲','Chế biến','09:08','done','2 ảnh · cô Hoa'],
+     ['🍱','Chia khẩu phần','10:42','done','1 ảnh · cả tổ'],
+     ['🧾','Lưu mẫu & hoàn tất','11:06','done','Lưu mẫu 24h · 1 ảnh'],
+   ]},
+  {dow:'Thứ Ba', date:'12/08', iso:'2026-08-12', ic:'✅',
+   dish:'Cơm · Thịt viên sốt cà · Rau luộc · Dưa hấu', status:'done',
+   steps:[
+     ['📦','Nhập nguyên liệu','06:16','done','Đủ 8/8 mặt hàng · 2 ảnh · cô Hoa'],
+     ['🔪','Sơ chế','07:44','done','2 ảnh · chú Minh'],
+     ['🍲','Chế biến','09:10','done','1 ảnh · cô Hoa'],
+     ['🍱','Chia khẩu phần','10:38','done','1 ảnh · cả tổ'],
+     ['🧾','Lưu mẫu & hoàn tất','11:04','done','Lưu mẫu 24h · 1 ảnh'],
+   ]},
+];
+
 const STEPS=[
   ["📦","Nhập nguyên liệu","Đã báo cáo lúc 06:15",true],
   ["🔪","Sơ chế","Đã báo cáo lúc 07:41",true],
-  ["🍲","Chế biến","Đang thực hiện",false],
-  ["🍱","Chia khẩu phần","Chưa bắt đầu",false],
+  ["🍲","Chế biến","Đã báo cáo lúc 09:12",true],
+  ["🍱","Chia khẩu phần","Đang thực hiện",false],
   ["🧾","Lưu mẫu & hoàn tất","Chưa bắt đầu",false],
 ];
 let picked=null, photos=0;
 
-function login(){show('s-menu');document.getElementById('nav').classList.add('on');}
+/* ===== Điều hướng ===== */
+function login(){show('s-menu');document.getElementById('nav').classList.add('on');renderUpcoming();}
 function logout(){document.getElementById('nav').classList.remove('on');show('login');}
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');document.getElementById(id).scrollTop=0;}
+function navBtn(t){return document.querySelector('.nav button[data-tab="'+t+'"]');}
 function tab(t,btn){
   show('s-'+t);
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+  if(btn)btn.classList.add('active');
   if(t==='report')renderReport();
+  if(t==='log')renderLogList();
 }
 
+/* ===== Thực đơn — các ngày tiếp theo ===== */
+function renderUpcoming(){
+  document.getElementById('upcomingList').innerHTML=UPCOMING.map((d,i)=>`
+    <button class="day-item" onclick="openMenu(${i})">
+      <span class="d">${d.dow.replace('Thứ ','T')}</span>
+      <span class="m">${d.dish}</span>
+      <span class="chev">›</span>
+    </button>`).join('');
+}
+function openMenu(i){
+  const d=UPCOMING[i];
+  document.getElementById('sheet').innerHTML=`
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <div>
+        <div class="tag">${d.dow.toUpperCase()} · ${d.date}</div>
+        <h2>${d.dish}</h2>
+        <span class="pill">${d.portions}</span>
+      </div>
+      <button class="x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="ing-list" style="background:var(--bg);margin-top:16px">
+      <div class="section-title" style="margin:12px 0 2px">Nguyên liệu dự kiến</div>
+      ${d.ing.map(x=>`<div class="ing-row"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}
+    </div>`;
+  document.getElementById('modal').classList.add('on');
+}
+function closeModal(){document.getElementById('modal').classList.remove('on');}
+
+/* ===== Nhật ký — danh sách + lọc ===== */
+function clearFilter(){document.getElementById('logDate').value='';renderLogList();}
+function renderLogList(){
+  const f=document.getElementById('logDate').value;
+  const list=LOGS.filter(l=>!f||l.iso===f);
+  const box=document.getElementById('logList');
+  if(!list.length){box.innerHTML=`<div class="empty">Không có nhật ký cho ngày này 🗓️</div>`;return;}
+  box.innerHTML=list.map(l=>{
+    const idx=LOGS.indexOf(l);
+    const badge=l.status==='done'?'<span class="badge done">Hoàn tất</span>':'<span class="badge progress">Đang thực hiện</span>';
+    return `<button class="log-card" onclick="openLog(${idx})">
+      <span class="ic">${l.ic}</span>
+      <span class="info">
+        <b>${l.dow} · ${l.date}${l.today?' · Hôm nay':''}</b>
+        <span class="dish">${l.dish}</span>
+        <span>${badge}</span>
+      </span>
+      <span class="chev">›</span>
+    </button>`;
+  }).join('');
+}
+function openLog(idx){
+  const l=LOGS[idx];
+  const badge=l.status==='done'?'<span class="badge done">Hoàn tất</span>':'<span class="badge progress">Đang thực hiện</span>';
+  const doneCount=l.steps.filter(s=>s[3]==='done').length;
+  document.getElementById('logDetailBody').innerHTML=`
+    <div class="today" style="margin-bottom:16px">
+      <div class="tag">${l.dow.toUpperCase()} · ${l.date}</div>
+      <h2>${l.dish}</h2>
+      ${badge} <span class="pill" style="margin-left:6px">${doneCount}/5 bước</span>
+    </div>
+    ${l.today?`<button class="btn btn-orange" style="margin-bottom:18px" onclick="tab('report',navBtn('report'))">📷 Báo cáo bước tiếp theo</button>`:''}
+    <div class="section-title" style="margin-top:0">Quy trình chế biến</div>
+    <div class="card" style="padding:4px 18px">
+      ${l.steps.map(s=>{
+        const cls=s[3]==='done'?'ok':(s[3]==='cur'?'cur':'');
+        const mk=s[3]==='done'?'✅':(s[3]==='cur'?'⏳':'⚪');
+        const time=s[2]?`<span style="color:var(--muted)">${s[2]}</span> · `:'';
+        return `<div class="step-row ${cls}">
+          <span class="ic">${s[0]}</span>
+          <span class="b"><b>${s[1]}</b><span class="t">${time}${s[4]}</span></span>
+          <span class="mk">${mk}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+  show('s-logdetail');
+}
+
+/* ===== Báo cáo ===== */
 function renderReport(){
   picked=null;photos=0;
   document.getElementById('reportBody').innerHTML=`
@@ -201,10 +396,12 @@ function pick(i){
   document.querySelectorAll('.step-btn').forEach((b,j)=>b.classList.toggle('picked',j===i));
   document.getElementById('photoArea').innerHTML=`
     <div class="section-title">Bước 2 — Chụp ảnh bằng chứng</div>
-    <div class="photo-zone" onclick="snap()"><span class="i">📷</span>Bấm để chụp ảnh<br><small style="font-size:14px">${STEPS[i][1]}</small></div>
+    <div class="photo-zone" onclick="snap()"><span class="i">📷</span>Bấm để chụp ảnh<br><small style="font-size:14px;font-weight:500">${STEPS[i][1]}</small></div>
     <div class="thumbs" id="thumbs"></div>
+    <div class="section-title">Bước 3 — Ghi chú <span style="text-transform:none;font-weight:600">(không bắt buộc)</span></div>
+    <textarea class="note-input" id="note" placeholder="VD: Nguyên liệu tươi, đủ số lượng. Nhiệt độ nấu đạt chuẩn…"></textarea>
     <button class="btn btn-orange" onclick="send()">GỬI BÁO CÁO</button>`;
-  document.getElementById('photoArea').scrollIntoView({behavior:'smooth'});
+  document.getElementById('photoArea').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function snap(){
   const cam=document.getElementById('cam');
@@ -221,11 +418,12 @@ function snap(){
   cam.click();
 }
 function send(){
+  const note=(document.getElementById('note')?.value||'').trim();
   document.getElementById('reportBody').innerHTML=`
     <div class="success">
       <div class="i">✅</div>
       <h2>Đã gửi báo cáo!</h2>
-      <p>Bước <b>${STEPS[picked??2][1]}</b> · ${photos} ảnh<br>đã gửi lên Kho tổng lúc ${new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})}.</p>
+      <p>Bước <b>${STEPS[picked??3][1]}</b> · ${photos} ảnh${note?`<br>Ghi chú: “${note}”`:''}<br>đã gửi lên Kho tổng lúc ${new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})}.</p>
       <br>
       <button class="btn btn-outline" onclick="renderReport()">Báo cáo bước khác</button>
     </div>`;

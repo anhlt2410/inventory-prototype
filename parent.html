@@ -12,17 +12,20 @@
   --amber:#C77E1E; --amber-soft:#FCF1DE;
 }
 *{margin:0;padding:0;box-sizing:border-box}
+*{scrollbar-width:none;-ms-overflow-style:none}
+*::-webkit-scrollbar{display:none;width:0;height:0}
 body{font-family:'Be Vietnam Pro',system-ui,sans-serif;background:#20302c;color:var(--ink)}
 button{font-family:inherit;cursor:pointer}
 a{color:var(--teal);text-decoration:none;font-weight:600}
 
-.frame{max-width:420px;margin:0 auto;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;position:relative}
+.frame{max-width:420px;margin:0 auto;background:var(--bg);height:100dvh;display:flex;flex-direction:column;position:relative;overflow:hidden}
 @media(min-width:480px){
   body{padding:28px 0}
-  .frame{min-height:calc(100vh - 56px);border-radius:38px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);border:8px solid #111}
+  .frame{height:min(880px,calc(100vh - 56px));border-radius:38px;box-shadow:0 30px 80px rgba(0,0,0,.5);border:8px solid #111}
 }
-.screen{display:none;flex:1;flex-direction:column;overflow-y:auto}
+.screen{display:none;flex:1;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .screen.on{display:flex}
+.screen::-webkit-scrollbar,.sheet-body::-webkit-scrollbar,.chipday::-webkit-scrollbar{display:none;width:0;height:0}
 .content{padding:16px 16px 100px;flex:1}
 .btn{border:none;border-radius:14px;font:700 16px 'Be Vietnam Pro';padding:15px;width:100%}
 .btn-teal{background:var(--teal);color:#fff}
@@ -52,7 +55,7 @@ a{color:var(--teal);text-decoration:none;font-weight:600}
 .hero .student span{font-size:13px;opacity:.85}
 
 /* nav */
-.nav{display:none;position:absolute;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);padding:8px 8px calc(10px + env(safe-area-inset-bottom));grid-template-columns:repeat(3,1fr)}
+.nav{display:none;position:absolute;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);padding:8px 8px calc(10px + env(safe-area-inset-bottom));grid-template-columns:repeat(2,1fr)}
 .nav.on{display:grid}
 .nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;font:600 12px 'Be Vietnam Pro';color:var(--muted);padding:6px;border-radius:12px}
 .nav button .i{font-size:23px}
@@ -70,6 +73,47 @@ a{color:var(--teal);text-decoration:none;font-weight:600}
 .ing .s{font-size:12.5px;color:var(--muted);margin-top:2px}
 .ing .qty{font-weight:700;font-size:13.5px;color:var(--teal-dark);white-space:nowrap}
 .trace{font-size:12.5px}
+
+/* filter */
+.filter-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 6px 2px}
+.date-pick{display:flex;align-items:center;gap:8px}
+#dateFilter{border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 12px;font:600 13.5px 'Be Vietnam Pro';color:var(--ink)}
+.date-clear{border:none;background:var(--teal-soft);color:var(--teal-dark);border-radius:999px;padding:8px 12px;font:700 12.5px 'Be Vietnam Pro';white-space:nowrap}
+
+/* menu list */
+.menu-card{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(18,42,37,.04)}
+.menu-card:active{transform:scale(.99)}
+.menu-card.feat{border:1.5px solid var(--teal);box-shadow:0 6px 18px rgba(15,164,138,.16)}
+.mc-top{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.mc-date{font-size:13px;font-weight:700;color:var(--ink)}
+.today-tag{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:var(--teal);color:#fff;padding:3px 9px;border-radius:999px}
+.empty{text-align:center;color:var(--muted);font-size:14px;padding:26px 12px}
+.menu-card .dish{font-size:15.5px;font-weight:700;line-height:1.5;color:var(--ink)}
+.mc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:11px}
+.status-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px}
+.status-chip.done{background:var(--teal-soft);color:var(--teal-dark)}
+.status-chip.doing{background:var(--amber-soft);color:var(--amber)}
+.status-chip.plan{background:#EEF1F0;color:var(--muted)}
+.mc-cta{font-size:13px;font-weight:800;color:var(--teal)}
+
+/* status banner variants */
+.status-banner.done{background:var(--teal-soft)}
+.status-banner.done b{color:var(--teal-dark)}
+.status-banner.plan{background:#EEF1F0}
+.status-banner.plan b{color:var(--muted)}
+
+/* detail sheet modal */
+.modal{position:absolute;inset:0;background:rgba(8,20,17,.5);z-index:200;opacity:0;visibility:hidden;-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0);transition:opacity .32s ease,visibility .32s,backdrop-filter .32s ease}
+.modal.on{opacity:1;visibility:visible;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.sheet{position:absolute;left:0;right:0;bottom:0;top:34px;background:var(--bg);border-radius:26px 26px 0 0;display:flex;flex-direction:column;transform:translateY(101%);transition:transform .42s cubic-bezier(.22,1,.36,1);will-change:transform}
+.modal.on .sheet{transform:translateY(0)}
+.sheet-head{position:relative;background:linear-gradient(160deg,var(--teal),var(--teal-dark));color:#fff;border-radius:26px 26px 0 0;padding:26px 18px 18px}
+.sheet-grip{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:40px;height:4px;border-radius:999px;background:rgba(255,255,255,.5)}
+.sheet-close{position:absolute;top:16px;right:14px;width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.28);color:#fff;font-size:20px;font-weight:700;line-height:1;z-index:10;display:flex;align-items:center;justify-content:center}
+.sheet-close:active{background:rgba(255,255,255,.45)}
+.sheet-head .d{font-size:13px;opacity:.9;margin-bottom:3px;padding-right:44px}
+.sheet-head h2{font-size:18px;font-weight:800;line-height:1.4;padding-right:44px}
+.sheet-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:16px 16px 30px}
 
 /* progress */
 .status-banner{background:var(--amber-soft);border-radius:18px;padding:16px;display:flex;gap:12px;align-items:center;margin-bottom:16px}
@@ -97,12 +141,14 @@ a{color:var(--teal);text-decoration:none;font-weight:600}
 .contact p{font-size:13.5px;opacity:.85;margin-bottom:14px}
 .contact a{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--teal-dark);border-radius:999px;padding:12px 22px;font-weight:800;font-size:15px}
 .prof-input{width:100%;padding:13px 15px;border:1.5px solid var(--line);border-radius:13px;font:400 15px 'Be Vietnam Pro';background:#fff}
+.home-btn{position:absolute;top:14px;right:14px;z-index:100;background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.6);border-radius:999px;padding:9px 14px;font:700 13.5px 'Be Vietnam Pro';color:var(--teal-dark);box-shadow:0 2px 10px rgba(18,42,37,.14);display:flex;align-items:center;gap:6px;text-decoration:none}
 #toast{position:absolute;bottom:96px;left:16px;right:16px;background:#122A25;color:#fff;padding:14px 18px;border-radius:14px;font-weight:600;font-size:14px;text-align:center;transform:translateY(180px);transition:transform .25s;z-index:99}
 #toast.on{transform:translateY(0)}
 </style>
 </head>
 <body>
 <div class="frame">
+  <a href="index.html" class="home-btn" title="Về trang chủ">🏠 Trang chủ</a>
 
   <!-- LOGIN -->
   <div class="screen on" id="login">
@@ -128,63 +174,18 @@ a{color:var(--teal);text-decoration:none;font-weight:600}
       </div>
     </div>
     <div class="content">
-      <div class="chipday" id="chips"></div>
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <span class="sec" style="margin:0">Bữa trưa</span>
-          <span id="menuDate" style="font-size:12.5px;color:var(--muted)"></span>
-        </div>
-        <div class="dish" id="menuDish"></div>
-      </div>
-      <div class="sec">Nguyên liệu đầu vào</div>
-      <div class="card" id="menuIng"></div>
-    </div>
-  </div>
+      <div class="sec" style="margin-top:6px">Hôm nay</div>
+      <div id="todayCard"></div>
 
-  <!-- TIẾN ĐỘ -->
-  <div class="screen" id="s-progress">
-    <div class="hero" style="padding-bottom:22px">
-      <div class="hi">Bữa trưa hôm nay · Thứ Hai 17/08</div>
-      <h1>Tiến độ chế biến</h1>
-    </div>
-    <div class="content">
-      <div class="status-banner">
-        <div class="i">🍲</div>
-        <div><b>Bếp đang chế biến</b><p>Cập nhật lúc 09:12 · Bếp trường TH Đoàn Thị Điểm</p></div>
-      </div>
-      <div class="card">
-        <div class="tl">
-          <div class="tstep done">
-            <div class="dot">✓</div>
-            <b>Nhập nguyên liệu</b>
-            <div class="t">06:15 · Đủ 8/8 nguyên liệu kiểm định từ Kho tổng</div>
-            <div class="photos"><div class="photo">📷</div><div class="photo">📷</div><div class="photo">📷</div></div>
-          </div>
-          <div class="tstep done">
-            <div class="dot">✓</div>
-            <b>Sơ chế</b>
-            <div class="t">07:41 · Rửa, ngâm muối theo tiêu chuẩn VSATTP</div>
-            <div class="photos"><div class="photo">📷</div><div class="photo">📷</div></div>
-          </div>
-          <div class="tstep doing">
-            <div class="dot">🍲</div>
-            <b>Chế biến</b>
-            <div class="t">Bắt đầu 09:10 · Dự kiến xong 10:30</div>
-            <div class="photos"><div class="photo">📷</div></div>
-          </div>
-          <div class="tstep">
-            <div class="dot"></div>
-            <b>Chia khẩu phần</b>
-            <div class="t">Dự kiến 10:45</div>
-          </div>
-          <div class="tstep" style="padding-bottom:4px">
-            <div class="dot"></div>
-            <b>Lưu mẫu &amp; hoàn tất</b>
-            <div class="t">Lưu mẫu thức ăn 24h theo quy định</div>
-          </div>
+      <div class="filter-bar">
+        <span class="sec" style="margin:0">Xem theo ngày</span>
+        <div class="date-pick">
+          <input type="date" id="dateFilter" value="" min="2026-08-17" max="2026-08-21" onchange="onDate(this.value)">
+          <button class="date-clear" id="dateClear" style="display:none" onclick="clearDate()">Xoá lọc ✕</button>
         </div>
       </div>
-      <p style="font-size:12.5px;color:var(--muted);text-align:center;padding:4px 12px">Ảnh do bếp trường chụp và gửi trực tiếp tại từng bước.</p>
+      <div class="sec" id="menuCount" style="margin-top:4px"></div>
+      <div id="menuList"></div>
     </div>
   </div>
 
@@ -224,64 +225,163 @@ a{color:var(--teal);text-decoration:none;font-weight:600}
 
   <div class="nav" id="nav">
     <button class="active" onclick="tab('menu',this)"><span class="i">🍽️</span>Thực đơn</button>
-    <button onclick="tab('progress',this)"><span class="i">⏱️</span>Tiến độ</button>
     <button onclick="tab('profile',this)"><span class="i">👤</span>Hồ sơ</button>
+  </div>
+
+  <!-- MODAL CHI TIẾT -->
+  <div class="modal" id="modal" onclick="if(event.target===this)closeDay()">
+    <div class="sheet">
+      <div class="sheet-head">
+        <div class="sheet-grip"></div>
+        <button class="sheet-close" onclick="closeDay()">✕</button>
+        <div class="d" id="mDate"></div>
+        <h2 id="mDish"></h2>
+      </div>
+      <div class="sheet-body">
+        <div class="status-banner" id="mBanner">
+          <div class="i" id="mBannerIcon"></div>
+          <div><b id="mBannerTitle"></b><p id="mBannerSub"></p></div>
+        </div>
+        <div class="sec" style="margin-top:0">Quy trình chế biến</div>
+        <div class="card"><div class="tl" id="mTimeline"></div></div>
+        <p style="font-size:12.5px;color:var(--muted);text-align:center;padding:0 12px 4px">Ảnh do bếp trường chụp và gửi trực tiếp tại từng bước.</p>
+        <div class="sec">Nguyên liệu &amp; nguồn gốc</div>
+        <div class="card" id="mIng"></div>
+      </div>
+    </div>
   </div>
   <div id="toast"></div>
 </div>
 
 <script>
+const STEP_NAMES=["Nhập nguyên liệu","Sơ chế","Chế biến","Chia khẩu phần","Lưu mẫu & hoàn tất"];
+// steps đầy đủ (đang nấu) & steps dự kiến (chưa bắt đầu) tái sử dụng
+const DOING_STEPS=[
+  {s:'done',t:'06:15 · Đủ 8/8 nguyên liệu kiểm định từ Kho tổng',ph:3},
+  {s:'done',t:'07:41 · Rửa, ngâm muối theo tiêu chuẩn VSATTP',ph:2},
+  {s:'doing',t:'Bắt đầu 09:10 · Dự kiến xong 10:30',ph:1},
+  {s:'',t:'Dự kiến 10:45'},
+  {s:'',t:'Lưu mẫu thức ăn 24h theo quy định'},
+];
+const PLAN_STEPS=[
+  {s:'',t:'Dự kiến nhận hàng 06:00 từ Kho tổng'},
+  {s:'',t:'Rửa, sơ chế theo tiêu chuẩn VSATTP'},
+  {s:'',t:'Dự kiến bắt đầu 09:00'},
+  {s:'',t:'Dự kiến 10:45'},
+  {s:'',t:'Lưu mẫu thức ăn 24h theo quy định'},
+];
+
 const MENU=[
-  {c:"T2 · 17/08",date:"Thứ Hai, 17/08/2026",dish:"Cơm gạo ST25 · Thịt kho trứng cút · Canh cải ngọt nấu tôm · Dưa hấu",
+  {dk:"17",iso:"2026-08-17",today:true,day:"Thứ Hai · 17/08",date:"Thứ Hai, 17/08/2026",
+   st:{k:'doing',icon:'🍲',title:'Bếp đang chế biến',sub:'Cập nhật 09:12 · Bếp TH Đoàn Thị Điểm'},
+   dish:"Cơm gạo ST25 · Thịt kho trứng cút · Canh cải ngọt nấu tôm · Dưa hấu",
+   steps:DOING_STEPS,
    ing:[["Gạo ST25","Lộc Trời · Sóc Trăng","76 g/suất","https://truyxuat.vn/gao-st25"],
         ["Thịt lợn nạc vai","CP Việt Nam · Đồng Nai","50 g/suất","https://truyxuat.vn/cp-thit-lon"],
         ["Trứng cút","Ba Huân · Long An","3 quả/suất","https://truyxuat.vn/bahuan-trung"],
         ["Rau cải ngọt","HTX Vân Nội · Hà Nội","32 g/suất","https://truyxuat.vn/vannoi-rau"],
         ["Tôm thẻ","Minh Phú · Cà Mau","10 g/suất","https://truyxuat.vn/minhphu-tom"],
         ["Dưa hấu","HTX Gò Công · Tiền Giang","56 g/suất","https://truyxuat.vn/gocong-dua"]]},
-  {c:"T3 · 18/08",date:"Thứ Ba, 18/08/2026",dish:"Cơm · Gà rang gừng · Canh bí đỏ · Sữa chua",
+  {dk:"18",iso:"2026-08-18",day:"Thứ Ba · 18/08",date:"Thứ Ba, 18/08/2026",
+   st:{k:'plan',icon:'🕒',title:'Chưa bắt đầu',sub:'Dự kiến bắt đầu 06:00'},
+   dish:"Cơm · Gà rang gừng · Canh bí đỏ · Sữa chua",
+   steps:PLAN_STEPS,
    ing:[["Gạo ST25","Lộc Trời · Sóc Trăng","76 g/suất","https://truyxuat.vn/gao-st25"],
         ["Thịt gà ta","3F Việt · Bình Dương","55 g/suất","https://truyxuat.vn/3f-ga"],
         ["Bí đỏ","HTX Mộc Châu · Sơn La","36 g/suất","https://truyxuat.vn/mocchau-bi"],
         ["Sữa chua","Vinamilk","1 hộp/suất","https://truyxuat.vn/vnm-suachua"]]},
-  {c:"T4 · 19/08",date:"Thứ Tư, 19/08/2026",dish:"Cơm · Cá basa sốt cà · Rau muống xào tỏi · Chuối",
+  {dk:"19",iso:"2026-08-19",day:"Thứ Tư · 19/08",date:"Thứ Tư, 19/08/2026",
+   st:{k:'plan',icon:'🕒',title:'Chưa bắt đầu',sub:'Dự kiến bắt đầu 06:00'},
+   dish:"Cơm · Cá basa sốt cà · Rau muống xào tỏi · Chuối",
+   steps:PLAN_STEPS,
    ing:[["Cá basa phi lê","Vĩnh Hoàn · Đồng Tháp","48 g/suất","https://truyxuat.vn/vh-basa"],
         ["Cà chua","Đà Lạt GAP","16 g/suất","https://truyxuat.vn/dalat-cachua"],
         ["Rau muống","HTX Vân Nội · Hà Nội","34 g/suất","https://truyxuat.vn/vannoi-rau"],
         ["Chuối tây","Hoàng Anh Gia Lai","1 quả/suất","https://truyxuat.vn/hagl-chuoi"]]},
-  {c:"T5 · 20/08",date:"Thứ Năm, 20/08/2026",dish:"Cơm · Đậu phụ nhồi thịt · Canh chua · Thanh long",
+  {dk:"20",iso:"2026-08-20",day:"Thứ Năm · 20/08",date:"Thứ Năm, 20/08/2026",
+   st:{k:'plan',icon:'🕒',title:'Chưa bắt đầu',sub:'Dự kiến bắt đầu 06:00'},
+   dish:"Cơm · Đậu phụ nhồi thịt · Canh chua · Thanh long",
+   steps:PLAN_STEPS,
    ing:[["Đậu phụ","Cơ sở Phú Bình · Hà Nội","28 g/suất","https://truyxuat.vn/phubinh-dau"],
         ["Thịt lợn xay","CP Việt Nam · Đồng Nai","22 g/suất","https://truyxuat.vn/cp-thit-lon"],
         ["Thanh long","Bình Thuận GAP","48 g/suất","https://truyxuat.vn/bt-thanhlong"]]},
-  {c:"T6 · 21/08",date:"Thứ Sáu, 21/08/2026",dish:"Mì bò bằm · Súp lơ luộc · Bánh flan",
+  {dk:"21",iso:"2026-08-21",day:"Thứ Sáu · 21/08",date:"Thứ Sáu, 21/08/2026",
+   st:{k:'plan',icon:'🕒',title:'Chưa bắt đầu',sub:'Dự kiến bắt đầu 06:00'},
+   dish:"Mì bò bằm · Súp lơ luộc · Bánh flan",
+   steps:PLAN_STEPS,
    ing:[["Mì sợi tươi","Safoco","56 g/suất","https://truyxuat.vn/safoco-mi"],
         ["Thịt bò bằm","Vissan","36 g/suất","https://truyxuat.vn/vissan-bo"],
         ["Súp lơ xanh","Đà Lạt GAP","30 g/suất","https://truyxuat.vn/dalat-suplo"],
         ["Bánh flan","Nhà bếp tự làm","1 cái/suất","https://truyxuat.vn/bep-flan"]]},
 ];
 
+let filterDate="";
+
 function login(){show('s-menu');document.getElementById('nav').classList.add('on');}
 function logout(){document.getElementById('nav').classList.remove('on');show('login');toast('Đã đăng xuất');}
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');}
 function tab(t,btn){show('s-'+t);document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 
-function renderChips(){
-  document.getElementById('chips').innerHTML=MENU.map((m,i)=>
-    `<button class="${i===0?'active':''}" onclick="pickDay(${i},this)">${m.c}</button>`).join('');
-}
-function pickDay(i,btn){
-  if(btn){document.querySelectorAll('.chipday button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function cardHTML(i,feat){
   const m=MENU[i];
-  document.getElementById('menuDate').textContent=m.date;
-  document.getElementById('menuDish').textContent=m.dish;
-  document.getElementById('menuIng').innerHTML=m.ing.map(x=>`
+  return `<button class="menu-card${feat?' feat':''}" onclick="openDay(${i})">
+      <div class="mc-top">
+        <span class="mc-date">${m.day}</span>
+        ${m.today?'<span class="today-tag">Hôm nay</span>':''}
+      </div>
+      <div class="dish">${m.dish}</div>
+      <div class="mc-foot">
+        <span class="status-chip ${m.st.k}">${m.st.icon} ${m.st.title}</span>
+        <span class="mc-cta">Xem chi tiết ›</span>
+      </div>
+    </button>`;
+}
+function onDate(v){filterDate=v;document.getElementById('dateClear').style.display=v?'inline-flex':'none';renderList();}
+function clearDate(){filterDate="";document.getElementById('dateFilter').value="";document.getElementById('dateClear').style.display='none';renderList();}
+function renderList(){
+  // thẻ ngày hiện tại nổi bật trên cùng
+  const tIdx=MENU.findIndex(m=>m.today);
+  document.getElementById('todayCard').innerHTML=tIdx>-1?cardHTML(tIdx,true):'';
+  // danh sách sắp xếp tương lai -> hiện tại -> quá khứ (ngày giảm dần)
+  let items=MENU.map((m,i)=>({m,i}));
+  if(filterDate) items=items.filter(x=>x.m.iso===filterDate);
+  items.sort((a,b)=>b.m.iso.localeCompare(a.m.iso));
+  document.getElementById('menuCount').textContent=filterDate
+    ?(items.length?`${items.length} bữa ăn · lọc theo ngày`:'Không có thực đơn ngày này')
+    :'';
+  document.getElementById('menuList').innerHTML=items.length
+    ?items.map(({i})=>cardHTML(i,false)).join('')
+    :'<div class="empty">Không có thực đơn cho ngày đã chọn.</div>';
+}
+
+function openDay(i){
+  const m=MENU[i];
+  document.getElementById('mDate').textContent=m.date;
+  document.getElementById('mDish').textContent=m.dish;
+  const b=document.getElementById('mBanner');
+  b.className='status-banner '+m.st.k;
+  document.getElementById('mBannerIcon').textContent=m.st.icon;
+  document.getElementById('mBannerTitle').textContent=m.st.title;
+  document.getElementById('mBannerSub').textContent=m.st.sub;
+  document.getElementById('mTimeline').innerHTML=m.steps.map((s,k)=>`
+    <div class="tstep ${s.s}">
+      <div class="dot">${s.s==='done'?'✓':s.s==='doing'?'🍲':''}</div>
+      <b>${STEP_NAMES[k]}</b>
+      <div class="t">${s.t}</div>
+      ${s.ph?`<div class="photos">${'<div class="photo">📷</div>'.repeat(s.ph)}</div>`:''}
+    </div>`).join('');
+  document.getElementById('mIng').innerHTML=m.ing.map(x=>`
     <div class="ing">
       <div><div class="n">${x[0]}</div><div class="s">${x[1]}</div>
         <div class="trace"><a href="#" onclick="toast('Mở trang truy xuất: ${x[3]}');return false">🔗 Truy xuất nguồn gốc</a></div>
       </div>
       <div class="qty">${x[2]}</div>
     </div>`).join('');
+  document.querySelector('.sheet-body').scrollTop=0;
+  document.getElementById('modal').classList.add('on');
+  document.querySelector('.home-btn').style.display='none';
 }
+function closeDay(){document.getElementById('modal').classList.remove('on');document.querySelector('.home-btn').style.display='';}
 function editProfile(on){
   document.getElementById('profileView').style.display=on?'none':'block';
   document.getElementById('profileEdit').style.display=on?'block':'none';
@@ -293,7 +393,7 @@ function saveProfile(){
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200);}
 
-renderChips();pickDay(0);
+renderList();
 </script>
 </body>
 </html>

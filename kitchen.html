@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>App Bếp — Bếp Trường</title>
+<title>App Trường — Bếp & Đặt hàng</title>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -34,6 +34,8 @@ button{font-family:inherit;cursor:pointer}
 .btn-orange{background:linear-gradient(145deg,#F0793F,var(--orange-dk));color:#fff;box-shadow:0 8px 20px rgba(210,87,31,.28)}
 .btn-orange:active{transform:translateY(1px)}
 .btn-outline{background:#fff;border:2px solid var(--line);color:var(--ink)}
+.btn-green{background:linear-gradient(145deg,#3E9A63,var(--green));color:#fff;box-shadow:0 8px 20px rgba(47,122,77,.26)}
+.btn-green:active{transform:translateY(1px)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 4px 16px rgba(38,34,30,.04)}
 
 /* login */
@@ -129,6 +131,66 @@ button{font-family:inherit;cursor:pointer}
 .sheet .tag{color:var(--orange-dk);font-weight:800;font-size:13px;letter-spacing:.05em}
 .sheet h2{font-size:20px;font-weight:800;margin:6px 0 4px;line-height:1.4}
 
+/* login — segmented toggle */
+.seg{display:flex;gap:8px;background:var(--bg);border:2px solid var(--line);border-radius:16px;padding:6px}
+.seg-btn{flex:1;background:none;border:none;border-radius:11px;padding:13px 8px;font:700 16px 'Be Vietnam Pro';color:var(--muted);transition:.15s}
+.seg-btn.on{background:#fff;color:var(--orange-dk);box-shadow:0 3px 10px rgba(38,34,30,.08)}
+
+/* ===== shop mode ===== */
+.shop-item{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 4px 16px rgba(38,34,30,.04)}
+.shop-item .ic{font-size:30px;width:56px;height:56px;display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:14px;flex-shrink:0}
+.shop-item .info{flex:1;min-width:0}
+.shop-item .info b{font-size:16px;display:block;line-height:1.35}
+.shop-item .info .sup{color:var(--muted);font-size:13px;margin-top:2px}
+.shop-item .info .price{color:var(--orange-dk);font-weight:800;font-size:16px;margin-top:5px}
+.stepper{display:flex;align-items:center;gap:2px;flex-shrink:0}
+.stepper button{width:40px;height:40px;border-radius:12px;border:2px solid var(--line);background:#fff;font-size:22px;font-weight:700;color:var(--orange-dk);display:flex;align-items:center;justify-content:center;line-height:1}
+.stepper button:active{background:var(--orange-soft)}
+.stepper .qty{min-width:34px;text-align:center;font-weight:800;font-size:17px}
+.add-btn{width:44px;height:44px;border-radius:14px;border:none;background:linear-gradient(145deg,#F0793F,var(--orange-dk));color:#fff;font-size:26px;font-weight:700;flex-shrink:0;box-shadow:0 6px 16px rgba(210,87,31,.24);display:flex;align-items:center;justify-content:center;line-height:1}
+.add-btn:active{transform:translateY(1px)}
+
+/* cart bar floating above nav */
+.cartbar{display:none;position:absolute;left:14px;right:14px;bottom:calc(84px + env(safe-area-inset-bottom));background:linear-gradient(145deg,#F0793F,var(--orange-dk));color:#fff;border:none;border-radius:18px;padding:15px 20px;font:800 17px 'Be Vietnam Pro';align-items:center;justify-content:space-between;box-shadow:0 12px 30px rgba(210,87,31,.35);z-index:25}
+.cartbar.on{display:flex}
+.cartbar .cright{display:flex;align-items:center;gap:8px}
+
+/* cart sheet rows */
+.cart-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.cart-row:last-of-type{border:none}
+.cart-row .info{flex:1;min-width:0}
+.cart-row .info b{font-size:15px;display:block;line-height:1.3}
+.cart-row .info .price{color:var(--muted);font-size:13px;margin-top:2px}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0 6px;font-size:16px}
+.total-row b{font-size:22px;font-weight:800;color:var(--orange-dk)}
+
+/* orders */
+.order-card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px;color:var(--ink);box-shadow:0 4px 16px rgba(38,34,30,.04)}
+.order-card:active{opacity:.65}
+.order-card .ic{font-size:28px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:14px;flex-shrink:0}
+.order-card .info{flex:1;min-width:0}
+.order-card .info b{font-size:16px;display:block}
+.order-card .info .sub{color:var(--muted);font-size:14px;margin-top:3px}
+.order-card .info .amt{font-weight:800;color:var(--orange-dk);font-size:15px;margin-top:4px}
+.order-card .chev{color:var(--muted);font-size:22px}
+.badge.pending{background:#FEF3D6;color:#9A6B00}
+.order-line{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line);font-size:16px}
+.order-line:last-child{border:none}
+.order-line .q{color:var(--muted);font-size:14px}
+
+/* debt */
+.debt-card{background:linear-gradient(158deg,#FFF3EB,#FDE7DA);border:1.5px solid #F6C6AC;border-radius:22px;padding:22px;margin-bottom:16px;box-shadow:0 8px 24px rgba(210,87,31,.10)}
+.debt-card .lbl{color:var(--orange-dk);font-weight:800;font-size:13px;letter-spacing:.05em}
+.debt-card .amt{font-size:34px;font-weight:800;margin:8px 0 4px;color:var(--ink)}
+.debt-card .meta{color:var(--muted);font-size:14px;line-height:1.5}
+.pay-row{display:flex;align-items:center;gap:13px;padding:15px 0;border-bottom:1px solid var(--line)}
+.pay-row:last-child{border:none}
+.pay-row .ic{font-size:22px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--green-soft);border-radius:12px;flex-shrink:0}
+.pay-row .info{flex:1;min-width:0}
+.pay-row .info b{font-size:15px;display:block}
+.pay-row .info .m{color:var(--muted);font-size:13px;margin-top:2px}
+.pay-row .amt{font-weight:800;color:var(--green);font-size:15px;white-space:nowrap}
+
 #toast{position:absolute;bottom:104px;left:16px;right:16px;background:#26221E;color:#fff;padding:15px 18px;border-radius:14px;font-weight:700;font-size:16px;text-align:center;transform:translateY(200px);transition:transform .25s;z-index:400;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 #toast.on{transform:translateY(0)}
 </style>
@@ -140,9 +202,16 @@ button{font-family:inherit;cursor:pointer}
   <!-- LOGIN -->
   <div class="screen on" id="login">
     <div class="content">
-      <div class="logo">👨‍🍳</div>
-      <h1>App Bếp Trường</h1>
-      <p class="sub">Trường TH Đoàn Thị Điểm</p>
+      <div class="logo">🏫</div>
+      <h1>App Trường</h1>
+      <p class="sub" id="loginSub">Trường TH Đoàn Thị Điểm</p>
+      <div class="field">
+        <label>Loại trường</label>
+        <div class="seg">
+          <button class="seg-btn on" data-mode="kitchen" onclick="setMode('kitchen',this)">🍲 Có bếp</button>
+          <button class="seg-btn" data-mode="shop" onclick="setMode('shop',this)">🛒 Không bếp</button>
+        </div>
+      </div>
       <div class="field"><label>Tên đăng nhập</label><input value="hoa.tt" placeholder="Tên đăng nhập"></div>
       <div class="field"><label>Mật khẩu</label><input type="password" value="123456" placeholder="Mật khẩu"></div>
       <button class="btn btn-orange" onclick="login()">ĐĂNG NHẬP</button>
@@ -202,10 +271,54 @@ button{font-family:inherit;cursor:pointer}
     <div class="content" id="reportBody"></div>
   </div>
 
+  <!-- ===== TRƯỜNG KHÔNG BẾP (shopping) ===== -->
+
+  <!-- ĐẶT HÀNG -->
+  <div class="screen" id="s-shop">
+    <div class="head">
+      <h1>Đặt hàng</h1>
+      <p>Trường TH Nghĩa Tân · <a href="#" onclick="logout();return false" style="color:var(--orange-dk);font-weight:700">Đăng xuất</a></p>
+    </div>
+    <div class="content">
+      <div class="filter" style="margin-bottom:18px">
+        <label style="font-weight:700;font-size:15px;color:var(--muted);white-space:nowrap">Giao ngày</label>
+        <input type="date" id="deliverDate" value="2026-08-18">
+      </div>
+      <div id="catalogList"></div>
+    </div>
+    <button class="cartbar" id="cartbar" onclick="openCart()"></button>
+  </div>
+
+  <!-- ĐƠN HÀNG (danh sách) -->
+  <div class="screen" id="s-orders">
+    <div class="head"><h1>Đơn hàng</h1><p>Lịch sử đặt hàng của trường</p></div>
+    <div class="content"><div id="orderList"></div></div>
+  </div>
+
+  <!-- ĐƠN HÀNG (chi tiết) -->
+  <div class="screen" id="s-orderdetail">
+    <div class="content">
+      <button class="back" onclick="tabShop('orders',navShopBtn('orders'))">← Danh sách đơn hàng</button>
+      <div id="orderDetailBody"></div>
+    </div>
+  </div>
+
+  <!-- CÔNG NỢ -->
+  <div class="screen" id="s-debt">
+    <div class="head"><h1>Công nợ</h1><p>Theo dõi thanh toán với Kho tổng</p></div>
+    <div class="content" id="debtBody"></div>
+  </div>
+
   <div class="nav" id="nav">
     <button class="active" data-tab="menu" onclick="tab('menu',this)"><span class="i">🍽️</span>Thực đơn</button>
     <button data-tab="log" onclick="tab('log',this)"><span class="i">📖</span>Nhật ký</button>
     <button data-tab="report" onclick="tab('report',this)"><span class="i">📷</span>Báo cáo</button>
+  </div>
+
+  <div class="nav" id="navShop">
+    <button class="active" data-tab="shop" onclick="tabShop('shop',this)"><span class="i">🛒</span>Đặt hàng</button>
+    <button data-tab="orders" onclick="tabShop('orders',this)"><span class="i">🧾</span>Đơn hàng</button>
+    <button data-tab="debt" onclick="tabShop('debt',this)"><span class="i">💳</span>Công nợ</button>
   </div>
 
   <!-- modal bottom sheet -->
@@ -290,8 +403,25 @@ const STEPS=[
 let picked=null, photos=0;
 
 /* ===== Điều hướng ===== */
-function login(){show('s-menu');document.getElementById('nav').classList.add('on');renderUpcoming();}
-function logout(){document.getElementById('nav').classList.remove('on');show('login');}
+let mode='kitchen';
+function setMode(m,btn){
+  mode=m;
+  document.querySelectorAll('.seg-btn').forEach(b=>b.classList.toggle('on',b===btn));
+  document.getElementById('loginSub').textContent = m==='shop' ? 'Trường TH Nghĩa Tân' : 'Trường TH Đoàn Thị Điểm';
+}
+function login(){
+  if(mode==='shop'){
+    show('s-shop');document.getElementById('navShop').classList.add('on');
+    renderShop();renderDebt();renderOrderList();
+  }else{
+    show('s-menu');document.getElementById('nav').classList.add('on');renderUpcoming();
+  }
+}
+function logout(){
+  document.getElementById('nav').classList.remove('on');
+  document.getElementById('navShop').classList.remove('on');
+  show('login');
+}
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');document.getElementById(id).scrollTop=0;}
 function navBtn(t){return document.querySelector('.nav button[data-tab="'+t+'"]');}
 function tab(t,btn){
@@ -400,7 +530,8 @@ function pick(i){
     <div class="thumbs" id="thumbs"></div>
     <div class="section-title">Bước 3 — Ghi chú <span style="text-transform:none;font-weight:600">(không bắt buộc)</span></div>
     <textarea class="note-input" id="note" placeholder="VD: Nguyên liệu tươi, đủ số lượng. Nhiệt độ nấu đạt chuẩn…"></textarea>
-    <button class="btn btn-orange" onclick="send()">GỬI BÁO CÁO</button>`;
+    <button class="btn btn-orange" onclick="send()">Gửi báo cáo</button>
+    <button class="btn btn-green" style="margin-top:12px" onclick="confirmStep()">✓ Hoàn thành bước</button>`;
   document.getElementById('photoArea').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function snap(){
@@ -428,6 +559,227 @@ function send(){
       <button class="btn btn-outline" onclick="renderReport()">Báo cáo bước khác</button>
     </div>`;
 }
+function confirmStep(){
+  if(picked==null)return;
+  const s=STEPS[picked];
+  document.getElementById('sheet').innerHTML=`
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <div><div class="tag" style="color:var(--green)">XÁC NHẬN HOÀN THÀNH</div><h2>${s[0]} ${s[1]}</h2></div>
+      <button class="x" onclick="closeModal()">✕</button>
+    </div>
+    <p style="color:var(--muted);font-size:16px;line-height:1.6;margin:6px 0 18px">Đánh dấu bước này đã hoàn thành? Thông tin sẽ được gửi lên Kho tổng.</p>
+    <button class="btn btn-green" onclick="completeStep()">✓ Xác nhận hoàn thành</button>
+    <button class="btn btn-outline" style="margin-top:12px" onclick="closeModal()">Huỷ</button>`;
+  document.getElementById('modal').classList.add('on');
+}
+function completeStep(){
+  if(picked==null)return;
+  const t=new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+  STEPS[picked][2]='Đã hoàn thành lúc '+t;
+  STEPS[picked][3]=true;
+  closeModal();
+  toast('✅ Đã hoàn thành: '+STEPS[picked][1]);
+  renderReport();
+}
+/* ===================================================================
+   ===== TRƯỜNG KHÔNG BẾP — Đặt hàng / Đơn hàng / Công nợ =====
+   =================================================================== */
+const CATALOG=[
+  {cat:'Suất ăn theo thực đơn', items:[
+    {id:'m1', ic:'🍱', name:'Suất cơm trưa tiêu chuẩn', unit:'suất', sup:'Bếp tổng HTX Vân Nội', price:32000},
+    {id:'m2', ic:'🥗', name:'Suất cơm dinh dưỡng cao cấp', unit:'suất', sup:'Bếp tổng HTX Vân Nội', price:38000},
+    {id:'m3', ic:'🍜', name:'Suất ăn xế (bún/phở/cháo)', unit:'suất', sup:'Bếp tổng HTX Vân Nội', price:18000},
+  ]},
+  {cat:'Sữa & tráng miệng', items:[
+    {id:'d1', ic:'🥛', name:'Sữa tươi Vinamilk 180ml', unit:'hộp', sup:'Vinamilk', price:7000},
+    {id:'d2', ic:'🍶', name:'Sữa chua Vinamilk', unit:'hộp', sup:'Vinamilk', price:6000},
+    {id:'d3', ic:'🍌', name:'Chuối tiêu', unit:'quả', sup:'HTX Vân Nội', price:3000},
+    {id:'d4', ic:'🍉', name:'Dưa hấu', unit:'kg', sup:'HTX Vân Nội', price:12000},
+  ]},
+];
+const ITEM=Object.fromEntries(CATALOG.flatMap(c=>c.items).map(i=>[i.id,i]));
+
+// Đơn hàng (mới nhất trước). status: 'pending' (chờ giao) | 'delivered' (đã giao)
+let ORDERS=[
+  {id:'DH-0816', date:'16/08/2026', deliver:'Thứ Hai 17/08', status:'delivered',
+   lines:[['m1',1250],['d1',1250]]},
+  {id:'DH-0815', date:'15/08/2026', deliver:'Thứ Sáu 15/08', status:'delivered',
+   lines:[['m1',1250],['d2',1250],['d4',70]]},
+  {id:'DH-0813', date:'13/08/2026', deliver:'Thứ Tư 13/08', status:'delivered',
+   lines:[['m1',1200],['m3',1200],['d3',1200]]},
+];
+let ODSEQ=17;
+
+let DEBT=24_650_000;
+const PAYMENTS=[
+  {date:'10/08/2026', method:'Chuyển khoản Vietcombank', amount:38_500_000, note:'Thanh toán đợt 1 tháng 8'},
+  {date:'31/07/2026', method:'Chuyển khoản Vietcombank', amount:52_200_000, note:'Quyết toán tháng 7'},
+  {date:'15/07/2026', method:'Chuyển khoản BIDV', amount:41_800_000, note:'Thanh toán đợt 2 tháng 7'},
+];
+
+let cart={}; // id -> qty
+
+function vnd(n){return n.toLocaleString('vi-VN')+'₫';}
+function navShopBtn(t){return document.querySelector('#navShop button[data-tab="'+t+'"]');}
+function tabShop(t,btn){
+  show('s-'+t);
+  document.querySelectorAll('#navShop button').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(t==='shop'){renderShop();renderCartBar();}
+  if(t==='orders')renderOrderList();
+  if(t==='debt')renderDebt();
+}
+
+/* ----- Đặt hàng (catalog) ----- */
+function renderShop(){
+  document.getElementById('catalogList').innerHTML=CATALOG.map(c=>`
+    <div class="section-title" style="margin-top:8px">${c.cat}</div>
+    ${c.items.map(it=>{
+      const q=cart[it.id]||0;
+      const ctrl=q>0
+        ? `<div class="stepper">
+             <button onclick="dec('${it.id}')">−</button>
+             <span class="qty" id="q-${it.id}">${q}</span>
+             <button onclick="inc('${it.id}')">+</button>
+           </div>`
+        : `<button class="add-btn" onclick="inc('${it.id}')">+</button>`;
+      return `<div class="shop-item">
+        <span class="ic">${it.ic}</span>
+        <span class="info">
+          <b>${it.name}</b>
+          <span class="sup">${it.sup} · /${it.unit}</span>
+          <span class="price">${vnd(it.price)}</span>
+        </span>
+        ${ctrl}
+      </div>`;
+    }).join('')}`).join('');
+  renderCartBar();
+}
+function inc(id){cart[id]=(cart[id]||0)+1;renderShop();}
+function dec(id){cart[id]=(cart[id]||0)-1;if(cart[id]<=0)delete cart[id];renderShop();}
+function cartCount(){return Object.values(cart).reduce((a,b)=>a+b,0);}
+function cartTotal(){return Object.entries(cart).reduce((s,[id,q])=>s+ITEM[id].price*q,0);}
+function renderCartBar(){
+  const bar=document.getElementById('cartbar');
+  const n=cartCount();
+  if(!n){bar.classList.remove('on');return;}
+  bar.classList.add('on');
+  bar.innerHTML=`<span>🛒 ${n} món</span><span class="cright">${vnd(cartTotal())} <span style="font-size:22px">›</span></span>`;
+}
+
+/* ----- Giỏ hàng (bottom sheet) ----- */
+function openCart(){
+  const entries=Object.entries(cart);
+  if(!entries.length){closeModal();return;}
+  const dd=document.getElementById('deliverDate').value;
+  const ddText=dd?dd.split('-').reverse().slice(0,2).join('/'):'—';
+  document.getElementById('sheet').innerHTML=`
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <div><div class="tag">GIỎ HÀNG · GIAO NGÀY ${ddText}</div><h2>Xác nhận đặt hàng</h2></div>
+      <button class="x" onclick="closeModal()">✕</button>
+    </div>
+    <div style="margin-top:8px">
+      ${entries.map(([id,q])=>{
+        const it=ITEM[id];
+        return `<div class="cart-row">
+          <span style="font-size:26px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:12px;flex-shrink:0">${it.ic}</span>
+          <span class="info"><b>${it.name}</b><span class="price">${vnd(it.price)} × ${q} ${it.unit}</span></span>
+          <div class="stepper">
+            <button onclick="dec('${id}');openCart()">−</button>
+            <span class="qty">${q}</span>
+            <button onclick="inc('${id}');openCart()">+</button>
+          </div>
+        </div>`;
+      }).join('')}
+      <div class="total-row"><span>Tổng cộng (${cartCount()} món)</span><b>${vnd(cartTotal())}</b></div>
+      <button class="btn btn-orange" style="margin-top:14px" onclick="placeOrder()">ĐẶT ĐƠN</button>
+    </div>`;
+  document.getElementById('modal').classList.add('on');
+}
+function placeOrder(){
+  if(!cartCount()){toast('Giỏ hàng đang trống');return;}
+  const dd=document.getElementById('deliverDate').value;
+  const ddText=dd?('Giao '+dd.split('-').reverse().slice(0,2).join('/')):'Giao trong ngày';
+  const total=cartTotal();
+  ORDERS.unshift({
+    id:'DH-08'+(ODSEQ++), date:'17/08/2026', deliver:ddText, status:'pending',
+    lines:Object.entries(cart).map(([id,q])=>[id,q])
+  });
+  DEBT+=total;
+  cart={};
+  closeModal();
+  renderShop();renderCartBar();
+  toast('✅ Đã đặt đơn '+vnd(total));
+  tabShop('orders',navShopBtn('orders'));
+}
+
+/* ----- Đơn hàng ----- */
+function orderTotal(o){return o.lines.reduce((s,[id,q])=>s+ITEM[id].price*q,0);}
+function renderOrderList(){
+  document.getElementById('orderList').innerHTML=ORDERS.map((o,i)=>{
+    const badge=o.status==='delivered'
+      ? '<span class="badge done">Đã giao</span>'
+      : '<span class="badge pending">Chờ giao</span>';
+    return `<button class="order-card" onclick="openOrder(${i})">
+      <span class="ic">${o.status==='delivered'?'📦':'🕒'}</span>
+      <span class="info">
+        <b>${o.id}</b>
+        <span class="sub">${o.deliver} · ${o.lines.length} mặt hàng</span>
+        <span class="amt">${vnd(orderTotal(o))}</span>
+        <span>${badge}</span>
+      </span>
+      <span class="chev">›</span>
+    </button>`;
+  }).join('');
+}
+function openOrder(i){
+  const o=ORDERS[i];
+  const badge=o.status==='delivered'
+    ? '<span class="badge done">Đã giao</span>'
+    : '<span class="badge pending">Chờ giao</span>';
+  document.getElementById('orderDetailBody').innerHTML=`
+    <div class="today" style="margin-bottom:16px">
+      <div class="tag">ĐƠN ${o.id} · ĐẶT ${o.date}</div>
+      <h2>${o.deliver}</h2>
+      ${badge}
+    </div>
+    <div class="section-title" style="margin-top:0">Chi tiết đơn</div>
+    <div class="card" style="padding:4px 18px">
+      ${o.lines.map(([id,q])=>{
+        const it=ITEM[id];
+        return `<div class="order-line">
+          <span>${it.ic} ${it.name}<br><span class="q">${vnd(it.price)} × ${q} ${it.unit}</span></span>
+          <b>${vnd(it.price*q)}</b>
+        </div>`;
+      }).join('')}
+      <div class="total-row"><span>Tổng cộng</span><b>${vnd(orderTotal(o))}</b></div>
+    </div>`;
+  show('s-orderdetail');
+}
+
+/* ----- Công nợ ----- */
+function renderDebt(){
+  document.getElementById('debtBody').innerHTML=`
+    <div class="debt-card">
+      <div class="lbl">CÔNG NỢ HIỆN TẠI</div>
+      <div class="amt">${vnd(DEBT)}</div>
+      <div class="meta">Hạn thanh toán: 25/08/2026 · Kho tổng HTX Vân Nội</div>
+    </div>
+    <button class="btn btn-orange" style="margin-bottom:22px" onclick="payDebt()">💳 Thanh toán ngay</button>
+    <div class="section-title" style="margin-top:0">Lịch sử thanh toán</div>
+    <div class="card" style="padding:4px 18px">
+      ${PAYMENTS.map(p=>`
+        <div class="pay-row">
+          <span class="ic">✅</span>
+          <span class="info"><b>${p.note}</b><span class="m">${p.date} · ${p.method}</span></span>
+          <span class="amt">−${vnd(p.amount)}</span>
+        </div>`).join('')}
+    </div>`;
+}
+function payDebt(){toast('Đã gửi yêu cầu thanh toán tới Kho tổng');}
+
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200);}
 </script>

@@ -81,6 +81,24 @@ tr:hover td{background:#FAFBF9}
 .pill.a{background:var(--amber-soft);color:var(--amber)}
 .pill.b{background:var(--blue-soft);color:var(--blue)}
 .pill.r{background:var(--red-soft);color:var(--red)}
+/* inline status select trong bảng đơn hàng */
+/* badge trạng thái đơn — bấm để mở menu đổi trạng thái */
+.status-pill{display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;font:600 12.5px 'Be Vietnam Pro';border:none;cursor:pointer}
+.status-pill.st-g{background:var(--green-soft);color:var(--green-d)}
+.status-pill.st-a{background:var(--amber-soft);color:var(--amber)}
+.status-menu{position:fixed;z-index:210;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.16);padding:5px;min-width:160px;display:none}
+.status-menu.on{display:block}
+.status-menu button{display:flex;align-items:center;gap:9px;width:100%;background:none;border:none;text-align:left;padding:9px 11px;border-radius:7px;font:500 13.5px 'Be Vietnam Pro';color:var(--ink)}
+.status-menu button:hover{background:var(--bg)}
+.status-menu button.sel{font-weight:700}
+.status-menu .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.status-menu .chk{margin-left:auto;color:var(--green-d)}
+/* thẻ tổng quan công nợ */
+.debt-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.debt-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.debt-card span{color:var(--muted);font-size:12.5px;display:block;margin-bottom:4px}
+.debt-card b{font-size:19px;font-weight:800}
+@media(max-width:560px){.debt-cards{grid-template-columns:1fr}}
 
 /* ---------- FILTERS ---------- */
 .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
@@ -206,7 +224,8 @@ tr:hover td{background:#FAFBF9}
     <nav>
       <button class="active" data-page="notif" onclick="go('notif',this)"><svg viewBox="0 0 24 24"><path d="M12 2a6 6 0 0 0-6 6c0 3.1-.8 5-1.6 6.1-.4.6 0 1.4.7 1.4h13.8c.7 0 1.1-.8.7-1.4C18.8 13 18 11.1 18 8a6 6 0 0 0-6-6Zm0 20a2.8 2.8 0 0 0 2.8-2.6H9.2A2.8 2.8 0 0 0 12 22Z"/></svg><span>Thông báo</span><span class="badge">3</span></button>
       <button data-page="source" onclick="go('source',this)"><svg viewBox="0 0 24 24"><path d="M12 2 3 6.9v10.2L12 22l9-4.9V6.9L12 2Zm0 2.3 6.1 3.3L12 10.9 5.9 7.6 12 4.3ZM5 9.2l6 3.3v6.9l-6-3.3V9.2Z"/></svg><span>Nguồn hàng</span></button>
-      <button data-page="kitchen" onclick="go('kitchen',this)"><svg viewBox="0 0 24 24"><path d="M7 20h10a1 1 0 0 0 1-1v-5H6v5a1 1 0 0 0 1 1Zm5-18a5 5 0 0 0-4.9 4.1A4 4 0 0 0 6 13.9V13h12v.9a4 4 0 0 0 .9-7.8A5 5 0 0 0 12 2Z"/></svg><span>Quản lý bếp</span></button>
+      <button data-page="order" onclick="go('order',this)"><svg viewBox="0 0 24 24"><path d="M8 2h8a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm1 6h6V6H9v2Zm0 4h6v-2H9v2Zm0 4h4v-2H9v2Z"/></svg><span>Đơn hàng</span></button>
+      <button data-page="kitchen" onclick="go('kitchen',this)"><svg viewBox="0 0 24 24"><path d="M7 20h10a1 1 0 0 0 1-1v-5H6v5a1 1 0 0 0 1 1Zm5-18a5 5 0 0 0-4.9 4.1A4 4 0 0 0 6 13.9V13h12v.9a4 4 0 0 0 .9-7.8A5 5 0 0 0 12 2Z"/></svg><span>Quản lý trường</span></button>
       <button data-page="parent" onclick="go('parent',this)"><svg viewBox="0 0 24 24"><path d="M8 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm8 .5a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM8 13c-3.3 0-6 1.7-6 3.8V19h12v-2.2C14 14.7 11.3 13 8 13Zm8 .5c-.5 0-1 0-1.4.1 1.2 1 1.9 2.2 1.9 3.7V19H22v-2.2c0-1.9-2.6-3.3-6-3.3Z"/></svg><span>Tài khoản PHHS</span></button>
     </nav>
     <div class="user">
@@ -267,7 +286,7 @@ tr:hover td{background:#FAFBF9}
       </div>
       <div class="panel">
         <table>
-          <thead><tr><th>Nguyên liệu</th><th>Nhà phân phối</th><th>Xuất xứ</th><th>Truy xuất nguồn gốc</th><th></th></tr></thead>
+          <thead><tr><th>Nguyên liệu</th><th>Nhà phân phối</th><th>Xuất xứ</th><th>Đơn giá</th><th>Truy xuất nguồn gốc</th><th></th></tr></thead>
           <tbody id="sourceBody"></tbody>
         </table>
         <div class="pager">
@@ -281,11 +300,40 @@ tr:hover td{background:#FAFBF9}
       </div>
     </div>
 
-    <!-- ===== QUẢN LÝ BẾP: DANH SÁCH ===== -->
+    <!-- ===== ĐƠN HÀNG ===== -->
+    <div class="page" id="page-order">
+      <div class="page-head">
+        <div><h2>Đơn hàng</h2><p>Đơn cấp nguyên liệu cho các trường — bấm mã đơn để xem chi tiết</p></div>
+        <button class="btn btn-green btn-sm" onclick="openOrderPanel()">+ Tạo đơn hàng</button>
+      </div>
+      <div class="tbar">
+        <div class="total" id="orderTotal"></div>
+        <div class="tbar-right">
+          <select id="orderStatus" class="f-input" onchange="pagerState.order=1;renderOrders()"><option value="">Tất cả trạng thái</option><option value="Chờ giao">Chờ giao</option><option value="Đã giao">Đã giao</option></select>
+          <input class="f-input search" id="orderSearch" placeholder="🔍 Tìm mã đơn, trường..." oninput="pagerState.order=1;renderOrders()">
+        </div>
+      </div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Mã đơn</th><th>Trường</th><th>Ngày đặt</th><th>Giá trị</th><th>Trạng thái</th><th style="text-align:right">Thao tác</th></tr></thead>
+          <tbody id="orderBody"></tbody>
+        </table>
+        <div class="pager">
+          <span id="orderRange"></span>
+          <div class="pager-ctrl">
+            <button onclick="pageStep('order',-1)" title="Trang trước">‹</button>
+            <span>Trang <input id="orderPageInput" onchange="pageGoto('order',this.value)"> / <b id="orderPages"></b></span>
+            <button onclick="pageStep('order',1)" title="Trang sau">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== QUẢN LÝ TRƯỜNG: DANH SÁCH ===== -->
     <div class="page" id="page-kitchen">
       <div class="page-head">
-        <div><h2>Quản lý bếp</h2><p>Mỗi trường một bếp — bấm tên bếp để xem chi tiết</p></div>
-        <button class="btn btn-green btn-sm" onclick="openKitchenPanel()">+ Tạo bếp mới</button>
+        <div><h2>Quản lý trường</h2><p>Mỗi trường một tài khoản — bấm tên trường để xem chi tiết</p></div>
+        <button class="btn btn-green btn-sm" onclick="openKitchenPanel()">+ Tạo trường mới</button>
       </div>
       <div class="tbar">
         <div class="total" id="kitchenTotal"></div>
@@ -296,7 +344,7 @@ tr:hover td{background:#FAFBF9}
       </div>
       <div class="panel">
         <table>
-          <thead><tr><th>Tên trường</th><th>Địa chỉ</th><th>Suất ăn/ngày</th><th>Bữa trưa hôm nay</th><th>Trạng thái</th><th style="text-align:right">Thao tác</th></tr></thead>
+          <thead><tr><th>Tên trường</th><th>Địa chỉ</th><th>Có bếp</th><th>Suất ăn/ngày</th><th>Bữa trưa hôm nay</th><th>Trạng thái</th><th style="text-align:right">Thao tác</th></tr></thead>
           <tbody id="kitchenBody"></tbody>
         </table>
         <div class="pager">
@@ -310,36 +358,25 @@ tr:hover td{background:#FAFBF9}
       </div>
     </div>
 
-    <!-- ===== CHI TIẾT BẾP (giữ là page riêng) ===== -->
+    <!-- ===== CHI TIẾT TRƯỜNG (giữ là page riêng) ===== -->
     <div class="page" id="page-kdetail">
-      <button class="back" onclick="go('kitchen',document.querySelector('[data-page=kitchen]'))">← Quay lại danh sách bếp</button>
+      <button class="back" onclick="go('kitchen',document.querySelector('[data-page=kitchen]'))">← Quay lại danh sách trường</button>
       <div class="page-head">
-        <div><h2 id="kdName">Bếp</h2><p id="kdMeta"></p></div>
+        <div><h2 id="kdName">Trường</h2><p id="kdMeta"></p></div>
         <div class="actions">
           <button class="btn btn-ghost btn-sm" onclick="fileImport('Đã import thực đơn tuần từ file Excel (25 dòng)')"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M12 3 7 8h3v6h4V8h3l-5-5ZM5 17h14v2H5z"/></svg>Import thực đơn</button>
-          <button class="btn btn-ghost btn-sm" onclick="openKitchenPanel(curKitchen)"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25ZM20.7 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z"/></svg>Sửa bếp</button>
-          <button class="btn btn-danger btn-sm" onclick="confirmDialog('Xoá bếp','Xoá bếp này khỏi hệ thống? Thao tác không thể hoàn tác.','Xoá bếp',()=>{toast('Đã xoá bếp (mock)');go('kitchen',document.querySelector('[data-page=kitchen]'))})">Xoá bếp</button>
+          <button class="btn btn-ghost btn-sm" onclick="openKitchenPanel(curKitchen)"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25ZM20.7 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z"/></svg>Sửa trường</button>
+          <button class="btn btn-danger btn-sm" onclick="confirmDialog('Xoá trường','Xoá trường này khỏi hệ thống? Thao tác không thể hoàn tác.','Xoá trường',()=>{toast('Đã xoá trường (mock)');go('kitchen',document.querySelector('[data-page=kitchen]'))})">Xoá trường</button>
         </div>
       </div>
       <div class="tabs">
         <button class="active" onclick="ktab('menu',this)">Danh sách thực đơn</button>
-        <button onclick="ktab('acc',this)">Tài khoản bếp</button>
+        <button onclick="ktab('debt',this)">Công nợ</button>
       </div>
 
       <div class="tabpage on" id="ktab-menu"></div>
 
-      <div class="tabpage" id="ktab-acc">
-        <div class="page-head" style="margin-bottom:14px">
-          <p style="color:var(--muted)">Tài khoản đăng nhập app Bếp của trường này</p>
-          <button class="btn btn-green btn-sm" onclick="openKaccPanel()">+ Tạo tài khoản bếp</button>
-        </div>
-        <div class="panel">
-          <table>
-            <thead><tr><th>Họ tên</th><th>Tên đăng nhập</th><th>Vai trò</th><th>Trạng thái</th><th></th></tr></thead>
-            <tbody id="kaccBody"></tbody>
-          </table>
-        </div>
-      </div>
+      <div class="tabpage" id="ktab-debt"></div>
     </div>
 
     <!-- ===== PHHS ===== -->
@@ -392,39 +429,41 @@ tr:hover td{background:#FAFBF9}
 
 <input type="file" id="hiddenFile" accept=".xlsx,.xls,.csv" style="display:none">
 <div id="tip"></div>
+<div id="statusMenu" class="status-menu"></div>
 <div id="toast"></div>
 
 <script>
 /* ============ MOCK DATA ============ */
+/* s = {name, dist, origin, link, price, unit, hist:[[date,price], ...] mới nhất trước} */
 const SOURCES = [
-  ["Gạo ST25","Tập đoàn Lộc Trời","Sóc Trăng","https://truyxuat.vn/gao-st25"],
-  ["Thịt lợn nạc vai","CP Việt Nam","Đồng Nai","https://truyxuat.vn/cp-thit-lon"],
-  ["Trứng cút","Ba Huân","Long An","https://truyxuat.vn/bahuan-trung"],
-  ["Rau cải ngọt","HTX Rau sạch Vân Nội","Đông Anh, Hà Nội","https://truyxuat.vn/vannoi-rau"],
-  ["Tôm thẻ","Minh Phú","Cà Mau","https://truyxuat.vn/minhphu-tom"],
-  ["Dưa hấu","HTX Nông sản Gò Công","Tiền Giang","https://truyxuat.vn/gocong-dua"],
-  ["Dầu ăn Simply","Calofic","Quảng Ninh","https://truyxuat.vn/simply"],
-  ["Đậu phụ","Cơ sở Phú Bình","Thanh Trì, Hà Nội","https://truyxuat.vn/phubinh-dau"],
-  ["Thịt gà ta","CP Việt Nam","Bình Phước","https://truyxuat.vn/cp-ga"],
-  ["Cá basa phi lê","Vĩnh Hoàn","Đồng Tháp","https://truyxuat.vn/vinhhoan-basa"],
-  ["Sữa tươi học đường","Vinamilk","Nghệ An","https://truyxuat.vn/vinamilk-sua"],
-  ["Bí đỏ","HTX Rau sạch Vân Nội","Đông Anh, Hà Nội","https://truyxuat.vn/vannoi-bido"],
-  ["Cà chua","HTX Rau sạch Vân Nội","Đông Anh, Hà Nội","https://truyxuat.vn/vannoi-cachua"],
-  ["Thịt bò","Vissan","TP.HCM","https://truyxuat.vn/vissan-bo"],
-  ["Nước mắm","Nam Ngư","Phú Quốc, Kiên Giang","https://truyxuat.vn/namngu"],
+  {name:"Gạo ST25", dist:"Tập đoàn Lộc Trời", origin:"Sóc Trăng", link:"https://truyxuat.vn/gao-st25", price:22000, unit:"kg", hist:[["01/08/2026",22000],["01/07/2026",21500],["01/06/2026",21000]]},
+  {name:"Thịt lợn nạc vai", dist:"CP Việt Nam", origin:"Đồng Nai", link:"https://truyxuat.vn/cp-thit-lon", price:125000, unit:"kg", hist:[["10/08/2026",125000],["20/07/2026",118000],["05/07/2026",120000]]},
+  {name:"Trứng cút", dist:"Ba Huân", origin:"Long An", link:"https://truyxuat.vn/bahuan-trung", price:62000, unit:"kg", hist:[["05/08/2026",62000],["01/07/2026",60000]]},
+  {name:"Rau cải ngọt", dist:"HTX Rau sạch Vân Nội", origin:"Đông Anh, Hà Nội", link:"https://truyxuat.vn/vannoi-rau", price:15000, unit:"kg", hist:[["12/08/2026",15000],["01/08/2026",13000],["15/07/2026",16000]]},
+  {name:"Tôm thẻ", dist:"Minh Phú", origin:"Cà Mau", link:"https://truyxuat.vn/minhphu-tom", price:185000, unit:"kg", hist:[["08/08/2026",185000],["18/07/2026",178000]]},
+  {name:"Dưa hấu", dist:"HTX Nông sản Gò Công", origin:"Tiền Giang", link:"https://truyxuat.vn/gocong-dua", price:12000, unit:"kg", hist:[["03/08/2026",12000],["10/07/2026",11000]]},
+  {name:"Dầu ăn Simply", dist:"Calofic", origin:"Quảng Ninh", link:"https://truyxuat.vn/simply", price:52000, unit:"chai", hist:[["01/08/2026",52000],["01/06/2026",49000]]},
+  {name:"Đậu phụ", dist:"Cơ sở Phú Bình", origin:"Thanh Trì, Hà Nội", link:"https://truyxuat.vn/phubinh-dau", price:13000, unit:"kg", hist:[["06/08/2026",13000],["01/07/2026",12000]]},
+  {name:"Thịt gà ta", dist:"CP Việt Nam", origin:"Bình Phước", link:"https://truyxuat.vn/cp-ga", price:95000, unit:"kg", hist:[["09/08/2026",95000],["22/07/2026",92000]]},
+  {name:"Cá basa phi lê", dist:"Vĩnh Hoàn", origin:"Đồng Tháp", link:"https://truyxuat.vn/vinhhoan-basa", price:68000, unit:"kg", hist:[["07/08/2026",68000],["15/07/2026",65000]]},
+  {name:"Sữa tươi học đường", dist:"Vinamilk", origin:"Nghệ An", link:"https://truyxuat.vn/vinamilk-sua", price:7500, unit:"hộp", hist:[["01/08/2026",7500],["01/05/2026",7000]]},
+  {name:"Bí đỏ", dist:"HTX Rau sạch Vân Nội", origin:"Đông Anh, Hà Nội", link:"https://truyxuat.vn/vannoi-bido", price:14000, unit:"kg", hist:[["11/08/2026",14000],["20/07/2026",13000]]},
+  {name:"Cà chua", dist:"HTX Rau sạch Vân Nội", origin:"Đông Anh, Hà Nội", link:"https://truyxuat.vn/vannoi-cachua", price:18000, unit:"kg", hist:[["11/08/2026",18000],["25/07/2026",15000]]},
+  {name:"Thịt bò", dist:"Vissan", origin:"TP.HCM", link:"https://truyxuat.vn/vissan-bo", price:265000, unit:"kg", hist:[["05/08/2026",265000],["10/07/2026",258000]]},
+  {name:"Nước mắm", dist:"Nam Ngư", origin:"Phú Quốc, Kiên Giang", link:"https://truyxuat.vn/namngu", price:38000, unit:"chai", hist:[["01/08/2026",38000],["01/06/2026",36000]]},
 ];
 const KITCHENS = [
-  {name:"Trường TH Đoàn Thị Điểm", addr:"Nam Từ Liêm, Hà Nội", size:1250, status:"Đang chế biến", s:"a", lunch:"Cơm gạo ST25 · Thịt kho trứng cút · Canh cải ngọt nấu tôm · Đậu phụ sốt cà chua · Dưa hấu tráng miệng"},
-  {name:"Trường TH Nguyễn Siêu", addr:"Cầu Giấy, Hà Nội", size:980, status:"Đã nhập nguyên liệu", s:"b", lunch:"Cơm tấm · Gà rang gừng · Canh bí đỏ hầm xương · Rau muống luộc chấm kho quẹt · Sữa chua nếp cẩm"},
-  {name:"Trường MN Hoa Sen", addr:"Ba Đình, Hà Nội", size:420, status:"Hoàn tất hôm nay", s:"g", lunch:"Cháo thịt bằm rau củ · Cá basa sốt cà chua · Trứng đúc thịt · Canh rau ngót nấu tôm · Chuối tây"},
-  {name:"Trường TH Kim Đồng", addr:"Hoàn Kiếm, Hà Nội", size:760, status:"Chưa bắt đầu", s:"r", lunch:"Cơm · Đậu phụ nhồi thịt sốt cà · Canh chua cá lóc · Su su xào tỏi · Thanh long ruột đỏ tráng miệng"},
-  {name:"Trường TH Kim Liên", addr:"Đống Đa, Hà Nội", size:1100, status:"Đang chế biến", s:"a", lunch:"Cơm · Sườn xào chua ngọt · Canh rau cải nấu thịt băm · Trứng chiên lá hẹ · Nho ngọt tráng miệng"},
-  {name:"Trường TH Cát Linh", addr:"Đống Đa, Hà Nội", size:890, status:"Đã nhập nguyên liệu", s:"b", lunch:"Cơm · Tôm rim thịt ba chỉ · Canh cua rau đay mồng tơi · Đậu bắp luộc · Táo Envy tráng miệng"},
-  {name:"Trường MN Việt Bun", addr:"Hai Bà Trưng, Hà Nội", size:360, status:"Hoàn tất hôm nay", s:"g", lunch:"Cháo gà hạt sen · Chả lá lốt · Canh mồng tơi nấu tôm · Sữa chua hoa quả tráng miệng"},
-  {name:"Trường TH Thành Công", addr:"Ba Đình, Hà Nội", size:1020, status:"Chưa bắt đầu", s:"r", lunch:"Cơm · Cá thu sốt cà chua · Thịt gà kho gừng · Canh bí xanh nấu xương · Dưa lê tráng miệng"},
-  {name:"Trường TH Trung Tự", addr:"Đống Đa, Hà Nội", size:640, status:"Đang chế biến", s:"a", lunch:"Cơm · Bò xào rau củ thập cẩm · Canh ngao chua nấu dứa · Rau muống xào tỏi · Chuối tiêu"},
-  {name:"Trường TH Ngọc Hà", addr:"Ba Đình, Hà Nội", size:720, status:"Đã nhập nguyên liệu", s:"b", lunch:"Cơm · Thịt viên sốt cà chua · Canh khoai tây cà rốt hầm xương · Su hào luộc · Cam ngọt"},
-  {name:"Trường MN Sao Mai", addr:"Cầu Giấy, Hà Nội", size:410, status:"Hoàn tất hôm nay", s:"g", lunch:"Cháo tôm bí đỏ · Trứng cút kho thịt · Canh rau ngót nấu thịt băm · Váng sữa · Lê Hàn"},
+  {name:"Trường TH Đoàn Thị Điểm", addr:"Nam Từ Liêm, Hà Nội", size:1250, status:"Đang chế biến", s:"a", kitchen:true, user:"dtd.bep", lunch:"Cơm gạo ST25 · Thịt kho trứng cút · Canh cải ngọt nấu tôm · Đậu phụ sốt cà chua · Dưa hấu tráng miệng"},
+  {name:"Trường TH Nguyễn Siêu", addr:"Cầu Giấy, Hà Nội", size:980, status:"Đã nhập nguyên liệu", s:"b", kitchen:true, user:"ngsieu.bep", lunch:"Cơm tấm · Gà rang gừng · Canh bí đỏ hầm xương · Rau muống luộc chấm kho quẹt · Sữa chua nếp cẩm"},
+  {name:"Trường MN Hoa Sen", addr:"Ba Đình, Hà Nội", size:420, status:"Hoàn tất hôm nay", s:"g", kitchen:true, user:"hoasen.bep", lunch:"Cháo thịt bằm rau củ · Cá basa sốt cà chua · Trứng đúc thịt · Canh rau ngót nấu tôm · Chuối tây"},
+  {name:"Trường TH Kim Đồng", addr:"Hoàn Kiếm, Hà Nội", size:760, status:"Chưa bắt đầu", s:"r", kitchen:false, user:"kimdong.bep", lunch:"Cơm · Đậu phụ nhồi thịt sốt cà · Canh chua cá lóc · Su su xào tỏi · Thanh long ruột đỏ tráng miệng"},
+  {name:"Trường TH Kim Liên", addr:"Đống Đa, Hà Nội", size:1100, status:"Đang chế biến", s:"a", kitchen:true, user:"kimlien.bep", lunch:"Cơm · Sườn xào chua ngọt · Canh rau cải nấu thịt băm · Trứng chiên lá hẹ · Nho ngọt tráng miệng"},
+  {name:"Trường TH Cát Linh", addr:"Đống Đa, Hà Nội", size:890, status:"Đã nhập nguyên liệu", s:"b", kitchen:true, user:"catlinh.bep", lunch:"Cơm · Tôm rim thịt ba chỉ · Canh cua rau đay mồng tơi · Đậu bắp luộc · Táo Envy tráng miệng"},
+  {name:"Trường MN Việt Bun", addr:"Hai Bà Trưng, Hà Nội", size:360, status:"Hoàn tất hôm nay", s:"g", kitchen:true, user:"vietbun.bep", lunch:"Cháo gà hạt sen · Chả lá lốt · Canh mồng tơi nấu tôm · Sữa chua hoa quả tráng miệng"},
+  {name:"Trường TH Thành Công", addr:"Ba Đình, Hà Nội", size:1020, status:"Chưa bắt đầu", s:"r", kitchen:false, user:"thanhcong.bep", lunch:"Cơm · Cá thu sốt cà chua · Thịt gà kho gừng · Canh bí xanh nấu xương · Dưa lê tráng miệng"},
+  {name:"Trường TH Trung Tự", addr:"Đống Đa, Hà Nội", size:640, status:"Đang chế biến", s:"a", kitchen:true, user:"trungtu.bep", lunch:"Cơm · Bò xào rau củ thập cẩm · Canh ngao chua nấu dứa · Rau muống xào tỏi · Chuối tiêu"},
+  {name:"Trường TH Ngọc Hà", addr:"Ba Đình, Hà Nội", size:720, status:"Đã nhập nguyên liệu", s:"b", kitchen:true, user:"ngocha.bep", lunch:"Cơm · Thịt viên sốt cà chua · Canh khoai tây cà rốt hầm xương · Su hào luộc · Cam ngọt"},
+  {name:"Trường MN Sao Mai", addr:"Cầu Giấy, Hà Nội", size:410, status:"Hoàn tất hôm nay", s:"g", kitchen:true, user:"saomai.bep", lunch:"Cháo tôm bí đỏ · Trứng cút kho thịt · Canh rau ngót nấu thịt băm · Váng sữa · Lê Hàn"},
 ];
 /* n = [icon, bg, html, time, unread, date] */
 const NOTIFS = [
@@ -460,10 +499,42 @@ const REPORT_STEPS = [
   {cls:"todo",ic:"🍱",t:"4. Chia khẩu phần",sub:"Chưa bắt đầu · Dự kiến 10:45",ph:0},
   {cls:"todo",ic:"🧾",t:"5. Lưu mẫu & hoàn tất",sub:"Chưa bắt đầu · Lưu mẫu thức ăn 24h theo quy định",ph:0},
 ];
-const KACC = [
-  ["Trần Thị Hoa","hoa.tt","Bếp trưởng"],
-  ["Lê Văn Minh","minh.lv","Nhân viên bếp"],
+/* o = {code, school, date, status, items:[[tên, SL, đơn giá tại thời điểm đặt, ĐVT], ...]}
+   Mã đơn = yyyyMMdd + số đếm trong ngày (bắt đầu từ 1). VD 202608011 = ngày 01/08/2026, đơn #1 */
+const ORDERS = [
+  {code:"202608011", school:"Trường TH Đoàn Thị Điểm", date:"01/08/2026", status:"Đã giao",
+   items:[["Gạo ST25",95,21500,"kg"],["Thịt lợn nạc vai",62,118000,"kg"],["Trứng cút",18,60000,"kg"],["Rau cải ngọt",40,13000,"kg"],["Dưa hấu",70,11000,"kg"]]},
+  {code:"202608012", school:"Trường TH Nguyễn Siêu", date:"01/08/2026", status:"Đã giao",
+   items:[["Gạo ST25",70,21500,"kg"],["Thịt gà ta",50,92000,"kg"],["Bí đỏ",34,13000,"kg"],["Sữa tươi học đường",980,7000,"hộp"]]},
+  {code:"202608021", school:"Trường MN Hoa Sen", date:"02/08/2026", status:"Đã giao",
+   items:[["Cá basa phi lê",26,65000,"kg"],["Trứng cút",10,60000,"kg"],["Rau cải ngọt",18,13000,"kg"],["Dầu ăn Simply",8,49000,"chai"]]},
+  {code:"202608031", school:"Trường TH Kim Liên", date:"03/08/2026", status:"Đã giao",
+   items:[["Gạo ST25",84,21500,"kg"],["Thịt bò",30,258000,"kg"],["Cà chua",16,15000,"kg"],["Nước mắm",6,36000,"chai"]]},
+  {code:"202608032", school:"Trường TH Đoàn Thị Điểm", date:"03/08/2026", status:"Đã giao",
+   items:[["Gạo ST25",95,21500,"kg"],["Đậu phụ",35,12000,"kg"],["Cà chua",20,15000,"kg"],["Tôm thẻ",12,178000,"kg"]]},
+  {code:"202608101", school:"Trường TH Cát Linh", date:"10/08/2026", status:"Đã giao",
+   items:[["Gạo ST25",70,22000,"kg"],["Tôm thẻ",22,185000,"kg"],["Đậu phụ",16,13000,"kg"]]},
+  {code:"202608111", school:"Trường TH Đoàn Thị Điểm", date:"11/08/2026", status:"Đã giao",
+   items:[["Gạo ST25",95,22000,"kg"],["Thịt gà ta",68,95000,"kg"],["Bí đỏ",45,14000,"kg"],["Sữa tươi học đường",1250,7500,"hộp"]]},
+  {code:"202608151", school:"Trường TH Nguyễn Siêu", date:"15/08/2026", status:"Chờ giao",
+   items:[["Gạo ST25",70,22000,"kg"],["Thịt lợn nạc vai",44,125000,"kg"],["Rau cải ngọt",24,15000,"kg"]]},
+  {code:"202608161", school:"Trường MN Hoa Sen", date:"16/08/2026", status:"Chờ giao",
+   items:[["Cá basa phi lê",22,68000,"kg"],["Bí đỏ",18,14000,"kg"],["Trứng cút",8,62000,"kg"]]},
+  {code:"202608171", school:"Trường TH Đoàn Thị Điểm", date:"17/08/2026", status:"Chờ giao",
+   items:[["Gạo ST25",95,22000,"kg"],["Thịt lợn nạc vai",62,125000,"kg"],["Trứng cút",18,62000,"kg"],["Rau cải ngọt",40,15000,"kg"],["Tôm thẻ",12,185000,"kg"],["Dưa hấu",70,12000,"kg"]]},
+  {code:"202608172", school:"Trường TH Kim Liên", date:"17/08/2026", status:"Chờ giao",
+   items:[["Gạo ST25",84,22000,"kg"],["Thịt bò",30,265000,"kg"],["Cà chua",16,18000,"kg"]]},
 ];
+function orderTotal(o){return o.items.reduce((s,it)=>s+it[1]*it[2],0);}
+
+/* Thanh toán ghi nhận tay bởi kế toán. p = [ngày, số tiền, ghi chú] */
+const PAYMENTS = {
+  "Trường TH Đoàn Thị Điểm":[["05/08/2026",5000000,"Chuyển khoản đợt 1"],["12/08/2026",8000000,"Chuyển khoản đợt 2"]],
+  "Trường TH Nguyễn Siêu":[["08/08/2026",6000000,"Chuyển khoản tháng 8"]],
+  "Trường MN Hoa Sen":[["06/08/2026",2000000,"Tiền mặt"]],
+  "Trường TH Kim Liên":[["09/08/2026",10000000,"Chuyển khoản"]],
+  "Trường TH Cát Linh":[],
+};
 const PARENTS = {
   "Trường TH Đoàn Thị Điểm":[
     ["Nguyễn Thu Hằng","0912 345 678","Nguyễn Minh Khôi","3A2"],
@@ -504,9 +575,9 @@ function renderNotifs(){
   drawPager('notif',info,'thông báo');
 }
 /* ---- pagination dùng chung (source / kitchen / parent) ---- */
-const pagerState={notif:1,source:1,kitchen:1,parent:1};
-const pagerPages={notif:1,source:1,kitchen:1,parent:1};
-const PER={notif:8,source:8,kitchen:8,parent:8};
+const pagerState={notif:1,source:1,order:1,kitchen:1,parent:1};
+const pagerPages={notif:1,source:1,order:1,kitchen:1,parent:1};
+const PER={notif:8,source:8,order:8,kitchen:8,parent:8};
 function paginate(name,list){
   const per=PER[name];
   const pages=Math.max(1,Math.ceil(list.length/per));
@@ -521,31 +592,77 @@ function drawPager(name,info,unit){
   document.getElementById(name+'Pages').textContent=info.pages;
   document.getElementById(name+'PageInput').value=info.page;
 }
-const renderByName={notif:()=>renderNotifs(),source:()=>renderSources(),kitchen:()=>renderKitchens(),parent:()=>renderParents()};
+const renderByName={notif:()=>renderNotifs(),source:()=>renderSources(),order:()=>renderOrders(),kitchen:()=>renderKitchens(),parent:()=>renderParents()};
+/* format tiền VND: 22000 -> "22.000 đ" */
+function money(n){return (n||0).toLocaleString('vi-VN')+' đ';}
+function parseVN(d){const[a,b,c]=d.split('/');return new Date(+c,+b-1,+a);}
 function pageStep(name,d){pagerState[name]=Math.min(pagerPages[name],Math.max(1,pagerState[name]+d));renderByName[name]();}
 function pageGoto(name,v){pagerState[name]=Math.min(pagerPages[name],Math.max(1,parseInt(v)||1));renderByName[name]();}
 
 function initSourceFilters(){
   const sel=document.getElementById('sourceDist');
   if(sel.options.length>1)return;
-  [...new Set(SOURCES.map(s=>s[1]))].forEach(d=>sel.add(new Option(d,d)));
+  [...new Set(SOURCES.map(s=>s.dist))].forEach(d=>sel.add(new Option(d,d)));
 }
 function renderSources(){
   initSourceFilters();
   const q=(document.getElementById('sourceSearch').value||'').toLowerCase().trim();
   const dist=document.getElementById('sourceDist').value;
   const list=SOURCES.map((s,i)=>({s,i})).filter(o=>
-    (!q||o.s.join(' ').toLowerCase().includes(q)) && (!dist||o.s[1]===dist));
+    (!q||`${o.s.name} ${o.s.dist} ${o.s.origin} ${o.s.link}`.toLowerCase().includes(q)) && (!dist||o.s.dist===dist));
   const info=paginate('source',list);
   document.getElementById('sourceBody').innerHTML = info.slice.length ? info.slice.map(({s,i})=>`
-    <tr><td><b>${s[0]}</b></td><td>${s[1]}</td><td>${s[2]}</td>
-    <td><a href="#" onclick="toast('Mở trang truy xuất: ${s[3]}');return false">${s[3]}</a></td>
-    <td style="text-align:right">
+    <tr><td><a class="name-link" onclick="openSourceDetail(${i})">${s.name}</a></td><td>${s.dist}</td><td>${s.origin}</td>
+    <td style="white-space:nowrap"><b>${money(s.price)}</b><span style="color:var(--muted)">/${s.unit}</span></td>
+    <td><a href="#" onclick="toast('Mở trang truy xuất: ${s.link}');return false">${s.link}</a></td>
+    <td style="text-align:right;white-space:nowrap">
       <button class="btn btn-ghost btn-sm" onclick="openSourcePanel(${i})">Sửa</button>
-      <button class="btn btn-danger btn-sm" onclick="confirmDialog('Xoá nguyên liệu','Xoá ${s[0]} khỏi danh mục nguồn hàng?','Xoá',()=>toast('Đã xoá nguyên liệu (mock)'))">Xoá</button>
-    </td></tr>`).join('') : `<tr><td colspan="5"><div class="empty">Không tìm thấy nguyên liệu.</div></td></tr>`;
+      <button class="btn btn-danger btn-sm" onclick="confirmDialog('Xoá nguyên liệu','Xoá ${s.name} khỏi danh mục nguồn hàng?','Xoá',()=>toast('Đã xoá nguyên liệu (mock)'))">Xoá</button>
+    </td></tr>`).join('') : `<tr><td colspan="6"><div class="empty">Không tìm thấy nguyên liệu.</div></td></tr>`;
   drawPager('source',info,'nguyên liệu');
 }
+function renderOrders(){
+  const q=(document.getElementById('orderSearch').value||'').toLowerCase().trim();
+  const st=document.getElementById('orderStatus').value;
+  const list=ORDERS.map((o,i)=>({o,i})).filter(x=>
+    (!q||`${x.o.code} ${x.o.school}`.toLowerCase().includes(q)) && (!st||x.o.status===st));
+  const info=paginate('order',list);
+  document.getElementById('orderBody').innerHTML = info.slice.length ? info.slice.map(({o,i})=>`
+    <tr>
+      <td><a class="name-link" onclick="openOrderDetail(${i})">${o.code}</a></td>
+      <td><div class="clamp2" data-tip="${o.school}">${o.school}</div></td>
+      <td style="white-space:nowrap">${o.date}</td>
+      <td style="white-space:nowrap"><b>${money(orderTotal(o))}</b></td>
+      <td><button class="status-pill ${o.status==='Đã giao'?'st-g':'st-a'}" onclick="openStatusMenu(${i},this)">${o.status}</button></td>
+      <td style="text-align:right;white-space:nowrap">
+        <button class="btn btn-ghost btn-sm" onclick="openOrderDetail(${i})">Chi tiết</button>
+      </td>
+    </tr>`).join('') : `<tr><td colspan="6"><div class="empty">Không tìm thấy đơn hàng.</div></td></tr>`;
+  drawPager('order',info,'đơn hàng');
+}
+function setOrderStatus(i,v){
+  if(ORDERS[i].status===v)return;
+  ORDERS[i].status=v;
+  renderOrders();
+  toast(v==='Đã giao'?`Đơn ${ORDERS[i].code} đã chuyển sang Đã giao`:`Đơn ${ORDERS[i].code} chuyển về Chờ giao`);
+}
+let statusMenuIdx=null;
+function openStatusMenu(i,btn){
+  const m=document.getElementById('statusMenu');
+  if(statusMenuIdx===i && m.classList.contains('on')){closeStatusMenu();return;}
+  statusMenuIdx=i;
+  const cur=ORDERS[i].status;
+  const opts=[['Chờ giao','var(--amber)'],['Đã giao','var(--green-d)']];
+  m.innerHTML=opts.map(([v,c])=>`<button class="${v===cur?'sel':''}" onclick="pickStatus('${v}')"><span class="dot" style="background:${c}"></span>${v}${v===cur?'<span class="chk">✓</span>':''}</button>`).join('');
+  m.classList.add('on');
+  const r=btn.getBoundingClientRect();
+  const mw=m.offsetWidth;
+  m.style.left=Math.max(8,Math.min(r.left,window.innerWidth-mw-8))+'px';
+  m.style.top=(r.bottom+6)+'px';
+}
+function pickStatus(v){const i=statusMenuIdx;closeStatusMenu();if(i!=null)setOrderStatus(i,v);}
+function closeStatusMenu(){document.getElementById('statusMenu').classList.remove('on');statusMenuIdx=null;}
+document.addEventListener('click',e=>{if(!e.target.closest('.status-pill')&&!e.target.closest('#statusMenu'))closeStatusMenu();});
 function initKitchenFilters(){
   const sel=document.getElementById('kitchenStatus');
   if(sel.options.length>1)return;
@@ -565,16 +682,17 @@ function renderKitchens(){
     <tr>
       <td><a class="name-link clamp2" data-tip="${k.name}" onclick="openKitchen(${i})">${k.name}</a></td>
       <td><div class="clamp2" data-tip="${k.addr}">${k.addr}</div></td>
+      <td><span class="pill ${k.kitchen?'g':'r'}">${k.kitchen?'Có':'Không'}</span></td>
       <td style="white-space:nowrap">${k.size} suất/ngày</td>
       <td><div class="clamp2" data-tip="${k.lunch}">${k.lunch}</div></td>
       <td><span class="pill ${k.s}">${k.status}</span></td>
       <td style="text-align:right;white-space:nowrap">
-        <button class="icon-btn" data-tip="Sửa bếp" onclick="openKitchenPanel(${i})">${pen}</button>
+        <button class="icon-btn" data-tip="Sửa trường" onclick="openKitchenPanel(${i})">${pen}</button>
         <button class="icon-btn" data-tip="Import thực đơn" onclick="fileImport('Đã import thực đơn cho ${k.name} (25 dòng)')">${up}</button>
-        <button class="icon-btn danger" data-tip="Xoá bếp" onclick="confirmDialog('Xoá bếp','Xoá bếp ${k.name}?','Xoá bếp',()=>toast('Đã xoá bếp (mock)'))">${trash}</button>
+        <button class="icon-btn danger" data-tip="Xoá trường" onclick="confirmDialog('Xoá trường','Xoá trường ${k.name}?','Xoá trường',()=>toast('Đã xoá trường (mock)'))">${trash}</button>
       </td>
-    </tr>`).join('') : `<tr><td colspan="6"><div class="empty">Không tìm thấy bếp.</div></td></tr>`;
-  drawPager('kitchen',info,'bếp');
+    </tr>`).join('') : `<tr><td colspan="7"><div class="empty">Không tìm thấy trường.</div></td></tr>`;
+  drawPager('kitchen',info,'trường');
 }
 function renderMenu(){
   document.getElementById('ktab-menu').innerHTML =
@@ -596,13 +714,59 @@ function renderMenu(){
       </div>
     </div>`).join('');
 }
-function renderKacc(){
-  document.getElementById('kaccBody').innerHTML = KACC.map((a,i)=>`
-    <tr><td><b>${a[0]}</b></td><td>${a[1]}</td><td>${a[2]}</td><td><span class="pill g">Hoạt động</span></td>
-    <td style="text-align:right">
-      <button class="btn btn-ghost btn-sm" onclick="openKaccPanel(${i})">Sửa</button>
-      <button class="btn btn-danger btn-sm" onclick="confirmDialog('Xoá tài khoản','Xoá tài khoản bếp ${a[0]}?','Xoá',()=>toast('Đã xoá tài khoản (mock)'))">Xoá</button>
-    </td></tr>`).join('');
+function renderDebt(school){
+  const orders=ORDERS.filter(o=>o.school===school);
+  const pays=PAYMENTS[school]||[];
+  const totalOrder=orders.reduce((s,o)=>s+orderTotal(o),0);
+  const totalPaid=pays.reduce((s,p)=>s+p[1],0);
+  const remain=totalOrder-totalPaid;
+  const entries=[
+    ...orders.map(o=>({date:o.date, kind:'order', label:'Đơn hàng '+o.code, debit:orderTotal(o), credit:0})),
+    ...pays.map(p=>({date:p[0], kind:'pay', label:p[2]||'Thanh toán', debit:0, credit:p[1]})),
+  ].sort((a,b)=>parseVN(a.date)-parseVN(b.date));
+  let bal=0;
+  const rows=entries.map(e=>{bal+=e.debit-e.credit;return `
+    <tr>
+      <td style="white-space:nowrap">${e.date}</td>
+      <td>${e.kind==='pay'?'💰 ':'📦 '}${e.label}</td>
+      <td style="text-align:right">${e.debit?money(e.debit):'—'}</td>
+      <td style="text-align:right;color:var(--green-d)">${e.credit?money(e.credit):'—'}</td>
+      <td style="text-align:right;white-space:nowrap"><b>${money(bal)}</b></td>
+    </tr>`;}).join('');
+  document.getElementById('ktab-debt').innerHTML=`
+    <div class="debt-cards">
+      <div class="debt-card"><span>Tổng đơn hàng</span><b>${money(totalOrder)}</b></div>
+      <div class="debt-card"><span>Đã thanh toán</span><b style="color:var(--green-d)">${money(totalPaid)}</b></div>
+      <div class="debt-card"><span>Còn nợ</span><b style="color:${remain>0?'var(--red)':'var(--green-d)'}">${money(remain)}</b></div>
+    </div>
+    <div class="day-tools" style="margin:18px 0 12px">
+      <p style="color:var(--muted);font-size:13.5px;max-width:520px">Công nợ cộng dồn từ các đơn hàng · trường thanh toán bên ngoài, kế toán bấm nút để ghi nhận thủ công</p>
+      <button class="btn btn-green btn-sm" onclick="openPaymentPanel('${school.replace(/'/g,"\\'")}')">+ Ghi nhận thanh toán</button>
+    </div>
+    <div class="panel">
+      <table>
+        <thead><tr><th>Ngày</th><th>Nội dung</th><th style="text-align:right">Phát sinh nợ</th><th style="text-align:right">Thanh toán</th><th style="text-align:right">Dư nợ</th></tr></thead>
+        <tbody>${rows||`<tr><td colspan="5"><div class="empty">Chưa có công nợ.</div></td></tr>`}</tbody>
+      </table>
+    </div>`;
+}
+function openPaymentPanel(school){
+  openDrawer('Ghi nhận thanh toán',`
+    <p style="color:var(--muted);font-size:13.5px;margin-bottom:16px">Trường <b>${school}</b> đã thanh toán bên ngoài — nhập thông tin để trừ vào công nợ.</p>
+    <div class="field"><label>Ngày thanh toán</label><input id="payDate" value="${new Date().toLocaleDateString('vi-VN')}" placeholder="dd/MM/yyyy"></div>
+    <div class="field"><label>Số tiền (đ)</label><input id="payAmount" inputmode="numeric" placeholder="VD: 5.000.000"></div>
+    <div class="field"><label>Hình thức / ghi chú</label><input id="payNote" placeholder="VD: Chuyển khoản đợt 3"></div>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
+     <button class="btn btn-green" onclick="savePayment('${school.replace(/'/g,"\\'")}')">Ghi nhận</button>`);
+}
+function savePayment(school){
+  const date=document.getElementById('payDate').value||new Date().toLocaleDateString('vi-VN');
+  const amount=parseInt((document.getElementById('payAmount').value||'0').replace(/\D/g,''))||0;
+  const note=document.getElementById('payNote').value||'Thanh toán';
+  (PAYMENTS[school]=PAYMENTS[school]||[]).push([date,amount,note]);
+  closeDrawer();
+  renderDebt(school);
+  toast('Đã ghi nhận thanh toán '+money(amount));
 }
 function renderParents(){
   const sel = document.getElementById('parentSchool');
@@ -621,15 +785,50 @@ function renderParents(){
 }
 
 /* ============ DRAWER PANELS ============ */
+const UNITS=['kg','hộp','chai','cái','thùng','bó'];
 function openSourcePanel(i){
-  const edit = i!=null, s = edit?SOURCES[i]:['','','',''];
+  const edit = i!=null, s = edit?SOURCES[i]:{name:'',dist:'',origin:'',link:'',price:'',unit:'kg'};
+  const unitOpts=UNITS.map(u=>`<option ${u===s.unit?'selected':''}>${u}</option>`).join('');
   openDrawer(edit?'Sửa nguyên liệu':'Thêm nguyên liệu',`
-    <div class="field"><label>Tên nguyên liệu</label><input value="${s[0]}" placeholder="VD: Thịt lợn nạc vai"></div>
-    <div class="field"><label>Nhà phân phối</label><input value="${s[1]}" placeholder="VD: CP Việt Nam"></div>
-    <div class="field"><label>Xuất xứ</label><input value="${s[2]}" placeholder="VD: Đồng Nai"></div>
-    <div class="field"><label>Link truy xuất nguồn gốc</label><input value="${s[3]}" placeholder="https://..."></div>`,
+    <div class="field"><label>Tên nguyên liệu</label><input value="${s.name}" placeholder="VD: Thịt lợn nạc vai"></div>
+    <div class="field"><label>Nhà phân phối</label><input value="${s.dist}" placeholder="VD: CP Việt Nam"></div>
+    <div class="field"><label>Xuất xứ</label><input value="${s.origin}" placeholder="VD: Đồng Nai"></div>
+    <div style="display:flex;gap:12px">
+      <div class="field" style="flex:1"><label>Đơn giá (đ)</label><input value="${s.price}" inputmode="numeric" placeholder="VD: 125.000"></div>
+      <div class="field" style="width:120px"><label>Đơn vị tính</label><select>${unitOpts}</select></div>
+    </div>
+    <div class="field"><label>Link truy xuất nguồn gốc</label><input value="${s.link}" placeholder="https://..."></div>`,
     `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
      <button class="btn btn-green" onclick="closeDrawer();toast('${edit?'Đã lưu thay đổi (mock)':'Đã thêm nguyên liệu (mock)'}')">${edit?'Lưu':'Thêm'}</button>`);
+}
+function openSourceDetail(i){
+  const s=SOURCES[i];
+  const rows=s.hist.map((h,idx)=>{
+    const prev=s.hist[idx+1];
+    let chg='<span style="color:var(--muted)">—</span>';
+    if(prev){
+      const d=h[1]-prev[1];
+      chg = d>0?`<span style="color:var(--red)">▲ ${money(d)}</span>`:d<0?`<span style="color:var(--green-d)">▼ ${money(-d)}</span>`:'<span style="color:var(--muted)">0</span>';
+    }
+    return `<tr><td style="white-space:nowrap">${h[0]}</td><td style="text-align:right"><b>${money(h[1])}</b>/${s.unit}</td><td style="text-align:right;white-space:nowrap">${idx===0?'<span class="pill g">Hiện tại</span>':chg}</td></tr>`;
+  }).join('');
+  openDrawer('Chi tiết nguyên liệu',`
+    <b style="font-size:16px">${s.name}</b>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 6px">
+      <div><div style="color:var(--muted);font-size:12px">Nhà phân phối</div><div style="font-weight:600">${s.dist}</div></div>
+      <div><div style="color:var(--muted);font-size:12px">Xuất xứ</div><div style="font-weight:600">${s.origin}</div></div>
+      <div><div style="color:var(--muted);font-size:12px">Đơn giá hiện tại</div><div style="font-weight:600">${money(s.price)}/${s.unit}</div></div>
+      <div><div style="color:var(--muted);font-size:12px">Truy xuất</div><a href="#" onclick="toast('Mở trang truy xuất: ${s.link}');return false" style="font-weight:600">Xem nguồn gốc</a></div>
+    </div>
+    <div style="border-top:1px solid var(--line);margin:16px 0 12px;padding-top:14px"><b style="font-size:13.5px">Lịch sử thay đổi giá</b></div>
+    <div class="panel">
+      <table>
+        <thead><tr><th>Ngày áp dụng</th><th style="text-align:right">Đơn giá</th><th style="text-align:right">Thay đổi</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Đóng</button>
+     <button class="btn btn-green" onclick="openSourcePanel(${i})">Sửa nguyên liệu</button>`);
 }
 function openImportPanel(title,msg){
   openDrawer(title,`
@@ -644,23 +843,59 @@ function openImportPanel(title,msg){
      <button class="btn btn-green" onclick="fileImport('${msg}')">Chọn file</button>`);
 }
 function openKitchenPanel(i){
-  const edit = i!=null, k = edit?KITCHENS[i]:{name:'',addr:'',size:''};
-  openDrawer(edit?'Sửa thông tin bếp':'Tạo bếp mới',`
+  const edit = i!=null, k = edit?KITCHENS[i]:{name:'',addr:'',size:'',kitchen:true,user:''};
+  openDrawer(edit?'Sửa thông tin trường':'Tạo trường mới',`
     <div class="field"><label>Tên trường</label><input value="${k.name}" placeholder="VD: Trường TH Kim Liên"></div>
     <div class="field"><label>Địa chỉ</label><input value="${k.addr}" placeholder="VD: Đống Đa, Hà Nội"></div>
-    <div class="field"><label>Sĩ số phục vụ</label><input value="${k.size}" placeholder="VD: 850"></div>`,
+    <div class="field"><label>Sĩ số phục vụ</label><input value="${k.size}" placeholder="VD: 850"></div>
+    <div class="field"><label>Có bếp nấu ăn tại trường</label><select><option ${k.kitchen?'selected':''}>Có</option><option ${!k.kitchen?'selected':''}>Không</option></select></div>
+    <div style="border-top:1px solid var(--line);margin:20px 0 16px;padding-top:16px"><b style="font-size:13.5px">Tài khoản đăng nhập của trường</b><p style="color:var(--muted);font-size:12.5px;margin-top:3px">Mỗi trường một tài khoản dùng chung cho app Bếp</p></div>
+    <div class="field"><label>Tên đăng nhập</label><input value="${k.user||''}" placeholder="VD: kimlien.bep"></div>
+    <div class="field"><label>Mật khẩu</label><input type="password" value="${edit?'123456':''}" placeholder="••••••••"></div>`,
     `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
-     <button class="btn btn-green" onclick="closeDrawer();toast('${edit?'Đã lưu thông tin bếp (mock)':'Đã tạo bếp mới (mock)'}')">${edit?'Lưu':'Tạo bếp'}</button>`);
+     <button class="btn btn-green" onclick="closeDrawer();toast('${edit?'Đã lưu thông tin trường (mock)':'Đã tạo trường mới (mock)'}')">${edit?'Lưu':'Tạo trường'}</button>`);
 }
-function openKaccPanel(i){
-  const edit = i!=null, d = edit?KACC[i]:['','','Bếp trưởng'];
-  openDrawer(edit?'Sửa tài khoản bếp':'Tạo tài khoản bếp',`
-    <div class="field"><label>Họ tên</label><input value="${d[0]}" placeholder="VD: Phạm Thị Lan"></div>
-    <div class="field"><label>Tên đăng nhập</label><input value="${d[1]}" placeholder="VD: lan.pt"></div>
-    <div class="field"><label>Mật khẩu</label><input type="password" value="${edit?'123456':''}" placeholder="••••••••"></div>
-    <div class="field"><label>Vai trò</label><select><option ${d[2]==='Bếp trưởng'?'selected':''}>Bếp trưởng</option><option ${d[2]==='Nhân viên bếp'?'selected':''}>Nhân viên bếp</option></select></div>`,
+function openOrderDetail(i){
+  const o=ORDERS[i];
+  const rows=o.items.map(it=>`
+    <tr><td>${it[0]}</td><td style="text-align:right;white-space:nowrap">${it[1]} ${it[3]}</td>
+    <td style="text-align:right;white-space:nowrap">${money(it[2])}</td>
+    <td style="text-align:right;white-space:nowrap"><b>${money(it[1]*it[2])}</b></td></tr>`).join('');
+  openDrawer('Chi tiết đơn hàng',`
+    <div style="background:#FAFBF9;border:1px solid var(--line);border-radius:12px;padding:16px 18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px">
+        <div><div style="color:var(--muted);font-size:12px;margin-bottom:2px">Mã đơn</div><b style="font-size:17px">${o.code}</b></div>
+        <span class="pill ${o.status==='Đã giao'?'g':'a'}">${o.status}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;gap:16px;padding-top:12px;border-top:1px solid var(--line)">
+        <div style="min-width:0"><div style="color:var(--muted);font-size:12px;margin-bottom:2px">Trường</div><div style="font-weight:600">${o.school}</div></div>
+        <div style="text-align:right;flex-shrink:0"><div style="color:var(--muted);font-size:12px;margin-bottom:2px">Ngày đặt</div><div style="font-weight:600">${o.date}</div></div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:26px 0 12px">
+      <b style="font-size:14px">Chi tiết nguyên liệu</b>
+      <span style="color:var(--muted);font-size:12px">Đơn giá tại thời điểm đặt</span>
+    </div>
+    <div class="panel">
+      <table>
+        <thead><tr><th>Nguyên liệu</th><th style="text-align:right">SL</th><th style="text-align:right">Đơn giá</th><th style="text-align:right">Thành tiền</th></tr></thead>
+        <tbody>${rows}</tbody>
+        <tfoot><tr><td colspan="3" style="text-align:right;font-weight:700;background:#FAFBF9">Tổng cộng</td><td style="text-align:right;font-weight:800;background:#FAFBF9;white-space:nowrap">${money(orderTotal(o))}</td></tr></tfoot>
+      </table>
+    </div>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Đóng</button>
+     <button class="btn btn-green" onclick="setOrderStatus(${i},'${o.status==='Đã giao'?'Chờ giao':'Đã giao'}');closeDrawer()">${o.status==='Đã giao'?'Chuyển về Chờ giao':'Đánh dấu Đã giao'}</button>`);
+}
+function openOrderPanel(){
+  const opts=KITCHENS.map(k=>`<option>${k.name}</option>`).join('');
+  openDrawer('Tạo đơn hàng',`
+    <p style="color:var(--muted);font-size:13.5px;margin-bottom:16px">Chọn trường và nhập thông tin đơn. Mã đơn được cấp tự động theo ngày.</p>
+    <div class="field"><label>Trường</label><select>${opts}</select></div>
+    <div class="field"><label>Ngày đặt</label><input value="${new Date().toLocaleDateString('vi-VN')}" placeholder="dd/MM/yyyy"></div>
+    <div class="field"><label>Ghi chú</label><input placeholder="VD: Thực đơn thứ Hai tuần 34"></div>
+    <p class="hint">Thêm nguyên liệu vào đơn ở bước sau (mock).</p>`,
     `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
-     <button class="btn btn-green" onclick="closeDrawer();toast('${edit?'Đã lưu tài khoản bếp (mock)':'Đã tạo tài khoản bếp (mock)'}')">${edit?'Lưu':'Tạo tài khoản'}</button>`);
+     <button class="btn btn-green" onclick="closeDrawer();toast('Đã tạo đơn hàng mới (mock)')">Tạo đơn</button>`);
 }
 function openParentPanel(i){
   const edit = i!=null, d = edit?curParentRows[i]:['','','',''];
@@ -709,9 +944,13 @@ let curKitchen=null;
 function openKitchen(i){
   curKitchen=i;
   const k=KITCHENS[i];
-  document.getElementById('kdName').textContent='🍳 '+k.name;
-  document.getElementById('kdMeta').textContent=`${k.addr} · ${k.size} suất ăn/ngày · Bếp trưởng: Trần Thị Hoa`;
-  renderKacc();
+  document.getElementById('kdName').textContent='🏫 '+k.name;
+  document.getElementById('kdMeta').textContent=`${k.addr} · ${k.size} suất ăn/ngày · ${k.kitchen?'Có bếp nấu tại trường':'Không có bếp'} · Tài khoản: ${k.user}`;
+  renderDebt(k.name);
+  /* reset về tab thực đơn mỗi lần mở */
+  document.querySelectorAll('#page-kdetail .tabpage').forEach(x=>x.classList.remove('on'));
+  document.getElementById('ktab-menu').classList.add('on');
+  document.querySelectorAll('#page-kdetail .tabs button').forEach((b,idx)=>b.classList.toggle('active',idx===0));
   go('kdetail');
   document.querySelector('[data-page=kitchen]').classList.add('active');
 }
@@ -769,7 +1008,7 @@ function showTip(target){
 document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(t);});
 document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tipEl.classList.remove('on');});
 
-renderNotifs();renderSources();renderKitchens();renderMenu();renderParents();
+renderNotifs();renderSources();renderOrders();renderKitchens();renderMenu();renderParents();
 </script>
 </body>
 </html>

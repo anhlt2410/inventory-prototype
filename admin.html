@@ -223,7 +223,8 @@ tr:hover td{background:#FAFBF9}
     </div>
     <nav>
       <button class="active" data-page="notif" onclick="go('notif',this)"><svg viewBox="0 0 24 24"><path d="M12 2a6 6 0 0 0-6 6c0 3.1-.8 5-1.6 6.1-.4.6 0 1.4.7 1.4h13.8c.7 0 1.1-.8.7-1.4C18.8 13 18 11.1 18 8a6 6 0 0 0-6-6Zm0 20a2.8 2.8 0 0 0 2.8-2.6H9.2A2.8 2.8 0 0 0 12 22Z"/></svg><span>Thông báo</span><span class="badge">3</span></button>
-      <button data-page="source" onclick="go('source',this)"><svg viewBox="0 0 24 24"><path d="M12 2 3 6.9v10.2L12 22l9-4.9V6.9L12 2Zm0 2.3 6.1 3.3L12 10.9 5.9 7.6 12 4.3ZM5 9.2l6 3.3v6.9l-6-3.3V9.2Z"/></svg><span>Nguồn hàng</span></button>
+      <button data-page="source" onclick="go('source',this)"><svg viewBox="0 0 24 24"><path d="M12 2 3 6.9v10.2L12 22l9-4.9V6.9L12 2Zm0 2.3 6.1 3.3L12 10.9 5.9 7.6 12 4.3ZM5 9.2l6 3.3v6.9l-6-3.3V9.2Z"/></svg><span>Nguyên liệu</span></button>
+      <button data-page="supplier" onclick="go('supplier',this)"><svg viewBox="0 0 24 24"><path d="M3 6a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v2h3.3a1 1 0 0 1 .8.4l2.7 3.6a1 1 0 0 1 .2.6V17a1 1 0 0 1-1 1h-1.1a2.5 2.5 0 0 1-4.8 0H9.9a2.5 2.5 0 0 1-4.8 0H4a1 1 0 0 1-1-1V6Zm11 4h5.5L17.8 8H14v2Zm-6.5 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9.5 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg><span>Nhà cung cấp</span></button>
       <button data-page="order" onclick="go('order',this)"><svg viewBox="0 0 24 24"><path d="M8 2h8a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm1 6h6V6H9v2Zm0 4h6v-2H9v2Zm0 4h4v-2H9v2Z"/></svg><span>Đơn hàng</span></button>
       <button data-page="kitchen" onclick="go('kitchen',this)"><svg viewBox="0 0 24 24"><path d="M7 20h10a1 1 0 0 0 1-1v-5H6v5a1 1 0 0 0 1 1Zm5-18a5 5 0 0 0-4.9 4.1A4 4 0 0 0 6 13.9V13h12v.9a4 4 0 0 0 .9-7.8A5 5 0 0 0 12 2Z"/></svg><span>Quản lý trường</span></button>
       <button data-page="parent" onclick="go('parent',this)"><svg viewBox="0 0 24 24"><path d="M8 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm8 .5a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM8 13c-3.3 0-6 1.7-6 3.8V19h12v-2.2C14 14.7 11.3 13 8 13Zm8 .5c-.5 0-1 0-1.4.1 1.2 1 1.9 2.2 1.9 3.7V19H22v-2.2c0-1.9-2.6-3.3-6-3.3Z"/></svg><span>Tài khoản PHHS</span></button>
@@ -268,25 +269,25 @@ tr:hover td{background:#FAFBF9}
       </div>
     </div>
 
-    <!-- ===== NGUỒN HÀNG ===== -->
+    <!-- ===== NGUYÊN LIỆU ===== -->
     <div class="page" id="page-source">
       <div class="page-head">
-        <div><h2>Nguồn hàng</h2><p>Danh mục nguyên liệu, nhà phân phối và truy xuất nguồn gốc</p></div>
+        <div><h2>Nguyên liệu</h2><p>Danh mục nguyên liệu, nhà cung cấp và truy xuất nguồn gốc</p></div>
         <div class="actions">
-          <button class="btn btn-ghost btn-sm" onclick="openImportPanel('Nhập nguồn hàng từ Excel','Đã import 12 nguồn hàng từ file Excel')"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M12 3 7 8h3v6h4V8h3l-5-5ZM5 17h14v2H5z"/></svg>Import</button>
+          <button class="btn btn-ghost btn-sm" onclick="openImportPanel('Nhập nguyên liệu từ Excel','Đã import 12 nguyên liệu từ file Excel')"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M12 3 7 8h3v6h4V8h3l-5-5ZM5 17h14v2H5z"/></svg>Import</button>
           <button class="btn btn-green btn-sm" onclick="openSourcePanel()">+ Thêm nguyên liệu</button>
         </div>
       </div>
       <div class="tbar">
         <div class="total" id="sourceTotal"></div>
         <div class="tbar-right">
-          <select id="sourceDist" class="f-input" onchange="pagerState.source=1;renderSources()"><option value="">Tất cả nhà phân phối</option></select>
-          <input class="f-input search" id="sourceSearch" placeholder="🔍 Tìm nguyên liệu, nhà phân phối, xuất xứ, link..." oninput="pagerState.source=1;renderSources()">
+          <select id="sourceDist" class="f-input" onchange="pagerState.source=1;renderSources()"><option value="">Tất cả nhà cung cấp</option></select>
+          <input class="f-input search" id="sourceSearch" placeholder="🔍 Tìm nguyên liệu, nhà cung cấp, xuất xứ, link..." oninput="pagerState.source=1;renderSources()">
         </div>
       </div>
       <div class="panel">
         <table>
-          <thead><tr><th>Nguyên liệu</th><th>Nhà phân phối</th><th>Xuất xứ</th><th>Đơn giá</th><th>Truy xuất nguồn gốc</th><th></th></tr></thead>
+          <thead><tr><th>Nguyên liệu</th><th>Nhà cung cấp</th><th>Xuất xứ</th><th>Đơn giá</th><th>Truy xuất nguồn gốc</th><th></th></tr></thead>
           <tbody id="sourceBody"></tbody>
         </table>
         <div class="pager">
@@ -295,6 +296,37 @@ tr:hover td{background:#FAFBF9}
             <button onclick="pageStep('source',-1)" title="Trang trước">‹</button>
             <span>Trang <input id="sourcePageInput" onchange="pageGoto('source',this.value)"> / <b id="sourcePages"></b></span>
             <button onclick="pageStep('source',1)" title="Trang sau">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== NHÀ CUNG CẤP ===== -->
+    <div class="page" id="page-supplier">
+      <div class="page-head">
+        <div><h2>Nhà cung cấp</h2><p>Danh sách nhà cung cấp — nguồn dữ liệu để chọn khi thêm nguyên liệu</p></div>
+        <div class="actions">
+          <button class="btn btn-ghost btn-sm" onclick="openImportPanel('Nhập nhà cung cấp từ Excel','Đã import 8 nhà cung cấp từ file Excel')"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M12 3 7 8h3v6h4V8h3l-5-5ZM5 17h14v2H5z"/></svg>Import</button>
+          <button class="btn btn-green btn-sm" onclick="openSupplierPanel()">+ Thêm nhà cung cấp</button>
+        </div>
+      </div>
+      <div class="tbar">
+        <div class="total" id="supplierTotal"></div>
+        <div class="tbar-right">
+          <input class="f-input search" id="supplierSearch" placeholder="🔍 Tìm nhà cung cấp, người liên hệ, mặt hàng..." oninput="pagerState.supplier=1;renderSuppliers()">
+        </div>
+      </div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Nhà cung cấp</th><th>Người liên hệ</th><th>Điện thoại</th><th>Mặt hàng cung cấp</th><th>Số nguyên liệu</th><th></th></tr></thead>
+          <tbody id="supplierBody"></tbody>
+        </table>
+        <div class="pager">
+          <span id="supplierRange"></span>
+          <div class="pager-ctrl">
+            <button onclick="pageStep('supplier',-1)" title="Trang trước">‹</button>
+            <span>Trang <input id="supplierPageInput" onchange="pageGoto('supplier',this.value)"> / <b id="supplierPages"></b></span>
+            <button onclick="pageStep('supplier',1)" title="Trang sau">›</button>
           </div>
         </div>
       </div>
@@ -452,6 +484,22 @@ const SOURCES = [
   {name:"Thịt bò", dist:"Vissan", origin:"TP.HCM", link:"https://truyxuat.vn/vissan-bo", price:265000, unit:"kg", hist:[["05/08/2026",265000],["10/07/2026",258000]]},
   {name:"Nước mắm", dist:"Nam Ngư", origin:"Phú Quốc, Kiên Giang", link:"https://truyxuat.vn/namngu", price:38000, unit:"chai", hist:[["01/08/2026",38000],["01/06/2026",36000]]},
 ];
+/* Nhà cung cấp — nguồn dữ liệu chọn "Nhà cung cấp" ở màn Nguyên liệu.
+   Tên phải khớp field `dist` trong SOURCES. sup = {name, contact, phone, addr} */
+const SUPPLIERS = [
+  {name:"CP Việt Nam", contact:"Nguyễn Văn Thành", phone:"0251 3836 251", addr:"Biên Hoà, Đồng Nai"},
+  {name:"Tập đoàn Lộc Trời", contact:"Trần Minh Hải", phone:"0296 3831 000", addr:"Long Xuyên, An Giang"},
+  {name:"Ba Huân", contact:"Lê Thị Kim Oanh", phone:"0272 3854 288", addr:"Đức Hoà, Long An"},
+  {name:"HTX Rau sạch Vân Nội", contact:"Phạm Văn Bốn", phone:"0912 456 780", addr:"Đông Anh, Hà Nội"},
+  {name:"Minh Phú", contact:"Đỗ Quốc Cường", phone:"0290 3833 828", addr:"TP. Cà Mau, Cà Mau"},
+  {name:"HTX Nông sản Gò Công", contact:"Nguyễn Thị Bé", phone:"0273 3841 567", addr:"Gò Công, Tiền Giang"},
+  {name:"Calofic", contact:"Vũ Đình Nam", phone:"0203 3618 888", addr:"Cái Lân, Quảng Ninh"},
+  {name:"Cơ sở Phú Bình", contact:"Hoàng Văn Bình", phone:"0987 321 654", addr:"Thanh Trì, Hà Nội"},
+  {name:"Vĩnh Hoàn", contact:"Trương Thị Lệ Khanh", phone:"0277 3891 166", addr:"Cao Lãnh, Đồng Tháp"},
+  {name:"Vinamilk", contact:"Đặng Thu Hà", phone:"1900 545 415", addr:"Quận 7, TP.HCM"},
+  {name:"Vissan", contact:"Lý Quốc Toàn", phone:"028 3553 3999", addr:"Bình Thạnh, TP.HCM"},
+  {name:"Nam Ngư", contact:"Bùi Thanh Sơn", phone:"1900 545 411", addr:"Phú Quốc, Kiên Giang"},
+];
 const KITCHENS = [
   {name:"Trường TH Đoàn Thị Điểm", addr:"Nam Từ Liêm, Hà Nội", size:1250, status:"Đang chế biến", s:"a", kitchen:true, user:"dtd.bep", lunch:"Cơm gạo ST25 · Thịt kho trứng cút · Canh cải ngọt nấu tôm · Đậu phụ sốt cà chua · Dưa hấu tráng miệng"},
   {name:"Trường TH Nguyễn Siêu", addr:"Cầu Giấy, Hà Nội", size:980, status:"Đã nhập nguyên liệu", s:"b", kitchen:true, user:"ngsieu.bep", lunch:"Cơm tấm · Gà rang gừng · Canh bí đỏ hầm xương · Rau muống luộc chấm kho quẹt · Sữa chua nếp cẩm"},
@@ -575,9 +623,9 @@ function renderNotifs(){
   drawPager('notif',info,'thông báo');
 }
 /* ---- pagination dùng chung (source / kitchen / parent) ---- */
-const pagerState={notif:1,source:1,order:1,kitchen:1,parent:1};
-const pagerPages={notif:1,source:1,order:1,kitchen:1,parent:1};
-const PER={notif:8,source:8,order:8,kitchen:8,parent:8};
+const pagerState={notif:1,source:1,supplier:1,order:1,kitchen:1,parent:1};
+const pagerPages={notif:1,source:1,supplier:1,order:1,kitchen:1,parent:1};
+const PER={notif:8,source:8,supplier:8,order:8,kitchen:8,parent:8};
 function paginate(name,list){
   const per=PER[name];
   const pages=Math.max(1,Math.ceil(list.length/per));
@@ -592,7 +640,7 @@ function drawPager(name,info,unit){
   document.getElementById(name+'Pages').textContent=info.pages;
   document.getElementById(name+'PageInput').value=info.page;
 }
-const renderByName={notif:()=>renderNotifs(),source:()=>renderSources(),order:()=>renderOrders(),kitchen:()=>renderKitchens(),parent:()=>renderParents()};
+const renderByName={notif:()=>renderNotifs(),source:()=>renderSources(),supplier:()=>renderSuppliers(),order:()=>renderOrders(),kitchen:()=>renderKitchens(),parent:()=>renderParents()};
 /* format tiền VND: 22000 -> "22.000 đ" */
 function money(n){return (n||0).toLocaleString('vi-VN')+' đ';}
 function parseVN(d){const[a,b,c]=d.split('/');return new Date(+c,+b-1,+a);}
@@ -602,7 +650,7 @@ function pageGoto(name,v){pagerState[name]=Math.min(pagerPages[name],Math.max(1,
 function initSourceFilters(){
   const sel=document.getElementById('sourceDist');
   if(sel.options.length>1)return;
-  [...new Set(SOURCES.map(s=>s.dist))].forEach(d=>sel.add(new Option(d,d)));
+  SUPPLIERS.map(s=>s.name).forEach(d=>sel.add(new Option(d,d)));
 }
 function renderSources(){
   initSourceFilters();
@@ -617,9 +665,38 @@ function renderSources(){
     <td><a href="#" onclick="toast('Mở trang truy xuất: ${s.link}');return false">${s.link}</a></td>
     <td style="text-align:right;white-space:nowrap">
       <button class="btn btn-ghost btn-sm" onclick="openSourcePanel(${i})">Sửa</button>
-      <button class="btn btn-danger btn-sm" onclick="confirmDialog('Xoá nguyên liệu','Xoá ${s.name} khỏi danh mục nguồn hàng?','Xoá',()=>toast('Đã xoá nguyên liệu (mock)'))">Xoá</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDialog('Xoá nguyên liệu','Xoá ${s.name} khỏi danh mục nguyên liệu?','Xoá',()=>toast('Đã xoá nguyên liệu (mock)'))">Xoá</button>
     </td></tr>`).join('') : `<tr><td colspan="6"><div class="empty">Không tìm thấy nguyên liệu.</div></td></tr>`;
   drawPager('source',info,'nguyên liệu');
+}
+function renderSuppliers(){
+  const q=(document.getElementById('supplierSearch').value||'').toLowerCase().trim();
+  const list=SUPPLIERS.map((sup,i)=>({sup,i,items:SOURCES.filter(s=>s.dist===sup.name).map(s=>s.name)}))
+    .filter(o=>!q||`${o.sup.name} ${o.sup.contact} ${o.sup.phone} ${o.sup.addr} ${o.items.join(' ')}`.toLowerCase().includes(q));
+  const info=paginate('supplier',list);
+  document.getElementById('supplierBody').innerHTML = info.slice.length ? info.slice.map(({sup,i,items})=>`
+    <tr>
+      <td><b>${sup.name}</b><div style="color:var(--muted);font-size:12.5px">${sup.addr}</div></td>
+      <td>${sup.contact}</td>
+      <td style="white-space:nowrap">${sup.phone}</td>
+      <td><div class="clamp2" data-tip="${items.join(', ')||'Chưa có nguyên liệu'}">${items.join(', ')||'<span style="color:var(--muted)">—</span>'}</div></td>
+      <td style="text-align:center"><span class="pill b">${items.length}</span></td>
+      <td style="text-align:right;white-space:nowrap">
+        <button class="btn btn-ghost btn-sm" onclick="openSupplierPanel(${i})">Sửa</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmDialog('Xoá nhà cung cấp','Xoá ${sup.name} khỏi danh sách nhà cung cấp?','Xoá',()=>toast('Đã xoá nhà cung cấp (mock)'))">Xoá</button>
+      </td>
+    </tr>`).join('') : `<tr><td colspan="6"><div class="empty">Không tìm thấy nhà cung cấp.</div></td></tr>`;
+  drawPager('supplier',info,'nhà cung cấp');
+}
+function openSupplierPanel(i){
+  const edit = i!=null, sup = edit?SUPPLIERS[i]:{name:'',contact:'',phone:'',addr:''};
+  openDrawer(edit?'Sửa nhà cung cấp':'Thêm nhà cung cấp',`
+    <div class="field"><label>Tên nhà cung cấp</label><input value="${sup.name}" placeholder="VD: CP Việt Nam"></div>
+    <div class="field"><label>Người liên hệ</label><input value="${sup.contact}" placeholder="VD: Nguyễn Văn Thành"></div>
+    <div class="field"><label>Điện thoại</label><input value="${sup.phone}" inputmode="tel" placeholder="VD: 0251 3836 251"></div>
+    <div class="field"><label>Địa chỉ</label><input value="${sup.addr}" placeholder="VD: Biên Hoà, Đồng Nai"></div>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
+     <button class="btn btn-green" onclick="closeDrawer();toast('${edit?'Đã lưu nhà cung cấp (mock)':'Đã thêm nhà cung cấp (mock)'}')">${edit?'Lưu':'Thêm'}</button>`);
 }
 function renderOrders(){
   const q=(document.getElementById('orderSearch').value||'').toLowerCase().trim();
@@ -789,9 +866,11 @@ const UNITS=['kg','hộp','chai','cái','thùng','bó'];
 function openSourcePanel(i){
   const edit = i!=null, s = edit?SOURCES[i]:{name:'',dist:'',origin:'',link:'',price:'',unit:'kg'};
   const unitOpts=UNITS.map(u=>`<option ${u===s.unit?'selected':''}>${u}</option>`).join('');
+  const distOpts=`<option value="" ${!s.dist?'selected':''} disabled>— Chọn nhà cung cấp —</option>`+
+    SUPPLIERS.map(sup=>`<option ${sup.name===s.dist?'selected':''}>${sup.name}</option>`).join('');
   openDrawer(edit?'Sửa nguyên liệu':'Thêm nguyên liệu',`
     <div class="field"><label>Tên nguyên liệu</label><input value="${s.name}" placeholder="VD: Thịt lợn nạc vai"></div>
-    <div class="field"><label>Nhà phân phối</label><input value="${s.dist}" placeholder="VD: CP Việt Nam"></div>
+    <div class="field"><label>Nhà cung cấp</label><select>${distOpts}</select></div>
     <div class="field"><label>Xuất xứ</label><input value="${s.origin}" placeholder="VD: Đồng Nai"></div>
     <div style="display:flex;gap:12px">
       <div class="field" style="flex:1"><label>Đơn giá (đ)</label><input value="${s.price}" inputmode="numeric" placeholder="VD: 125.000"></div>
@@ -815,7 +894,7 @@ function openSourceDetail(i){
   openDrawer('Chi tiết nguyên liệu',`
     <b style="font-size:16px">${s.name}</b>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 6px">
-      <div><div style="color:var(--muted);font-size:12px">Nhà phân phối</div><div style="font-weight:600">${s.dist}</div></div>
+      <div><div style="color:var(--muted);font-size:12px">Nhà cung cấp</div><div style="font-weight:600">${s.dist}</div></div>
       <div><div style="color:var(--muted);font-size:12px">Xuất xứ</div><div style="font-weight:600">${s.origin}</div></div>
       <div><div style="color:var(--muted);font-size:12px">Đơn giá hiện tại</div><div style="font-weight:600">${money(s.price)}/${s.unit}</div></div>
       <div><div style="color:var(--muted);font-size:12px">Truy xuất</div><a href="#" onclick="toast('Mở trang truy xuất: ${s.link}');return false" style="font-weight:600">Xem nguồn gốc</a></div>
@@ -1008,7 +1087,7 @@ function showTip(target){
 document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(t);});
 document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tipEl.classList.remove('on');});
 
-renderNotifs();renderSources();renderOrders();renderKitchens();renderMenu();renderParents();
+renderNotifs();renderSources();renderSuppliers();renderOrders();renderKitchens();renderMenu();renderParents();
 </script>
 </body>
 </html>

@@ -516,13 +516,13 @@ const KITCHENS = [
 /* n = [icon, bg, html, time, unread, date] */
 const NOTIFS = [
   ["🍲","var(--amber-soft)","<b>Bếp TH Đoàn Thị Điểm</b> đã báo cáo bước <b>Chế biến</b> (1 ảnh)","09:12 · Hôm nay",1,"2026-08-16"],
-  ["✅","var(--green-soft)","<b>Bếp MN Hoa Sen</b> đã hoàn tất quy trình bữa trưa (5/5 bước)","08:55 · Hôm nay",1,"2026-08-16"],
-  ["📦","var(--blue-soft)","<b>Bếp TH Nguyễn Siêu</b> đã xác nhận <b>Nhập nguyên liệu</b> — đủ 8/8 mặt hàng","06:32 · Hôm nay",1,"2026-08-16"],
+  ["✅","var(--green-soft)","<b>Bếp MN Hoa Sen</b> đã hoàn tất quy trình bữa trưa (6/6 bước)","08:55 · Hôm nay",1,"2026-08-16"],
+  ["📦","var(--blue-soft)","<b>Bếp TH Nguyễn Siêu</b> đã xác nhận <b>Giao nhận thực phẩm</b> — đủ 8/8 mặt hàng","06:32 · Hôm nay",1,"2026-08-16"],
   ["🧑‍🍳","var(--green-soft)","<b>Bếp TH Kim Đồng</b> đã tiếp nhận thực đơn tuần 34 (17/08 – 21/08)","17:20 · Hôm qua",0,"2026-08-15"],
   ["📷","var(--amber-soft)","<b>Bếp TH Đoàn Thị Điểm</b> đã báo cáo bước <b>Sơ chế</b> (2 ảnh)","07:41 · Hôm qua",0,"2026-08-15"],
-  ["🍱","var(--blue-soft)","<b>Bếp TH Kim Liên</b> đã báo cáo bước <b>Chia khẩu phần</b> (2 ảnh)","10:05 · Hôm nay",1,"2026-08-16"],
-  ["✅","var(--green-soft)","<b>Bếp TH Cát Linh</b> đã hoàn tất quy trình bữa trưa (5/5 bước)","11:20 · Hôm nay",1,"2026-08-16"],
-  ["📦","var(--blue-soft)","<b>Bếp TH Thành Công</b> đã xác nhận <b>Nhập nguyên liệu</b> — đủ 9/9 mặt hàng","06:48 · Hôm nay",1,"2026-08-16"],
+  ["🍱","var(--blue-soft)","<b>Bếp TH Kim Liên</b> đã báo cáo bước <b>Lưu mẫu - chia ăn</b> (2 ảnh)","10:05 · Hôm nay",1,"2026-08-16"],
+  ["✅","var(--green-soft)","<b>Bếp TH Cát Linh</b> đã hoàn tất quy trình bữa trưa (6/6 bước)","11:20 · Hôm nay",1,"2026-08-16"],
+  ["📦","var(--blue-soft)","<b>Bếp TH Thành Công</b> đã xác nhận <b>Giao nhận thực phẩm</b> — đủ 9/9 mặt hàng","06:48 · Hôm nay",1,"2026-08-16"],
   ["📷","var(--amber-soft)","<b>Bếp MN Việt Bun</b> đã báo cáo bước <b>Sơ chế</b> (3 ảnh)","07:15 · Hôm nay",0,"2026-08-16"],
   ["🧑‍🍳","var(--green-soft)","<b>Bếp TH Trung Tự</b> đã tiếp nhận thực đơn tuần 34 (17/08 – 21/08)","16:40 · Hôm qua",0,"2026-08-15"],
   ["🍲","var(--amber-soft)","<b>Bếp TH Ngọc Hà</b> đã báo cáo bước <b>Chế biến</b> (1 ảnh)","09:30 · Hôm qua",0,"2026-08-15"],
@@ -539,13 +539,14 @@ const MENU = [
   {d:"Thứ Sáu · 21/08", dish:"Mì bò bằm · Súp lơ luộc · Bánh flan",
    ing:[["Mì sợi tươi","70 kg"],["Thịt bò bằm","45 kg"],["Súp lơ xanh","38 kg"],["Bánh flan","1.250 cái"]]},
 ];
-/* Quy trình 5 bước chuẩn */
+/* Quy trình 6 bước chuẩn theo quy trình chế biến thực tế */
 const REPORT_STEPS = [
-  {cls:"done",ic:"✅",t:"1. Nhập nguyên liệu",sub:"Hoàn tất 06:15 · Bếp trưởng Trần Thị Hoa · Đủ 8/8 nguyên liệu theo phiếu xuất kho",ph:3},
-  {cls:"done",ic:"✅",t:"2. Sơ chế",sub:"Hoàn tất 07:40 · Rửa, ngâm muối rau củ; sơ chế thịt theo quy trình VSATTP",ph:2},
-  {cls:"doing",ic:"🍲",t:"3. Chế biến",sub:"Bắt đầu 09:10 · Đang nấu — dự kiến hoàn tất 10:30",ph:1},
-  {cls:"todo",ic:"🍱",t:"4. Chia khẩu phần",sub:"Chưa bắt đầu · Dự kiến 10:45",ph:0},
-  {cls:"todo",ic:"🧾",t:"5. Lưu mẫu & hoàn tất",sub:"Chưa bắt đầu · Lưu mẫu thức ăn 24h theo quy định",ph:0},
+  {cls:"done",ic:"📦",t:"1. Giao nhận thực phẩm",sub:"Hoàn tất 06:30 (06h00–06h45) · Bếp trưởng Trần Thị Hoa · Đủ 8/8 mặt hàng, giấy tờ & cảm quan đạt",ph:3},
+  {cls:"done",ic:"🔪",t:"2. Sơ chế - rửa thực phẩm",sub:"Hoàn tất 07:25 (06h45–07h30) · Rửa sạch, thái sơ chế thực phẩm sống; vệ sinh khu sơ chế",ph:2},
+  {cls:"doing",ic:"🍲",t:"3. Chế biến thực phẩm",sub:"Bắt đầu 07:50 (07h45–09h45) · Đối chiếu thực đơn, tẩm ướp, chế biến — dự kiến hoàn tất 09:45",ph:1},
+  {cls:"todo",ic:"🍱",t:"4. Lưu mẫu - chia ăn - bảo quản",sub:"Chưa bắt đầu · Dự kiến 09h45–10h45 · Lưu mẫu 24h, chia suất, ủ ấm, vận chuyển",ph:0},
+  {cls:"todo",ic:"🍽️",t:"5. Giao nhận suất ăn",sub:"Chưa bắt đầu · Dự kiến 10h45–11h00 · Bàn giao suất ăn cho tổ bán trú",ph:0},
+  {cls:"todo",ic:"🍎",t:"6. Giao nhận, chia quả chiều",sub:"Chưa bắt đầu · Dự kiến 13h00–13h30 · Chuẩn bị, chia & bàn giao quả chiều",ph:0},
 ];
 /* o = {code, school, date, status, items:[[tên, SL, đơn giá tại thời điểm đặt, ĐVT], ...]}
    Mã đơn = yyyyMMdd + số đếm trong ngày (bắt đầu từ 1). VD 202608011 = ngày 01/08/2026, đơn #1 */

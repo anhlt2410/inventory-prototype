@@ -254,22 +254,26 @@ a{color:var(--teal);text-decoration:none;font-weight:600}
 </div>
 
 <script>
-const STEP_NAMES=["Nhập nguyên liệu","Sơ chế","Chế biến","Chia khẩu phần","Lưu mẫu & hoàn tất"];
+// Quy trình 6 bước chuẩn theo quy trình chế biến thực tế
+const STEP_NAMES=["Giao nhận thực phẩm","Sơ chế - rửa thực phẩm","Chế biến thực phẩm","Lưu mẫu - chia ăn - bảo quản","Giao nhận suất ăn","Giao nhận, chia quả chiều"];
 // steps đầy đủ (đang nấu) & steps dự kiến (chưa bắt đầu) tái sử dụng
 const DOING_STEPS=[
-  {s:'done',t:'06:15 · Đủ 8/8 nguyên liệu kiểm định từ Kho tổng',ph:3},
-  {s:'done',t:'07:41 · Rửa, ngâm muối theo tiêu chuẩn VSATTP',ph:2},
-  {s:'doing',t:'Bắt đầu 09:10 · Dự kiến xong 10:30',ph:1},
-  {s:'',t:'Dự kiến 10:45'},
-  {s:'',t:'Lưu mẫu thức ăn 24h theo quy định'},
+  {s:'done',t:'06:30 (06h00–06h45) · Đủ 8/8 mặt hàng, giấy tờ & cảm quan đạt',ph:3},
+  {s:'done',t:'07:25 (06h45–07h30) · Rửa sạch, thái sơ chế thực phẩm sống',ph:2},
+  {s:'doing',t:'Bắt đầu 07:50 (07h45–09h45) · Tẩm ướp, chế biến theo thực đơn',ph:1},
+  {s:'',t:'Dự kiến 09h45–10h45 · Lưu mẫu 24h, chia suất, ủ ấm'},
+  {s:'',t:'Dự kiến 10h45–11h00 · Bàn giao suất ăn cho tổ bán trú'},
+  {s:'',t:'Dự kiến 13h00–13h30 · Chia & bàn giao quả chiều'},
 ];
 const PLAN_STEPS=[
-  {s:'',t:'Dự kiến nhận hàng 06:00 từ Kho tổng'},
-  {s:'',t:'Rửa, sơ chế theo tiêu chuẩn VSATTP'},
-  {s:'',t:'Dự kiến bắt đầu 09:00'},
-  {s:'',t:'Dự kiến 10:45'},
-  {s:'',t:'Lưu mẫu thức ăn 24h theo quy định'},
+  {s:'',t:'Dự kiến 06h00–06h45 · Giao nhận thực phẩm từ Kho tổng'},
+  {s:'',t:'Dự kiến 06h45–07h30 · Rửa, sơ chế theo tiêu chuẩn VSATTP'},
+  {s:'',t:'Dự kiến 07h45–09h45 · Chế biến theo thực đơn'},
+  {s:'',t:'Dự kiến 09h45–10h45 · Lưu mẫu 24h, chia suất, ủ ấm'},
+  {s:'',t:'Dự kiến 10h45–11h00 · Bàn giao suất ăn cho tổ bán trú'},
+  {s:'',t:'Dự kiến 13h00–13h30 · Chia & bàn giao quả chiều'},
 ];
+const STEP_ICONS=["📦","🔪","🍲","🍱","🍽️","🍎"];
 
 const MENU=[
   {dk:"17",iso:"2026-08-17",today:true,day:"Thứ Hai · 17/08",date:"Thứ Hai, 17/08/2026",
@@ -365,7 +369,7 @@ function openDay(i){
   document.getElementById('mBannerSub').textContent=m.st.sub;
   document.getElementById('mTimeline').innerHTML=m.steps.map((s,k)=>`
     <div class="tstep ${s.s}">
-      <div class="dot">${s.s==='done'?'✓':s.s==='doing'?'🍲':''}</div>
+      <div class="dot">${s.s==='done'?'✓':s.s==='doing'?STEP_ICONS[k]:''}</div>
       <b>${STEP_NAMES[k]}</b>
       <div class="t">${s.t}</div>
       ${s.ph?`<div class="photos">${'<div class="photo">📷</div>'.repeat(s.ph)}</div>`:''}

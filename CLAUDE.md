@@ -40,7 +40,7 @@ Không có file JS/CSS riêng. Không tạo thêm thư mục `src/`, `assets/` t
 - Mock data: const array ở đầu `<script>` (`MENU`, `SOURCES`, `KITCHENS`, `PARENTS`, `STEPS`, `NOTIFS`) + hàm `renderX()` đổ HTML bằng template literal. Sửa data ở đây, đừng hardcode trong markup nếu đã có render function.
 - Import Excel: `fileImport(msg)` mở file picker rồi toast — không parse file thật. Giữ nguyên trừ khi được yêu cầu parse thật (khi đó mới cân nhắc SheetJS).
 - Chụp ảnh (kitchen): `<input type="file" accept="image/*" capture="environment">` → thumbnail bằng `URL.createObjectURL`. Đã hoạt động trên mobile thật, đừng thay bằng getUserMedia.
-- Quy trình 5 bước chuẩn (dùng thống nhất cả 3 app): Nhập nguyên liệu → Sơ chế → Chế biến → Chia khẩu phần → Lưu mẫu & hoàn tất.
+- Quy trình 6 bước chuẩn theo quy trình chế biến thực tế (dùng thống nhất cả 3 app): Giao nhận thực phẩm (06h00–06h45) → Sơ chế - rửa thực phẩm (06h45–07h30) → Chế biến thực phẩm (07h45–09h45) → Lưu mẫu - chia ăn - bảo quản - vận chuyển (09h45–10h45) → Giao nhận suất ăn (10h45–11h00) → Giao nhận, chia quả chiều (13h00–13h30). Icon thống nhất: 📦 🔪 🍲 🍱 🍽️ 🍎.
 
 ## Mock data conventions
 

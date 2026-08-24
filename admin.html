@@ -29,8 +29,9 @@ a{color:var(--green-d)}
 .login-box p{color:var(--muted);margin-bottom:24px;font-size:13.5px}
 .field{margin-bottom:14px}
 .field label{display:block;font-weight:600;font-size:13px;margin-bottom:6px}
-.field input, .field select{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;font:400 14px 'Be Vietnam Pro';background:#fff}
-.field input:focus{outline:2px solid var(--green);border-color:transparent}
+.field input, .field select, .field textarea{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;font:400 14px 'Be Vietnam Pro';background:#fff}
+.field textarea{resize:vertical;line-height:1.5}
+.field input:focus, .field textarea:focus{outline:2px solid var(--green);border-color:transparent}
 .btn{border:none;border-radius:10px;padding:11px 16px;font:600 14px 'Be Vietnam Pro';transition:filter .15s;display:inline-flex;align-items:center;gap:6px;justify-content:center}
 .btn:hover{filter:brightness(1.05)}
 .btn-primary{background:var(--grad);color:#fff;width:100%}
@@ -228,6 +229,7 @@ tr:hover td{background:#FAFBF9}
       <button data-page="order" onclick="go('order',this)"><svg viewBox="0 0 24 24"><path d="M8 2h8a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm1 6h6V6H9v2Zm0 4h6v-2H9v2Zm0 4h4v-2H9v2Z"/></svg><span>Đơn hàng</span></button>
       <button data-page="kitchen" onclick="go('kitchen',this)"><svg viewBox="0 0 24 24"><path d="M7 20h10a1 1 0 0 0 1-1v-5H6v5a1 1 0 0 0 1 1Zm5-18a5 5 0 0 0-4.9 4.1A4 4 0 0 0 6 13.9V13h12v.9a4 4 0 0 0 .9-7.8A5 5 0 0 0 12 2Z"/></svg><span>Quản lý trường</span></button>
       <button data-page="parent" onclick="go('parent',this)"><svg viewBox="0 0 24 24"><path d="M8 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm8 .5a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM8 13c-3.3 0-6 1.7-6 3.8V19h12v-2.2C14 14.7 11.3 13 8 13Zm8 .5c-.5 0-1 0-1.4.1 1.2 1 1.9 2.2 1.9 3.7V19H22v-2.2c0-1.9-2.6-3.3-6-3.3Z"/></svg><span>Tài khoản PHHS</span></button>
+      <button data-page="process" onclick="go('process',this)"><svg viewBox="0 0 24 24"><path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm1 5h8V6H8v2Zm0 4h8v-2H8v2Zm0 4h5v-2H8v2Z"/></svg><span>Quy trình</span></button>
     </nav>
     <div class="user">
       <b>Nguyễn Quản Trị</b>
@@ -439,6 +441,21 @@ tr:hover td{background:#FAFBF9}
         </div>
       </div>
     </div>
+
+    <!-- ===== QUY TRÌNH ===== -->
+    <div class="page" id="page-process">
+      <div class="page-head">
+        <div><h2>Quy trình chế biến</h2><p>Các bước chuẩn bếp trường thực hiện &amp; báo cáo mỗi ngày — áp dụng cho tất cả bếp và app phụ huynh</p></div>
+        <button class="btn btn-green btn-sm" onclick="openProcessPanel()">+ Thêm bước</button>
+      </div>
+      <div class="tbar"><div class="total" id="processTotal"></div></div>
+      <div class="panel">
+        <table>
+          <thead><tr><th style="width:120px">Bước</th><th>Tên bước</th><th style="width:150px">Thời gian</th><th>Mô tả công việc</th><th style="width:96px"></th></tr></thead>
+          <tbody id="processBody"></tbody>
+        </table>
+      </div>
+    </div>
   </main>
 </div>
 
@@ -540,13 +557,31 @@ const MENU = [
    ing:[["Mì sợi tươi","70 kg"],["Thịt bò bằm","45 kg"],["Súp lơ xanh","38 kg"],["Bánh flan","1.250 cái"]]},
 ];
 /* Quy trình 6 bước chuẩn theo quy trình chế biến thực tế */
-const REPORT_STEPS = [
-  {cls:"done",ic:"📦",t:"1. Giao nhận thực phẩm",sub:"Hoàn tất 06:30 (06h00–06h45) · Bếp trưởng Trần Thị Hoa · Đủ 8/8 mặt hàng, giấy tờ & cảm quan đạt",ph:3},
-  {cls:"done",ic:"🔪",t:"2. Sơ chế - rửa thực phẩm",sub:"Hoàn tất 07:25 (06h45–07h30) · Rửa sạch, thái sơ chế thực phẩm sống; vệ sinh khu sơ chế",ph:2},
-  {cls:"doing",ic:"🍲",t:"3. Chế biến thực phẩm",sub:"Bắt đầu 07:50 (07h45–09h45) · Đối chiếu thực đơn, tẩm ướp, chế biến — dự kiến hoàn tất 09:45",ph:1},
-  {cls:"todo",ic:"🍱",t:"4. Lưu mẫu - chia ăn - bảo quản",sub:"Chưa bắt đầu · Dự kiến 09h45–10h45 · Lưu mẫu 24h, chia suất, ủ ấm, vận chuyển",ph:0},
-  {cls:"todo",ic:"🍽️",t:"5. Giao nhận suất ăn",sub:"Chưa bắt đầu · Dự kiến 10h45–11h00 · Bàn giao suất ăn cho tổ bán trú",ph:0},
-  {cls:"todo",ic:"🍎",t:"6. Giao nhận, chia quả chiều",sub:"Chưa bắt đầu · Dự kiến 13h00–13h30 · Chuẩn bị, chia & bàn giao quả chiều",ph:0},
+/* Quy trình 6 bước chuẩn — NGUỒN SỰ THẬT cho cả 3 app. Admin sửa ở màn "Quy trình".
+   In-memory: sửa/xoá/thêm chỉ áp dụng trong phiên demo (reset khi reload).
+   Giữ đồng bộ với PROCESS trong kitchen.html & parent.html. */
+let PROCESS = [
+  {ic:"📦", t:"Giao nhận thực phẩm", time:"06h00 – 06h45",
+   desc:["Nhận thực phẩm tươi sống","Đối chiếu chủng loại & giấy tờ đi kèm mỗi loại","Đánh giá cảm quan chất lượng, an toàn thực phẩm từng loại"]},
+  {ic:"🔪", t:"Sơ chế - rửa thực phẩm", time:"06h45 – 07h30",
+   desc:["Rửa sạch thực phẩm, thái sơ chế thực phẩm sống","Vệ sinh sạch sẽ khu vực sơ chế"]},
+  {ic:"🍲", t:"Chế biến thực phẩm", time:"07h45 – 09h45",
+   desc:["Đối chiếu thực đơn, tẩm ướp, chế biến nguyên liệu thành món ăn","Đánh giá cảm quan món ăn","Vệ sinh khu vực bếp"]},
+  {ic:"🍱", t:"Lưu mẫu - chia ăn - bảo quản - vận chuyển", time:"09h45 – 10h45",
+   desc:["Lưu mẫu (lưu nghiệm) thức ăn 24h theo quy định","Chia món ăn, cơm vào từng suất; ủ ấm; chia canh vào thùng inox","Chuyển suất ăn, canh lên khu vực ăn"]},
+  {ic:"🍽️", t:"Giao nhận suất ăn", time:"10h45 – 11h00",
+   desc:["Bàn giao suất ăn cho tổ bán trú","Ghi chép thời gian bắt đầu, kết thúc chế biến"]},
+  {ic:"🍎", t:"Giao nhận, chia quả chiều", time:"13h00 – 13h30",
+   desc:["Chuẩn bị, chia quả chiều","Bàn giao quả chiều cho tổ bán trú"]},
+];
+/* Trạng thái báo cáo (mock) của bữa đang xem — ghép theo index với PROCESS */
+const REPORT_STATE = [
+  {cls:"done", note:"Hoàn tất 06:30 · Bếp trưởng Trần Thị Hoa · Đủ 8/8 mặt hàng, giấy tờ & cảm quan đạt", ph:3},
+  {cls:"done", note:"Hoàn tất 07:25 · Rửa sạch, thái sơ chế thực phẩm sống; vệ sinh khu sơ chế", ph:2},
+  {cls:"doing", note:"Bắt đầu 07:50 · Đối chiếu thực đơn, tẩm ướp, chế biến — dự kiến hoàn tất 09:45", ph:1},
+  {cls:"todo", note:"Chưa bắt đầu", ph:0},
+  {cls:"todo", note:"Chưa bắt đầu", ph:0},
+  {cls:"todo", note:"Chưa bắt đầu", ph:0},
 ];
 /* o = {code, school, date, status, items:[[tên, SL, đơn giá tại thời điểm đặt, ĐVT], ...]}
    Mã đơn = yyyyMMdd + số đếm trong ngày (bắt đầu từ 1). VD 202608011 = ngày 01/08/2026, đơn #1 */
@@ -641,7 +676,7 @@ function drawPager(name,info,unit){
   document.getElementById(name+'Pages').textContent=info.pages;
   document.getElementById(name+'PageInput').value=info.page;
 }
-const renderByName={notif:()=>renderNotifs(),source:()=>renderSources(),supplier:()=>renderSuppliers(),order:()=>renderOrders(),kitchen:()=>renderKitchens(),parent:()=>renderParents()};
+const renderByName={notif:()=>renderNotifs(),source:()=>renderSources(),supplier:()=>renderSuppliers(),order:()=>renderOrders(),kitchen:()=>renderKitchens(),parent:()=>renderParents(),process:()=>renderProcess()};
 /* format tiền VND: 22000 -> "22.000 đ" */
 function money(n){return (n||0).toLocaleString('vi-VN')+' đ';}
 function parseVN(d){const[a,b,c]=d.split('/');return new Date(+c,+b-1,+a);}
@@ -992,15 +1027,17 @@ function openParentPanel(i){
 }
 function openReportPanel(i){
   const m = MENU[i];
-  const steps = REPORT_STEPS.map(s=>`
-    <div class="step ${s.cls}">
+  const steps = PROCESS.map((s,idx)=>{
+    const st = REPORT_STATE[idx] || {cls:"todo",note:"Chưa bắt đầu",ph:0};
+    return `
+    <div class="step ${st.cls}">
       <div class="dot">${s.ic}</div>
       <div style="flex:1">
-        <b>${s.t}</b>
-        <div class="sub">${s.sub}</div>
-        ${s.ph?`<div class="photos">${'<div class="photo">📷</div>'.repeat(s.ph)}</div>`:''}
+        <b>${idx+1}. ${s.t}</b>
+        <div class="sub"><span style="color:var(--muted)">${s.time}</span> · ${st.note}</div>
+        ${st.ph?`<div class="photos">${'<div class="photo">📷</div>'.repeat(st.ph)}</div>`:''}
       </div>
-    </div>`).join('');
+    </div>`;}).join('');
   openDrawer('Báo cáo quy trình',`
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:8px">
       <b style="font-size:15px">Bữa trưa · ${m.d}/2026</b>
@@ -1009,6 +1046,62 @@ function openReportPanel(i){
     <p style="color:var(--muted);font-size:13px;margin-bottom:16px">${m.dish}</p>
     <div class="steps">${steps}</div>`,
     `<button class="btn btn-ghost" onclick="closeDrawer()">Đóng</button>`);
+}
+/* ---- Quy trình ---- */
+function renderProcess(){
+  const pen=`<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25ZM20.7 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z"/></svg>`;
+  const trash=`<svg viewBox="0 0 24 24"><path d="M6 7h12l-1 14H7L6 7Zm3-3h6l1 2h4v2H4V6h4l1-2Z"/></svg>`;
+  document.getElementById('processTotal').textContent=`${PROCESS.length} bước`;
+  document.getElementById('processBody').innerHTML = PROCESS.length ? PROCESS.map((s,i)=>`
+    <tr>
+      <td style="white-space:nowrap"><span style="font-size:19px">${s.ic}</span> <b style="color:var(--muted)">Bước ${i+1}</b></td>
+      <td><b>${s.t}</b></td>
+      <td style="white-space:nowrap">${s.time}</td>
+      <td><div style="color:var(--muted);font-size:13px;line-height:1.6">${s.desc.map(d=>'· '+d).join('<br>')}</div></td>
+      <td style="text-align:right;white-space:nowrap">
+        <button class="icon-btn" data-tip="Sửa bước" onclick="openProcessPanel(${i})">${pen}</button>
+        <button class="icon-btn danger" data-tip="Xoá bước" onclick="confirmDialog('Xoá bước','Xoá bước ${s.t}?','Xoá bước',()=>{PROCESS.splice(${i},1);renderProcess();toast('Đã xoá bước (mock)')})">${trash}</button>
+      </td>
+    </tr>`).join('') : `<tr><td colspan="5"><div class="empty">Chưa có bước nào. Bấm "+ Thêm bước".</div></td></tr>`;
+}
+/* "06h00 – 06h45" -> {start:"06:00", end:"06:45"} cho input type=time */
+function parseTimeRange(str){
+  const m=(str||'').match(/(\d{1,2})[h:](\d{2})/g)||[];
+  const norm=x=>x.replace(/[h:]/,':').replace(/^(\d):/,'0$1:');
+  return {start:m[0]?norm(m[0]):'', end:m[1]?norm(m[1]):''};
+}
+/* "06:00" -> "06h00"; ghép lại thành "06h00 – 06h45" */
+function buildTimeRange(start,end){
+  const f=x=>x?x.replace(':','h'):'';
+  if(!start&&!end)return '';
+  return f(start)+(end?' – '+f(end):'');
+}
+function openProcessPanel(i){
+  const edit=i!=null, d=edit?PROCESS[i]:{ic:'📋',t:'',time:'',desc:[]};
+  const tr=parseTimeRange(d.time);
+  openDrawer(edit?'Sửa bước quy trình':'Thêm bước quy trình',`
+    <div class="field"><label>Icon (emoji)</label><input id="pIc" value="${d.ic}" placeholder="VD: 📦" style="width:110px"></div>
+    <div class="field"><label>Tên bước</label><input id="pName" value="${d.t}" placeholder="VD: Giao nhận thực phẩm"></div>
+    <div class="field"><label>Thời gian</label>
+      <div style="display:flex;align-items:center;gap:10px">
+        <input type="time" id="pStart" value="${tr.start}" style="flex:1;min-width:0">
+        <span style="color:var(--muted)">–</span>
+        <input type="time" id="pEnd" value="${tr.end}" style="flex:1;min-width:0">
+      </div>
+    </div>
+    <div class="field"><label>Mô tả công việc <span style="font-weight:600;color:var(--muted)">(mỗi dòng một việc)</span></label><textarea id="pDesc" rows="5" placeholder="Nhận thực phẩm tươi sống&#10;Đối chiếu chủng loại & giấy tờ...">${d.desc.join('\n')}</textarea></div>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
+     <button class="btn btn-green" onclick="saveProcess(${edit?i:-1})">${edit?'Lưu':'Thêm bước'}</button>`);
+}
+function saveProcess(i){
+  const step={
+    ic:(document.getElementById('pIc').value.trim()||'📋'),
+    t:document.getElementById('pName').value.trim()||'Bước mới',
+    time:buildTimeRange(document.getElementById('pStart').value,document.getElementById('pEnd').value),
+    desc:document.getElementById('pDesc').value.split('\n').map(x=>x.trim()).filter(Boolean)
+  };
+  if(i<0)PROCESS.push(step); else PROCESS[i]=step;
+  closeDrawer();renderProcess();toast(i<0?'Đã thêm bước (mock)':'Đã lưu thay đổi (mock)');
 }
 
 /* ============ ACTIONS ============ */
@@ -1088,7 +1181,7 @@ function showTip(target){
 document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(t);});
 document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tipEl.classList.remove('on');});
 
-renderNotifs();renderSources();renderSuppliers();renderOrders();renderKitchens();renderMenu();renderParents();
+renderNotifs();renderSources();renderSuppliers();renderOrders();renderKitchens();renderMenu();renderParents();renderProcess();
 </script>
 </body>
 </html>

@@ -254,26 +254,35 @@ a{color:var(--teal);text-decoration:none;font-weight:600}
 </div>
 
 <script>
-// Quy trình 6 bước chuẩn theo quy trình chế biến thực tế
-const STEP_NAMES=["Giao nhận thực phẩm","Sơ chế - rửa thực phẩm","Chế biến thực phẩm","Lưu mẫu - chia ăn - bảo quản","Giao nhận suất ăn","Giao nhận, chia quả chiều"];
-// steps đầy đủ (đang nấu) & steps dự kiến (chưa bắt đầu) tái sử dụng
+// Quy trình 6 bước chuẩn — NGUỒN SỰ THẬT: Kho tổng định nghĩa ở admin.html (màn "Quy trình").
+// Giữ đồng bộ với PROCESS trong admin.html & kitchen.html.
+const PROCESS=[
+  {ic:"📦", t:"Giao nhận thực phẩm", time:"06h00 – 06h45",
+   desc:["Giao nhận thực phẩm từ Kho tổng","Đối chiếu chủng loại, giấy tờ, cảm quan"]},
+  {ic:"🔪", t:"Sơ chế - rửa thực phẩm", time:"06h45 – 07h30",
+   desc:["Rửa, sơ chế theo tiêu chuẩn VSATTP","Vệ sinh khu vực sơ chế"]},
+  {ic:"🍲", t:"Chế biến thực phẩm", time:"07h45 – 09h45",
+   desc:["Tẩm ướp, chế biến theo thực đơn","Đánh giá cảm quan món ăn"]},
+  {ic:"🍱", t:"Lưu mẫu - chia ăn - bảo quản", time:"09h45 – 10h45",
+   desc:["Lưu mẫu 24h, chia suất, ủ ấm","Vận chuyển tới khu vực ăn"]},
+  {ic:"🍽️", t:"Giao nhận suất ăn", time:"10h45 – 11h00",
+   desc:["Bàn giao suất ăn cho tổ bán trú"]},
+  {ic:"🍎", t:"Giao nhận, chia quả chiều", time:"13h00 – 13h30",
+   desc:["Chia & bàn giao quả chiều"]},
+];
+const STEP_NAMES=PROCESS.map(s=>s.t);
+const STEP_ICONS=PROCESS.map(s=>s.ic);
+// steps đầy đủ (đang nấu) & steps dự kiến (chưa bắt đầu) tái sử dụng.
+// Thời gian & tên bước lấy từ PROCESS khi render; ở đây chỉ giữ trạng thái + ghi chú.
 const DOING_STEPS=[
-  {s:'done',t:'06:30 (06h00–06h45) · Đủ 8/8 mặt hàng, giấy tờ & cảm quan đạt',ph:3},
-  {s:'done',t:'07:25 (06h45–07h30) · Rửa sạch, thái sơ chế thực phẩm sống',ph:2},
-  {s:'doing',t:'Bắt đầu 07:50 (07h45–09h45) · Tẩm ướp, chế biến theo thực đơn',ph:1},
-  {s:'',t:'Dự kiến 09h45–10h45 · Lưu mẫu 24h, chia suất, ủ ấm'},
-  {s:'',t:'Dự kiến 10h45–11h00 · Bàn giao suất ăn cho tổ bán trú'},
-  {s:'',t:'Dự kiến 13h00–13h30 · Chia & bàn giao quả chiều'},
+  {s:'done',t:'06:30 · Đủ 8/8 mặt hàng, giấy tờ & cảm quan đạt',ph:3},
+  {s:'done',t:'07:25 · Rửa sạch, thái sơ chế thực phẩm sống',ph:2},
+  {s:'doing',t:'Bắt đầu 07:50 · Tẩm ướp, chế biến theo thực đơn',ph:1},
+  {s:'',t:'Chưa bắt đầu'},
+  {s:'',t:'Chưa bắt đầu'},
+  {s:'',t:'Chưa bắt đầu'},
 ];
-const PLAN_STEPS=[
-  {s:'',t:'Dự kiến 06h00–06h45 · Giao nhận thực phẩm từ Kho tổng'},
-  {s:'',t:'Dự kiến 06h45–07h30 · Rửa, sơ chế theo tiêu chuẩn VSATTP'},
-  {s:'',t:'Dự kiến 07h45–09h45 · Chế biến theo thực đơn'},
-  {s:'',t:'Dự kiến 09h45–10h45 · Lưu mẫu 24h, chia suất, ủ ấm'},
-  {s:'',t:'Dự kiến 10h45–11h00 · Bàn giao suất ăn cho tổ bán trú'},
-  {s:'',t:'Dự kiến 13h00–13h30 · Chia & bàn giao quả chiều'},
-];
-const STEP_ICONS=["📦","🔪","🍲","🍱","🍽️","🍎"];
+const PLAN_STEPS=PROCESS.map(s=>({s:'',t:'Dự kiến · '+s.desc[0]}));
 
 const MENU=[
   {dk:"17",iso:"2026-08-17",today:true,day:"Thứ Hai · 17/08",date:"Thứ Hai, 17/08/2026",
@@ -371,7 +380,7 @@ function openDay(i){
     <div class="tstep ${s.s}">
       <div class="dot">${s.s==='done'?'✓':s.s==='doing'?STEP_ICONS[k]:''}</div>
       <b>${STEP_NAMES[k]}</b>
-      <div class="t">${s.t}</div>
+      <div class="t"><span style="color:var(--muted)">${PROCESS[k]?PROCESS[k].time:''}</span> · ${s.t}</div>
       ${s.ph?`<div class="photos">${'<div class="photo">📷</div>'.repeat(s.ph)}</div>`:''}
     </div>`).join('');
   document.getElementById('mIng').innerHTML=m.ing.map(x=>`

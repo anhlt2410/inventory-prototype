@@ -52,6 +52,7 @@ button{font-family:inherit;cursor:pointer}
 /* tabs bottom nav */
 .nav{display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px 8px calc(12px + env(safe-area-inset-bottom));grid-template-columns:1fr 1fr 1fr;box-shadow:0 -6px 24px rgba(38,34,30,.06);z-index:20}
 .nav.on{display:grid}
+.nav.two{grid-template-columns:1fr 1fr}
 .nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;font:600 13px 'Be Vietnam Pro';color:var(--muted);padding:8px 6px;border-radius:14px;transition:.15s}
 .nav button .i{font-size:26px}
 .nav button.active{color:var(--orange);background:var(--orange-soft)}
@@ -72,6 +73,19 @@ button{font-family:inherit;cursor:pointer}
 .day-item .m{flex:1;line-height:1.4}
 .day-item .chev{color:var(--muted);font-size:22px}
 .day-item:active{opacity:.6}
+
+/* thực đơn — mỗi ngày tối đa 3 bữa, collapsed, bấm để mở */
+.meal{margin-bottom:12px;border:1px solid var(--line);border-radius:18px;background:var(--card);overflow:hidden;box-shadow:0 4px 16px rgba(38,34,30,.04)}
+.meal.open{border-color:#F6C6AC}
+.meal-head{display:flex;align-items:center;gap:13px;width:100%;background:none;border:none;padding:16px;text-align:left;color:var(--ink)}
+.meal-head .mi{font-size:27px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:14px;flex-shrink:0}
+.meal.open .meal-head .mi{background:var(--orange-soft)}
+.meal-head .mt{flex:1;min-width:0}
+.meal-head .mt .k{font-weight:800;font-size:16px;display:block}
+.meal-head .mt .s{color:var(--muted);font-size:14px;margin-top:3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.meal-head .chev{color:var(--muted);font-size:22px;flex-shrink:0;font-weight:800}
+.meal-body{padding:0 16px 16px}
+.meal-body h3{font-size:16px;font-weight:700;line-height:1.45;margin:2px 0 10px}
 
 /* log list */
 .filter{display:flex;gap:10px;align-items:center;margin-bottom:14px}
@@ -147,6 +161,15 @@ button{font-family:inherit;cursor:pointer}
 .seg{display:flex;gap:8px;background:var(--bg);border:2px solid var(--line);border-radius:16px;padding:6px}
 .seg-btn{flex:1;background:none;border:none;border-radius:11px;padding:13px 8px;font:700 16px 'Be Vietnam Pro';color:var(--muted);transition:.15s}
 .seg-btn.on{background:#fff;color:var(--orange-dk);box-shadow:0 3px 10px rgba(38,34,30,.08)}
+
+/* đăng ký suất ăn (tài khoản trường) */
+.reg-row{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.reg-row input{padding:13px 14px;border:2px solid var(--line);border-radius:12px;font:600 16px 'Be Vietnam Pro';background:#fff;min-width:0}
+.reg-row input:focus,.reg-qty:focus{outline:none;border-color:var(--orange)}
+.reg-row .cls{flex:1}
+.reg-row .num{width:88px;text-align:center;flex-shrink:0}
+.reg-row .del{background:var(--bg);border:none;width:46px;height:46px;border-radius:12px;font-size:19px;color:var(--muted);flex-shrink:0}
+.reg-qty{width:100%;padding:15px;border:2px solid var(--line);border-radius:12px;font:600 17px 'Be Vietnam Pro';background:#fff}
 
 /* ===== shop mode ===== */
 .shop-item{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 4px 16px rgba(38,34,30,.04)}
@@ -224,6 +247,13 @@ button{font-family:inherit;cursor:pointer}
           <button class="seg-btn" data-mode="shop" onclick="setMode('shop',this)">🛒 Không bếp</button>
         </div>
       </div>
+      <div class="field" id="roleField">
+        <label>Đăng nhập với vai trò</label>
+        <div class="seg">
+          <button class="seg-btn on" data-role="school" onclick="setRole('school',this)">🏫 Nhà trường</button>
+          <button class="seg-btn" data-role="bep" onclick="setRole('bep',this)">🍲 Bếp</button>
+        </div>
+      </div>
       <div class="field"><label>Tên đăng nhập</label><input value="hoa.tt" placeholder="Tên đăng nhập"></div>
       <div class="field"><label>Mật khẩu</label><input type="password" value="123456" placeholder="Mật khẩu"></div>
       <button class="btn btn-orange" onclick="login()">ĐĂNG NHẬP</button>
@@ -238,19 +268,13 @@ button{font-family:inherit;cursor:pointer}
       <p>Xin chào, cô Hoa 👋 · <a href="#" onclick="logout();return false" style="color:var(--orange-dk);font-weight:700">Đăng xuất</a></p>
     </div>
     <div class="content">
-      <div class="today">
+      <div class="today" style="padding:16px 20px;margin-bottom:14px">
         <div class="tag">HÔM NAY · THỨ HAI 17/08</div>
-        <h2>Cơm · Thịt kho trứng cút · Canh cải nấu tôm · Dưa hấu</h2>
-        <span class="pill">1.250 suất ăn</span>
-        <div class="ing-list">
-          <div class="section-title" style="margin:12px 0 2px">Nguyên liệu nhận trong ngày</div>
-          <div class="ing-row"><span>Gạo ST25</span><b>95 kg</b></div>
-          <div class="ing-row"><span>Thịt lợn nạc vai</span><b>62 kg</b></div>
-          <div class="ing-row"><span>Trứng cút</span><b>18 kg</b></div>
-          <div class="ing-row"><span>Rau cải ngọt</span><b>40 kg</b></div>
-          <div class="ing-row"><span>Tôm thẻ</span><b>12 kg</b></div>
-          <div class="ing-row"><span>Dưa hấu</span><b>70 kg</b></div>
-        </div>
+        <h2 style="font-size:17px;margin:6px 0 0" id="todayHint">Thực đơn hôm nay · bấm để xem chi tiết</h2>
+      </div>
+      <div id="todayMeals"></div>
+      <div id="regBtnWrap" style="display:none;margin:2px 0 6px">
+        <button class="btn btn-orange" onclick="openRegister()">📝 Đăng ký suất ăn hôm nay</button>
       </div>
       <div class="section-title">Các ngày tiếp theo</div>
       <div class="card" id="upcomingList" style="padding:6px 16px"></div>
@@ -324,7 +348,7 @@ button{font-family:inherit;cursor:pointer}
   <div class="nav" id="nav">
     <button class="active" data-tab="menu" onclick="tab('menu',this)"><span class="i">🍽️</span>Thực đơn</button>
     <button data-tab="log" onclick="tab('log',this)"><span class="i">📖</span>Nhật ký</button>
-    <button data-tab="report" onclick="tab('report',this)"><span class="i">📷</span>Báo cáo</button>
+    <button id="navReport" data-tab="report" onclick="tab('report',this)"><span class="i">📷</span>Báo cáo</button>
   </div>
 
   <div class="nav" id="navShop">
@@ -338,22 +362,56 @@ button{font-family:inherit;cursor:pointer}
     <div class="sheet" id="sheet"></div>
   </div>
 
-  <input type="file" id="cam" accept="image/*" capture="environment" style="display:none">
+  <input type="file" id="cam" accept="image/*" multiple style="display:none">
   <div id="toast"></div>
 </div>
 
 <script>
 /* ===== Dữ liệu ===== */
-// Các ngày tiếp theo trong tuần (Thực đơn) — bấm để mở modal
+// Thực đơn theo ngày: mỗi ngày tối đa 3 bữa (bữa sáng · trưa học sinh · trưa giáo viên).
+// type = tên bữa, ic = icon, dish = chi tiết món, portions = số suất, ing = nguyên liệu.
+const TODAY_MENU={dow:'Thứ Hai', date:'17/08', meals:[
+  {type:'Bữa sáng', ic:'🥣', dish:'Cháo gà hạt sen · Sữa tươi Vinamilk', portions:'980 suất',
+   ing:[['Gạo tẻ','25 kg'],['Thịt gà','20 kg'],['Hạt sen','5 kg'],['Sữa tươi','980 hộp']]},
+  {type:'Trưa · Học sinh', ic:'🍚', dish:'Cơm · Thịt kho trứng cút · Canh cải nấu tôm · Dưa hấu', portions:'1.250 suất',
+   ing:[['Gạo ST25','95 kg'],['Thịt lợn nạc vai','62 kg'],['Trứng cút','18 kg'],['Rau cải ngọt','40 kg'],['Tôm thẻ','12 kg'],['Dưa hấu','70 kg']]},
+  {type:'Trưa · Giáo viên', ic:'🍱', dish:'Cơm · Thịt kho trứng cút · Canh cải nấu tôm · Rau muống xào tỏi · Dưa hấu', portions:'45 suất',
+   ing:[['Gạo ST25','4 kg'],['Thịt lợn nạc vai','3 kg'],['Trứng cút','1 kg'],['Rau cải ngọt','2 kg'],['Rau muống','2 kg'],['Dưa hấu','3 kg']]},
+]};
+// Các ngày tiếp theo trong tuần — bấm để mở modal xem 3 bữa
 const UPCOMING=[
-  {dow:'Thứ Ba', date:'18/08', dish:'Cơm · Gà rang gừng · Canh bí đỏ · Sữa chua', portions:'1.250 suất',
-   ing:[['Gạo ST25','95 kg'],['Gà ta làm sạch','55 kg'],['Gừng tươi','4 kg'],['Bí đỏ','45 kg'],['Sữa chua','1.250 hộp']]},
-  {dow:'Thứ Tư', date:'19/08', dish:'Cơm · Cá basa sốt cà · Rau muống xào · Chuối', portions:'1.250 suất',
-   ing:[['Gạo ST25','95 kg'],['Cá basa phi lê','58 kg'],['Cà chua','30 kg'],['Rau muống','45 kg'],['Chuối tiêu','1.250 quả']]},
-  {dow:'Thứ Năm', date:'20/08', dish:'Cơm · Đậu phụ nhồi thịt · Canh chua · Thanh long', portions:'1.250 suất',
-   ing:[['Gạo ST25','95 kg'],['Đậu phụ','60 kg'],['Thịt lợn xay','25 kg'],['Cá + dứa (canh chua)','30 kg'],['Thanh long','75 kg']]},
-  {dow:'Thứ Sáu', date:'21/08', dish:'Mì bò bằm · Súp lơ luộc · Bánh flan', portions:'1.250 suất',
-   ing:[['Mì trứng','80 kg'],['Thịt bò bằm','40 kg'],['Súp lơ xanh','50 kg'],['Trứng + sữa (flan)','1.250 phần']]},
+  {dow:'Thứ Ba', date:'18/08', meals:[
+    {type:'Bữa sáng', ic:'🍜', dish:'Phở bò · Sữa chua Vinamilk', portions:'980 suất',
+     ing:[['Bánh phở','40 kg'],['Thịt bò','18 kg'],['Sữa chua','980 hộp']]},
+    {type:'Trưa · Học sinh', ic:'🍚', dish:'Cơm · Gà rang gừng · Canh bí đỏ · Sữa chua', portions:'1.250 suất',
+     ing:[['Gạo ST25','95 kg'],['Gà ta làm sạch','55 kg'],['Gừng tươi','4 kg'],['Bí đỏ','45 kg'],['Sữa chua','1.250 hộp']]},
+    {type:'Trưa · Giáo viên', ic:'🍱', dish:'Cơm · Gà rang gừng · Canh bí đỏ · Nộm rau · Sữa chua', portions:'45 suất',
+     ing:[['Gạo ST25','4 kg'],['Gà ta làm sạch','3 kg'],['Bí đỏ','2 kg'],['Sữa chua','45 hộp']]},
+  ]},
+  {dow:'Thứ Tư', date:'19/08', meals:[
+    {type:'Bữa sáng', ic:'🍲', dish:'Bún riêu cua · Sữa tươi', portions:'980 suất',
+     ing:[['Bún','40 kg'],['Cua đồng','15 kg'],['Cà chua','8 kg'],['Sữa tươi','980 hộp']]},
+    {type:'Trưa · Học sinh', ic:'🍚', dish:'Cơm · Cá basa sốt cà · Rau muống xào · Chuối', portions:'1.250 suất',
+     ing:[['Gạo ST25','95 kg'],['Cá basa phi lê','58 kg'],['Cà chua','30 kg'],['Rau muống','45 kg'],['Chuối tiêu','1.250 quả']]},
+    {type:'Trưa · Giáo viên', ic:'🍱', dish:'Cơm · Cá basa sốt cà · Rau muống xào · Canh chua · Chuối', portions:'45 suất',
+     ing:[['Gạo ST25','4 kg'],['Cá basa phi lê','3 kg'],['Rau muống','2 kg'],['Chuối tiêu','45 quả']]},
+  ]},
+  {dow:'Thứ Năm', date:'20/08', meals:[
+    {type:'Bữa sáng', ic:'🍙', dish:'Xôi gà · Sữa tươi', portions:'980 suất',
+     ing:[['Gạo nếp','30 kg'],['Thịt gà','18 kg'],['Sữa tươi','980 hộp']]},
+    {type:'Trưa · Học sinh', ic:'🍚', dish:'Cơm · Đậu phụ nhồi thịt · Canh chua · Thanh long', portions:'1.250 suất',
+     ing:[['Gạo ST25','95 kg'],['Đậu phụ','60 kg'],['Thịt lợn xay','25 kg'],['Cá + dứa (canh chua)','30 kg'],['Thanh long','75 kg']]},
+    {type:'Trưa · Giáo viên', ic:'🍱', dish:'Cơm · Đậu phụ nhồi thịt · Canh chua · Rau luộc · Thanh long', portions:'45 suất',
+     ing:[['Gạo ST25','4 kg'],['Đậu phụ','3 kg'],['Thịt lợn xay','1 kg'],['Thanh long','3 kg']]},
+  ]},
+  {dow:'Thứ Sáu', date:'21/08', meals:[
+    {type:'Bữa sáng', ic:'🥪', dish:'Bánh mì trứng · Sữa tươi', portions:'980 suất',
+     ing:[['Bánh mì','980 ổ'],['Trứng gà','20 kg'],['Sữa tươi','980 hộp']]},
+    {type:'Trưa · Học sinh', ic:'🍜', dish:'Mì bò bằm · Súp lơ luộc · Bánh flan', portions:'1.250 suất',
+     ing:[['Mì trứng','80 kg'],['Thịt bò bằm','40 kg'],['Súp lơ xanh','50 kg'],['Trứng + sữa (flan)','1.250 phần']]},
+    {type:'Trưa · Giáo viên', ic:'🍱', dish:'Cơm · Bò xào rau củ · Súp lơ luộc · Canh · Bánh flan', portions:'45 suất',
+     ing:[['Gạo ST25','4 kg'],['Thịt bò','3 kg'],['Súp lơ xanh','2 kg'],['Trứng + sữa (flan)','45 phần']]},
+  ]},
 ];
 
 // Lịch sử nhật ký (mới nhất trước). isoDate dùng cho bộ lọc.
@@ -439,19 +497,33 @@ const STEPS=PROCESS.map((s,i)=>({...s, ...(STEP_STATE[i]||{done:false,at:"Chưa 
 let picked=null, photos=0;
 
 /* ===== Điều hướng ===== */
-let mode='kitchen';
+let mode='kitchen', role='school';
 function setMode(m,btn){
   mode=m;
-  document.querySelectorAll('.seg-btn').forEach(b=>b.classList.toggle('on',b===btn));
+  document.querySelectorAll('.seg-btn[data-mode]').forEach(b=>b.classList.toggle('on',b===btn));
+  document.getElementById('roleField').style.display = m==='kitchen' ? 'block' : 'none';
   document.getElementById('loginSub').textContent = m==='shop' ? 'Trường TH Nghĩa Tân' : 'Trường TH Đoàn Thị Điểm';
+}
+function setRole(r,btn){
+  role=r;
+  document.querySelectorAll('.seg-btn[data-role]').forEach(b=>b.classList.toggle('on',b===btn));
 }
 function login(){
   if(mode==='shop'){
     show('s-shop');document.getElementById('navShop').classList.add('on');
     renderShop();renderDebt();renderOrderList();
-  }else{
-    show('s-menu');document.getElementById('nav').classList.add('on');renderUpcoming();
+    return;
   }
+  // Có bếp — hai vai trò: Nhà trường (chỉ đăng ký + xem) hoặc Bếp (báo cáo)
+  const school = role==='school';
+  const nav=document.getElementById('nav');
+  nav.classList.toggle('two', school);
+  document.getElementById('navReport').style.display = school ? 'none' : '';
+  document.getElementById('regBtnWrap').style.display = school ? 'block' : 'none';
+  renderToday();
+  renderUpcoming();
+  tab('menu',navBtn('menu'));
+  nav.classList.add('on');
 }
 function logout(){
   document.getElementById('nav').classList.remove('on');
@@ -468,12 +540,45 @@ function tab(t,btn){
   if(t==='log')renderLogList();
 }
 
-/* ===== Thực đơn — các ngày tiếp theo ===== */
+/* ===== Thực đơn — mỗi ngày tối đa 3 bữa, collapsed ===== */
+// Tóm tắt 1 dòng cho item ngày: lấy bữa trưa học sinh (nếu có), fallback bữa đầu.
+function daySummary(d){
+  const lunch=d.meals.find(m=>m.type.includes('Học sinh'))||d.meals[0];
+  return lunch?lunch.dish:'';
+}
+// 1 thẻ bữa ăn collapsed. Mở/đóng bằng toggleMeal (thuần DOM, không cần state).
+function mealCard(m,open){
+  return `<div class="meal${open?' open':''}">
+    <button class="meal-head" onclick="toggleMeal(this)">
+      <span class="mi">${m.ic}</span>
+      <span class="mt"><span class="k">${m.type}</span><span class="s">${m.dish}</span></span>
+      <span class="chev">${open?'▾':'›'}</span>
+    </button>
+    <div class="meal-body" style="${open?'':'display:none'}">
+      <h3>${m.dish}</h3>
+      <span class="pill">${m.portions}</span>
+      <div class="ing-list" style="background:var(--bg);margin-top:12px">
+        <div class="section-title" style="margin:12px 0 2px">Nguyên liệu</div>
+        ${m.ing.map(x=>`<div class="ing-row"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+function toggleMeal(btn){
+  const meal=btn.closest('.meal');
+  const open=meal.classList.toggle('open');
+  meal.querySelector('.meal-body').style.display=open?'':'none';
+  btn.querySelector('.chev').textContent=open?'▾':'›';
+}
+function renderToday(){
+  document.getElementById('todayHint').textContent=TODAY_MENU.meals.length+' thực đơn hôm nay · bấm để xem chi tiết';
+  document.getElementById('todayMeals').innerHTML=TODAY_MENU.meals.map(m=>mealCard(m,false)).join('');
+}
 function renderUpcoming(){
   document.getElementById('upcomingList').innerHTML=UPCOMING.map((d,i)=>`
     <button class="day-item" onclick="openMenu(${i})">
       <span class="d">${d.dow.replace('Thứ ','T')}</span>
-      <span class="m">${d.dish}</span>
+      <span class="m">${daySummary(d)} <span style="color:var(--muted);font-weight:600">· ${d.meals.length} bữa</span></span>
       <span class="chev">›</span>
     </button>`).join('');
 }
@@ -484,18 +589,64 @@ function openMenu(i){
     <div class="sheet-head">
       <div>
         <div class="tag">${d.dow.toUpperCase()} · ${d.date}</div>
-        <h2>${d.dish}</h2>
-        <span class="pill">${d.portions}</span>
+        <h2>${d.meals.length} thực đơn trong ngày</h2>
       </div>
       <button class="x" onclick="closeModal()">✕</button>
     </div>
-    <div class="ing-list" style="background:var(--bg);margin-top:16px">
-      <div class="section-title" style="margin:12px 0 2px">Nguyên liệu dự kiến</div>
-      ${d.ing.map(x=>`<div class="ing-row"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}
-    </div>`;
+    <div style="margin-top:14px">${d.meals.map(m=>mealCard(m,false)).join('')}</div>`;
   document.getElementById('modal').classList.add('on');
 }
 function closeModal(){document.getElementById('modal').classList.remove('on');}
+
+/* ===== Đăng ký suất ăn (tài khoản trường) ===== */
+let regRows=[];
+function openRegister(){
+  regRows=[{cls:'1A',qty:35},{cls:'1B',qty:34},{cls:'2A',qty:36},{cls:'2B',qty:33}];
+  document.getElementById('sheet').innerHTML=`
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <div>
+        <div class="tag">ĐĂNG KÝ SUẤT ĂN · THỨ HAI 17/08</div>
+        <h2 id="regTotal">Tổng: 0 suất</h2>
+      </div>
+      <button class="x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="section-title" style="margin-top:14px">Suất ăn học sinh <span style="text-transform:none;font-weight:600">(theo lớp)</span></div>
+    <div id="regRows"></div>
+    <button class="btn btn-outline" style="min-height:50px;padding:13px" onclick="addRegRow()">+ Thêm lớp</button>
+    <div class="section-title">Suất ăn giáo viên</div>
+    <input class="reg-qty" type="number" inputmode="numeric" id="regTeacher" value="45" placeholder="Số lượng" oninput="recalcReg()">
+    <div class="section-title">Suất bữa sáng</div>
+    <input class="reg-qty" type="number" inputmode="numeric" id="regBreakfast" value="0" placeholder="Số lượng" oninput="recalcReg()">
+    <button class="btn btn-orange" style="margin-top:18px" onclick="submitRegister()">Gửi đăng ký</button>`;
+  renderRegRows();
+  recalcReg();
+  document.getElementById('modal').classList.add('on');
+}
+function renderRegRows(){
+  document.getElementById('regRows').innerHTML=regRows.map((r,i)=>`
+    <div class="reg-row">
+      <input class="cls" placeholder="Lớp" value="${r.cls}" oninput="regRows[${i}].cls=this.value">
+      <input class="num" type="number" inputmode="numeric" placeholder="SL" value="${r.qty}" oninput="regRows[${i}].qty=+this.value||0;recalcReg()">
+      <button class="del" onclick="delRegRow(${i})">✕</button>
+    </div>`).join('');
+}
+function addRegRow(){regRows.push({cls:'',qty:0});renderRegRows();recalcReg();}
+function delRegRow(i){regRows.splice(i,1);renderRegRows();recalcReg();}
+function regTotalSuat(){
+  const stu=regRows.reduce((s,r)=>s+(+r.qty||0),0);
+  const t=+(document.getElementById('regTeacher')?.value)||0;
+  const b=+(document.getElementById('regBreakfast')?.value)||0;
+  return stu+t+b;
+}
+function recalcReg(){
+  document.getElementById('regTotal').textContent='Tổng: '+regTotalSuat().toLocaleString('vi-VN')+' suất';
+}
+function submitRegister(){
+  const n=regTotalSuat();
+  closeModal();
+  toast('✅ Đã đăng ký '+n.toLocaleString('vi-VN')+' suất ăn hôm nay');
+}
 
 /* ===== Nhật ký — danh sách + lọc ===== */
 function clearFilter(){document.getElementById('logDate').value='';renderLogList();}
@@ -528,7 +679,7 @@ function openLog(idx){
       <h2>${l.dish}</h2>
       ${badge} <span class="pill" style="margin-left:6px">${doneCount}/${l.steps.length} bước</span>
     </div>
-    ${l.today?`<button class="btn btn-orange" style="margin-bottom:18px" onclick="tab('report',navBtn('report'))">📷 Báo cáo bước tiếp theo</button>`:''}
+    ${(l.today && role!=='school')?`<button class="btn btn-orange" style="margin-bottom:18px" onclick="tab('report',navBtn('report'))">📷 Báo cáo bước tiếp theo</button>`:''}
     <div class="section-title" style="margin-top:0">Quy trình chế biến</div>
     <div class="card" style="padding:4px 18px">
       ${l.steps.map((s,i)=>{
@@ -574,13 +725,12 @@ function accBody(i){
       <div class="ad-title">Nội dung công việc · ${s.time}</div>
       <ul>${s.desc.map(d=>`<li>${d}</li>`).join('')}</ul>
     </div>
-    <div class="section-title">Chụp ảnh bằng chứng</div>
-    <div class="photo-zone" onclick="snap()"><span class="i">📷</span>Bấm để chụp ảnh<br><small style="font-size:14px;font-weight:500">${s.t}</small></div>
+    <div class="section-title">Ảnh bằng chứng</div>
+    <div class="photo-zone" onclick="snap()"><span class="i">🖼️</span>Bấm để tải ảnh lên<br><small style="font-size:14px;font-weight:500">Chọn ảnh từ máy · ${s.t}</small></div>
     <div class="thumbs" id="thumbs"></div>
     <div class="section-title">Ghi chú <span style="text-transform:none;font-weight:600">(không bắt buộc)</span></div>
     <textarea class="note-input" id="note" placeholder="VD: Thực phẩm tươi, đủ số lượng, giấy tờ đầy đủ. Cảm quan đạt…"></textarea>
-    <button class="btn btn-orange" onclick="send()">Gửi báo cáo</button>
-    ${s.done?'':`<button class="btn btn-green" style="margin-top:12px" onclick="confirmStep()">✓ Hoàn thành bước</button>`}
+    <button class="btn btn-orange" onclick="send()">Gửi báo cáo · Hoàn thành bước</button>
   </div>`;
 }
 function pick(i){
@@ -594,12 +744,15 @@ function pick(i){
 function snap(){
   const cam=document.getElementById('cam');
   cam.onchange=()=>{
-    photos++;
-    const f=cam.files[0];
-    const img=document.createElement('img');
-    img.className='thumb';
-    if(f)img.src=URL.createObjectURL(f);else img.style.background='#EAE4DC';
-    document.getElementById('thumbs').appendChild(img);
+    const files=[...cam.files];
+    if(!files.length){const img=document.createElement('img');img.className='thumb';img.style.background='#EAE4DC';document.getElementById('thumbs').appendChild(img);photos++;}
+    files.forEach(f=>{
+      photos++;
+      const img=document.createElement('img');
+      img.className='thumb';
+      img.src=URL.createObjectURL(f);
+      document.getElementById('thumbs').appendChild(img);
+    });
     toast('Đã thêm ảnh ('+photos+')');
     cam.value='';
   };
@@ -607,65 +760,59 @@ function snap(){
 }
 function send(){
   const note=(document.getElementById('note')?.value||'').trim();
+  const t=new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+  const i=picked??2;
+  // Gửi báo cáo = hoàn thành bước luôn
+  STEPS[i].done=true;
+  STEPS[i].at='Đã báo cáo lúc '+t;
   document.getElementById('reportBody').innerHTML=`
     <div class="success">
       <div class="i">✅</div>
       <h2>Đã gửi báo cáo!</h2>
-      <p>Bước <b>${STEPS[picked??2].t}</b> · ${photos} ảnh${note?`<br>Ghi chú: “${note}”`:''}<br>đã gửi lên Kho tổng lúc ${new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})}.</p>
+      <p>Bước <b>${STEPS[i].t}</b> đã hoàn thành · ${photos} ảnh${note?`<br>Ghi chú: “${note}”`:''}<br>đã gửi lên Kho tổng lúc ${t}.</p>
       <br>
       <button class="btn btn-outline" onclick="renderReport()">Báo cáo bước khác</button>
     </div>`;
 }
-function confirmStep(){
-  if(picked==null)return;
-  const s=STEPS[picked];
-  document.getElementById('sheet').innerHTML=`
-    <div class="grab"></div>
-    <div class="sheet-head">
-      <div><div class="tag" style="color:var(--green)">XÁC NHẬN HOÀN THÀNH</div><h2>${s.ic} ${s.t}</h2></div>
-      <button class="x" onclick="closeModal()">✕</button>
-    </div>
-    <p style="color:var(--muted);font-size:16px;line-height:1.6;margin:6px 0 18px">Đánh dấu bước này đã hoàn thành? Thông tin sẽ được gửi lên Kho tổng.</p>
-    <button class="btn btn-green" onclick="completeStep()">✓ Xác nhận hoàn thành</button>
-    <button class="btn btn-outline" style="margin-top:12px" onclick="closeModal()">Huỷ</button>`;
-  document.getElementById('modal').classList.add('on');
-}
-function completeStep(){
-  if(picked==null)return;
-  const t=new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
-  STEPS[picked].at='Đã hoàn thành lúc '+t;
-  STEPS[picked].done=true;
-  const nm=STEPS[picked].t;
-  closeModal();
-  toast('✅ Đã hoàn thành: '+nm);
-  renderReport();
-}
 /* ===================================================================
    ===== TRƯỜNG KHÔNG BẾP — Đặt hàng / Đơn hàng / Công nợ =====
    =================================================================== */
+// Danh mục nguyên liệu + đơn giá — đồng bộ với SOURCES bên admin.html (Web Admin)
 const CATALOG=[
-  {cat:'Suất ăn theo thực đơn', items:[
-    {id:'m1', ic:'🍱', name:'Suất cơm trưa tiêu chuẩn', unit:'suất', sup:'Bếp tổng HTX Vân Nội', price:32000},
-    {id:'m2', ic:'🥗', name:'Suất cơm dinh dưỡng cao cấp', unit:'suất', sup:'Bếp tổng HTX Vân Nội', price:38000},
-    {id:'m3', ic:'🍜', name:'Suất ăn xế (bún/phở/cháo)', unit:'suất', sup:'Bếp tổng HTX Vân Nội', price:18000},
+  {cat:'Gạo & thực phẩm khô', items:[
+    {id:'gao',  ic:'🌾', name:'Gạo ST25', unit:'kg', sup:'Tập đoàn Lộc Trời', price:22000},
+    {id:'dau',  ic:'🛢️', name:'Dầu ăn Simply', unit:'chai', sup:'Calofic', price:52000},
+    {id:'mam',  ic:'🍶', name:'Nước mắm Nam Ngư', unit:'chai', sup:'Nam Ngư', price:38000},
   ]},
-  {cat:'Sữa & tráng miệng', items:[
-    {id:'d1', ic:'🥛', name:'Sữa tươi Vinamilk 180ml', unit:'hộp', sup:'Vinamilk', price:7000},
-    {id:'d2', ic:'🍶', name:'Sữa chua Vinamilk', unit:'hộp', sup:'Vinamilk', price:6000},
-    {id:'d3', ic:'🍌', name:'Chuối tiêu', unit:'quả', sup:'HTX Vân Nội', price:3000},
-    {id:'d4', ic:'🍉', name:'Dưa hấu', unit:'kg', sup:'HTX Vân Nội', price:12000},
+  {cat:'Thịt · Cá · Trứng', items:[
+    {id:'lon',  ic:'🥩', name:'Thịt lợn nạc vai', unit:'kg', sup:'CP Việt Nam', price:125000},
+    {id:'ga',   ic:'🍗', name:'Thịt gà ta', unit:'kg', sup:'CP Việt Nam', price:95000},
+    {id:'bo',   ic:'🐄', name:'Thịt bò', unit:'kg', sup:'Vissan', price:265000},
+    {id:'basa', ic:'🐟', name:'Cá basa phi lê', unit:'kg', sup:'Vĩnh Hoàn', price:68000},
+    {id:'tom',  ic:'🦐', name:'Tôm thẻ', unit:'kg', sup:'Minh Phú', price:185000},
+    {id:'cut',  ic:'🥚', name:'Trứng cút', unit:'kg', sup:'Ba Huân', price:62000},
+    {id:'dauphu',ic:'🧈', name:'Đậu phụ', unit:'kg', sup:'Cơ sở Phú Bình', price:13000},
+  ]},
+  {cat:'Rau củ quả', items:[
+    {id:'cai',  ic:'🥬', name:'Rau cải ngọt', unit:'kg', sup:'HTX Vân Nội', price:15000},
+    {id:'bido', ic:'🎃', name:'Bí đỏ', unit:'kg', sup:'HTX Vân Nội', price:14000},
+    {id:'ca',   ic:'🍅', name:'Cà chua', unit:'kg', sup:'HTX Vân Nội', price:18000},
+    {id:'dua',  ic:'🍉', name:'Dưa hấu', unit:'kg', sup:'HTX Gò Công', price:12000},
+  ]},
+  {cat:'Sữa học đường', items:[
+    {id:'sua',  ic:'🥛', name:'Sữa tươi học đường', unit:'hộp', sup:'Vinamilk', price:7500},
   ]},
 ];
 const ITEM=Object.fromEntries(CATALOG.flatMap(c=>c.items).map(i=>[i.id,i]));
 
-// Đơn hàng (mới nhất trước). status: 'pending' (chờ giao) | 'delivered' (đã giao)
+// Đơn hàng (mới nhất trước). status: 'Chờ duyệt' | 'Hoàn thành'
 let ORDERS=[
-  {id:'DH-0816', date:'16/08/2026', deliver:'Thứ Hai 17/08', status:'delivered',
-   lines:[['m1',1250],['d1',1250]]},
-  {id:'DH-0815', date:'15/08/2026', deliver:'Thứ Sáu 15/08', status:'delivered',
-   lines:[['m1',1250],['d2',1250],['d4',70]]},
-  {id:'DH-0813', date:'13/08/2026', deliver:'Thứ Tư 13/08', status:'delivered',
-   lines:[['m1',1200],['m3',1200],['d3',1200]]},
+  {id:'DH-0816', date:'16/08/2026', deliver:'Thứ Hai 17/08', status:'Hoàn thành',
+   lines:[['gao',95],['lon',62],['cut',18],['dua',70]]},
+  {id:'DH-0815', date:'15/08/2026', deliver:'Thứ Sáu 15/08', status:'Hoàn thành',
+   lines:[['gao',90],['cai',40],['sua',1250]]},
+  {id:'DH-0813', date:'13/08/2026', deliver:'Thứ Tư 13/08', status:'Chờ duyệt',
+   lines:[['gao',88],['basa',58],['ca',30]]},
 ];
 let ODSEQ=17;
 
@@ -762,14 +909,14 @@ function placeOrder(){
   const ddText=dd?('Giao '+dd.split('-').reverse().slice(0,2).join('/')):'Giao trong ngày';
   const total=cartTotal();
   ORDERS.unshift({
-    id:'DH-08'+(ODSEQ++), date:'17/08/2026', deliver:ddText, status:'pending',
+    id:'DH-08'+(ODSEQ++), date:'17/08/2026', deliver:ddText, status:'Chờ duyệt',
     lines:Object.entries(cart).map(([id,q])=>[id,q])
   });
   DEBT+=total;
   cart={};
   closeModal();
   renderShop();renderCartBar();
-  toast('✅ Đã đặt đơn '+vnd(total));
+  toast('✅ Đã gửi đơn '+vnd(total)+' · chờ Kho tổng duyệt');
   tabShop('orders',navShopBtn('orders'));
 }
 
@@ -777,11 +924,11 @@ function placeOrder(){
 function orderTotal(o){return o.lines.reduce((s,[id,q])=>s+ITEM[id].price*q,0);}
 function renderOrderList(){
   document.getElementById('orderList').innerHTML=ORDERS.map((o,i)=>{
-    const badge=o.status==='delivered'
-      ? '<span class="badge done">Đã giao</span>'
-      : '<span class="badge pending">Chờ giao</span>';
+    const badge=o.status==='Hoàn thành'
+      ? '<span class="badge done">Hoàn thành</span>'
+      : '<span class="badge pending">Chờ duyệt</span>';
     return `<button class="order-card" onclick="openOrder(${i})">
-      <span class="ic">${o.status==='delivered'?'📦':'🕒'}</span>
+      <span class="ic">${o.status==='Hoàn thành'?'✅':'🕒'}</span>
       <span class="info">
         <b>${o.id}</b>
         <span class="sub">${o.deliver} · ${o.lines.length} mặt hàng</span>
@@ -794,9 +941,9 @@ function renderOrderList(){
 }
 function openOrder(i){
   const o=ORDERS[i];
-  const badge=o.status==='delivered'
-    ? '<span class="badge done">Đã giao</span>'
-    : '<span class="badge pending">Chờ giao</span>';
+  const badge=o.status==='Hoàn thành'
+    ? '<span class="badge done">Hoàn thành</span>'
+    : '<span class="badge pending">Chờ duyệt</span>';
   document.getElementById('orderDetailBody').innerHTML=`
     <div class="today" style="margin-bottom:16px">
       <div class="tag">ĐƠN ${o.id} · ĐẶT ${o.date}</div>

@@ -170,6 +170,12 @@ button{font-family:inherit;cursor:pointer}
 .reg-row .num{width:88px;text-align:center;flex-shrink:0}
 .reg-row .del{background:var(--bg);border:none;width:46px;height:46px;border-radius:12px;font-size:19px;color:var(--muted);flex-shrink:0}
 .reg-qty{width:100%;padding:15px;border:2px solid var(--line);border-radius:12px;font:600 17px 'Be Vietnam Pro';background:#fff}
+.day-chips{display:flex;gap:9px;overflow-x:auto;padding:2px 0 4px;margin-bottom:2px}
+.day-chip{flex-shrink:0;background:#fff;border:2px solid var(--line);border-radius:14px;padding:10px 14px;text-align:center;color:var(--ink);line-height:1.25;min-width:64px}
+.day-chip .dc-d{display:block;font-weight:800;font-size:15px}
+.day-chip .dc-t{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.day-chip.on{border-color:var(--orange);background:linear-gradient(150deg,#FFF3EB,#FDE7DA);box-shadow:0 6px 16px rgba(210,87,31,.14)}
+.day-chip.on .dc-t{color:var(--orange-dk);font-weight:700}
 
 /* ===== shop mode ===== */
 .shop-item{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 4px 16px rgba(38,34,30,.04)}
@@ -268,16 +274,18 @@ button{font-family:inherit;cursor:pointer}
       <p>Xin chào, cô Hoa 👋 · <a href="#" onclick="logout();return false" style="color:var(--orange-dk);font-weight:700">Đăng xuất</a></p>
     </div>
     <div class="content">
-      <div class="today" style="padding:16px 20px;margin-bottom:14px">
-        <div class="tag">HÔM NAY · THỨ HAI 17/08</div>
-        <h2 style="font-size:17px;margin:6px 0 0" id="todayHint">Thực đơn hôm nay · bấm để xem chi tiết</h2>
+      <div id="regBtnWrap" style="display:none;margin-bottom:18px">
+        <button class="btn btn-orange" onclick="openRegister()">📝 Đăng ký suất ăn</button>
       </div>
-      <div id="todayMeals"></div>
-      <div id="regBtnWrap" style="display:none;margin:2px 0 6px">
-        <button class="btn btn-orange" onclick="openRegister()">📝 Đăng ký suất ăn hôm nay</button>
+      <div id="todayBlock">
+        <div class="today" style="padding:16px 20px;margin-bottom:14px">
+          <div class="tag">HÔM NAY · THỨ HAI 17/08</div>
+          <h2 style="font-size:17px;margin:6px 0 0" id="todayHint">Thực đơn hôm nay · bấm để xem chi tiết</h2>
+        </div>
+        <div id="todayMeals"></div>
       </div>
-      <div class="section-title">Các ngày tiếp theo</div>
-      <div class="card" id="upcomingList" style="padding:6px 16px"></div>
+      <div class="section-title" id="weekTitle">Các ngày tiếp theo</div>
+      <div class="card" id="weekList" style="padding:6px 16px"></div>
     </div>
   </div>
 
@@ -520,8 +528,9 @@ function login(){
   nav.classList.toggle('two', school);
   document.getElementById('navReport').style.display = school ? 'none' : '';
   document.getElementById('regBtnWrap').style.display = school ? 'block' : 'none';
-  renderToday();
-  renderUpcoming();
+  document.getElementById('todayBlock').style.display = school ? 'none' : '';
+  if(!school) renderToday();
+  renderWeek();
   tab('menu',navBtn('menu'));
   nav.classList.add('on');
 }
@@ -574,8 +583,14 @@ function renderToday(){
   document.getElementById('todayHint').textContent=TODAY_MENU.meals.length+' thực đơn hôm nay · bấm để xem chi tiết';
   document.getElementById('todayMeals').innerHTML=TODAY_MENU.meals.map(m=>mealCard(m,false)).join('');
 }
-function renderUpcoming(){
-  document.getElementById('upcomingList').innerHTML=UPCOMING.map((d,i)=>`
+// Cả tuần: hôm nay (Thứ Hai) + các ngày tiếp theo.
+const WEEK=[TODAY_MENU, ...UPCOMING];
+// Trường: liệt kê đủ T2–T6. Bếp: chỉ các ngày tiếp theo (đã có block hôm nay ở trên).
+function renderWeek(){
+  const school = role==='school';
+  document.getElementById('weekTitle').textContent = school ? 'Thực đơn tuần này' : 'Các ngày tiếp theo';
+  const days = WEEK.map((d,i)=>({d,i})).filter(x=>school||x.i>0);
+  document.getElementById('weekList').innerHTML=days.map(({d,i})=>`
     <button class="day-item" onclick="openMenu(${i})">
       <span class="d">${d.dow.replace('Thứ ','T')}</span>
       <span class="m">${daySummary(d)} <span style="color:var(--muted);font-weight:600">· ${d.meals.length} bữa</span></span>
@@ -583,12 +598,12 @@ function renderUpcoming(){
     </button>`).join('');
 }
 function openMenu(i){
-  const d=UPCOMING[i];
+  const d=WEEK[i];
   document.getElementById('sheet').innerHTML=`
     <div class="grab"></div>
     <div class="sheet-head">
       <div>
-        <div class="tag">${d.dow.toUpperCase()} · ${d.date}</div>
+        <div class="tag">${d.dow.toUpperCase()} · ${d.date}${i===0?' · HÔM NAY':''}</div>
         <h2>${d.meals.length} thực đơn trong ngày</h2>
       </div>
       <button class="x" onclick="closeModal()">✕</button>
@@ -599,18 +614,26 @@ function openMenu(i){
 function closeModal(){document.getElementById('modal').classList.remove('on');}
 
 /* ===== Đăng ký suất ăn (tài khoản trường) ===== */
-let regRows=[];
+// Danh sách ngày có thể đăng ký: hôm nay + các ngày tiếp theo trong tuần.
+const REG_DAYS=[
+  {dow:TODAY_MENU.dow, date:TODAY_MENU.date, today:true},
+  ...UPCOMING.map(d=>({dow:d.dow, date:d.date})),
+];
+let regRows=[], regDay=0;
 function openRegister(){
+  regDay=0;
   regRows=[{cls:'1A',qty:35},{cls:'1B',qty:34},{cls:'2A',qty:36},{cls:'2B',qty:33}];
   document.getElementById('sheet').innerHTML=`
     <div class="grab"></div>
     <div class="sheet-head">
       <div>
-        <div class="tag">ĐĂNG KÝ SUẤT ĂN · THỨ HAI 17/08</div>
+        <div class="tag" id="regTag"></div>
         <h2 id="regTotal">Tổng: 0 suất</h2>
       </div>
       <button class="x" onclick="closeModal()">✕</button>
     </div>
+    <div class="section-title" style="margin-top:12px">Chọn ngày</div>
+    <div class="day-chips" id="regDayChips"></div>
     <div class="section-title" style="margin-top:14px">Suất ăn học sinh <span style="text-transform:none;font-weight:600">(theo lớp)</span></div>
     <div id="regRows"></div>
     <button class="btn btn-outline" style="min-height:50px;padding:13px" onclick="addRegRow()">+ Thêm lớp</button>
@@ -619,10 +642,21 @@ function openRegister(){
     <div class="section-title">Suất bữa sáng</div>
     <input class="reg-qty" type="number" inputmode="numeric" id="regBreakfast" value="0" placeholder="Số lượng" oninput="recalcReg()">
     <button class="btn btn-orange" style="margin-top:18px" onclick="submitRegister()">Gửi đăng ký</button>`;
+  renderRegDays();
   renderRegRows();
   recalcReg();
   document.getElementById('modal').classList.add('on');
 }
+function renderRegDays(){
+  document.getElementById('regDayChips').innerHTML=REG_DAYS.map((d,i)=>`
+    <button class="day-chip${i===regDay?' on':''}" onclick="pickRegDay(${i})">
+      <span class="dc-d">${d.dow.replace('Thứ ','T')}</span>
+      <span class="dc-t">${d.date}${d.today?' · Nay':''}</span>
+    </button>`).join('');
+  const d=REG_DAYS[regDay];
+  document.getElementById('regTag').textContent='ĐĂNG KÝ SUẤT ĂN · '+d.dow.toUpperCase()+' '+d.date;
+}
+function pickRegDay(i){regDay=i;renderRegDays();}
 function renderRegRows(){
   document.getElementById('regRows').innerHTML=regRows.map((r,i)=>`
     <div class="reg-row">
@@ -644,8 +678,9 @@ function recalcReg(){
 }
 function submitRegister(){
   const n=regTotalSuat();
+  const d=REG_DAYS[regDay];
   closeModal();
-  toast('✅ Đã đăng ký '+n.toLocaleString('vi-VN')+' suất ăn hôm nay');
+  toast('✅ Đã đăng ký '+n.toLocaleString('vi-VN')+' suất ăn · '+d.dow+' '+d.date);
 }
 
 /* ===== Nhật ký — danh sách + lọc ===== */

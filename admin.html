@@ -246,9 +246,23 @@ tr.tr-click{cursor:pointer}
 .acct-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0}
 
 /* danh sách chọn nguyên liệu (picker) — mỗi dòng 1 dropdown + số lượng */
+.ing-item{margin-bottom:10px}
 .ing-row{display:grid;grid-template-columns:1fr 92px 44px 30px;gap:10px;align-items:center;margin-bottom:10px}
+.ing-item .ing-row{margin-bottom:0}
 .ing-row .ing-qty{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;font:600 13px 'Be Vietnam Pro';text-align:right}
 .ing-row .ing-unit{color:var(--muted);font-size:12.5px}
+.ing-warn{font-size:12px;line-height:1.5;margin-top:4px}
+.ing-warn.on{color:var(--amber)}
+.ing-warn.ok{color:var(--green-d)}
+.ing-warn a{font-weight:700}
+/* nhập kho nhiều dòng — mỗi dòng 1 nguyên liệu trên 1 hàng (không xuống dòng)
+   thứ tự: nguyên liệu · số lượng · đơn vị · nguồn · tên NCC · xoá */
+.stockin-item{margin-bottom:10px}
+.si-row{display:grid;grid-template-columns:1.25fr 70px 26px 0.9fr 1.1fr 26px;gap:8px;align-items:center}
+.si-row .f-input{padding:9px 10px}
+.si-row .si-qty{width:100%;padding:9px;border:1.5px solid var(--line);border-radius:11px;font:600 13px 'Be Vietnam Pro';text-align:right;background:#fff}
+.si-row .si-unit{color:var(--muted);font-size:12.5px;font-weight:600}
+.si-list-head{display:grid;grid-template-columns:1.25fr 70px 26px 0.9fr 1.1fr 26px;gap:8px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600;margin-bottom:8px;padding:0 2px}
 
 /* tab loại bữa trong từng ngày — kiểu tab folder gắn liền với data phía dưới */
 .meal-bar{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:14px}
@@ -268,6 +282,7 @@ tr.tr-click{cursor:pointer}
 .overlay.on{display:block}
 .drawer{position:fixed;top:0;right:0;height:100vh;width:min(460px,94vw);background:#fff;box-shadow:-8px 0 30px rgba(0,0,0,.14);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:60;display:flex;flex-direction:column}
 .drawer.wide{width:clamp(500px,38vw,780px)}
+.drawer.xwide{width:clamp(640px,60vw,1000px)}
 .drawer.on{transform:translateX(0)}
 .drawer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:20px 24px;border-bottom:1px solid var(--line)}
 .drawer-head h3{font-size:17px;font-weight:800}
@@ -406,6 +421,7 @@ tr.tr-click{cursor:pointer}
       <button data-page="source" onclick="go('source',this)"><svg viewBox="0 0 24 24"><path d="M12 2 3 6.9v10.2L12 22l9-4.9V6.9L12 2Zm0 2.3 6.1 3.3L12 10.9 5.9 7.6 12 4.3ZM5 9.2l6 3.3v6.9l-6-3.3V9.2Z"/></svg><span>Nguyên liệu</span></button>
       <button data-page="supplier" onclick="go('supplier',this)"><svg viewBox="0 0 24 24"><path d="M3 6a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v2h3.3a1 1 0 0 1 .8.4l2.7 3.6a1 1 0 0 1 .2.6V17a1 1 0 0 1-1 1h-1.1a2.5 2.5 0 0 1-4.8 0H9.9a2.5 2.5 0 0 1-4.8 0H4a1 1 0 0 1-1-1V6Zm11 4h5.5L17.8 8H14v2Zm-6.5 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9.5 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg><span>Nhà cung cấp</span></button>
       <button data-page="order" onclick="go('order',this)"><svg viewBox="0 0 24 24"><path d="M8 2h8a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm1 6h6V6H9v2Zm0 4h6v-2H9v2Zm0 4h4v-2H9v2Z"/></svg><span>Đơn hàng</span></button>
+      <button data-page="warehouse" onclick="go('warehouse',this)"><svg viewBox="0 0 24 24"><path d="M12 3 3 7v13h5v-6h8v6h5V7l-9-4Zm-2 11H8v-2h2v2Zm0-3H8V9h2v2Zm3 3h-2v-2h2v2Zm0-3h-2V9h2v2Zm3 3h-2v-2h2v2Zm0-3h-2V9h2v2Z"/></svg><span>Kho</span></button>
       <button data-page="kitchen" onclick="go('kitchen',this)"><svg viewBox="0 0 24 24"><path d="M7 20h10a1 1 0 0 0 1-1v-5H6v5a1 1 0 0 0 1 1Zm5-18a5 5 0 0 0-4.9 4.1A4 4 0 0 0 6 13.9V13h12v.9a4 4 0 0 0 .9-7.8A5 5 0 0 0 12 2Z"/></svg><span>Quản lý trường</span></button>
       <button data-page="parent" onclick="go('parent',this)"><svg viewBox="0 0 24 24"><path d="M8 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm8 .5a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM8 13c-3.3 0-6 1.7-6 3.8V19h12v-2.2C14 14.7 11.3 13 8 13Zm8 .5c-.5 0-1 0-1.4.1 1.2 1 1.9 2.2 1.9 3.7V19H22v-2.2c0-1.9-2.6-3.3-6-3.3Z"/></svg><span>Tài khoản PHHS</span></button>
       <button data-page="process" onclick="go('process',this)"><svg viewBox="0 0 24 24"><path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm1 5h8V6H8v2Zm0 4h8v-2H8v2Zm0 4h5v-2H8v2Z"/></svg><span>Quy trình</span></button>
@@ -525,6 +541,8 @@ tr.tr-click{cursor:pointer}
       <div class="tbar">
         <div class="total" id="orderTotal"></div>
         <div class="tbar-right">
+          <input type="date" id="orderFrom" class="f-input" data-tip="Từ ngày" onchange="pagerState.order=1;renderOrders()">
+          <input type="date" id="orderTo" class="f-input" data-tip="Đến ngày" onchange="pagerState.order=1;renderOrders()">
           <select id="orderStatus" class="f-input" onchange="pagerState.order=1;renderOrders()"><option value="">Tất cả trạng thái</option><option value="Chờ duyệt">Chờ duyệt</option><option value="Hoàn thành">Hoàn thành</option></select>
           <input class="f-input search" id="orderSearch" placeholder="🔍 Tìm mã đơn, trường..." oninput="pagerState.order=1;renderOrders()">
         </div>
@@ -540,6 +558,36 @@ tr.tr-click{cursor:pointer}
             <button onclick="pageStep('order',-1)" title="Trang trước">‹</button>
             <span>Trang <input id="orderPageInput" onchange="pageGoto('order',this.value)"> / <b id="orderPages"></b></span>
             <button onclick="pageStep('order',1)" title="Trang sau">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== KHO NỘI BỘ ===== -->
+    <div class="page" id="page-warehouse">
+      <div class="page-head">
+        <div><h2 id="whTitle">Kho tổng</h2><p id="whSub"></p></div>
+        <div class="actions">
+          <button class="btn btn-green btn-sm" onclick="openStockIn()">+ Nhập kho</button>
+        </div>
+      </div>
+      <div class="tbar">
+        <div class="total" id="warehouseTotal"></div>
+        <div class="tbar-right">
+          <input class="f-input search" id="warehouseSearch" placeholder="🔍 Tìm nguyên liệu trong kho..." oninput="pagerState.warehouse=1;renderWarehouse()">
+        </div>
+      </div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Nguyên liệu</th><th>Đơn vị tính</th><th style="text-align:right">Đã nhập</th><th style="text-align:right">Tồn kho</th><th style="text-align:right">Thao tác</th></tr></thead>
+          <tbody id="warehouseBody"></tbody>
+        </table>
+        <div class="pager">
+          <span id="warehouseRange"></span>
+          <div class="pager-ctrl">
+            <button onclick="pageStep('warehouse',-1)" title="Trang trước">‹</button>
+            <span>Trang <input id="warehousePageInput" onchange="pageGoto('warehouse',this.value)"> / <b id="warehousePages"></b></span>
+            <button onclick="pageStep('warehouse',1)" title="Trang sau">›</button>
           </div>
         </div>
       </div>
@@ -667,6 +715,16 @@ tr.tr-click{cursor:pointer}
           <tbody id="usersBody"></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- ===== CHI TIẾT DÙNG CHUNG (full trang: nguyên liệu / NCC / đơn hàng) ===== -->
+    <div class="page" id="page-detail">
+      <button class="back" onclick="detailBack()">← Quay lại</button>
+      <div class="page-head">
+        <div><h2 id="detailTitle"></h2><p id="detailMeta"></p></div>
+        <div class="actions" id="detailActions"></div>
+      </div>
+      <div id="detailBody"></div>
     </div>
   </main>
 </div>
@@ -878,6 +936,49 @@ function invNo(o){return "HD"+(o.inv||"—");}
 function fmtNum(n){return Math.round(n||0).toLocaleString('vi-VN');}
 function fmtQty(n){return (n||0).toLocaleString('vi-VN');}
 
+/* ============ KHO NỘI BỘ ============ */
+/* Một số nguyên liệu khô/gia vị nhập sẵn về kho; thực đơn hằng ngày LẤY TỪ KHO
+   thay vì tạo đơn nhập NCC. Tên khớp SOURCES (nếu có) để đối chiếu tồn kho khi
+   Admin chọn nguyên liệu cho thực đơn. w = {name, unit, imported, stock, min, hist}
+   hist = [[date, 'in'|'out', qty, nguồn/nơi nhận, ghi chú]] — mới nhất trước.
+   In-memory: nhập kho chỉ cộng dồn trong phiên demo (reset khi reload). */
+let WAREHOUSE = [
+  {name:"Gạo ST25", unit:"kg", imported:800, stock:60, min:120, hist:[
+    ["05/08/2026","in",500,"Tập đoàn Lộc Trời","Nhập bổ sung đầu tháng"],
+    ["06/08/2026","out",240,"Bếp TH Đoàn Thị Điểm","Xuất theo thực đơn tuần 33"],
+    ["12/08/2026","out",200,"Bếp TH Kim Liên","Xuất theo thực đơn tuần 33"],
+    ["01/08/2026","in",300,"Tập đoàn Lộc Trời","Tồn đầu kỳ"]]},
+  {name:"Dầu ăn Simply", unit:"chai", imported:600, stock:184, min:100, hist:[
+    ["01/08/2026","in",400,"Calofic","Nhập đầu tháng"],
+    ["03/08/2026","in",200,"Calofic","Nhập bổ sung"],
+    ["09/08/2026","out",216,"Bếp các trường","Xuất định kỳ tuần 33"]]},
+  {name:"Nước mắm", unit:"chai", imported:400, stock:132, min:80, hist:[
+    ["01/08/2026","in",400,"Nam Ngư","Nhập đầu tháng"],
+    ["10/08/2026","out",268,"Bếp các trường","Xuất định kỳ tuần 33"]]},
+  {name:"Muối I-ốt", unit:"kg", imported:220, stock:96, min:60, hist:[
+    ["01/08/2026","in",220,"Cửa hàng gia vị Minh Châu","Nhập đầu tháng"],
+    ["11/08/2026","out",124,"Bếp các trường","Xuất định kỳ"]]},
+  {name:"Đường trắng", unit:"kg", imported:180, stock:34, min:50, hist:[
+    ["01/08/2026","in",180,"Cửa hàng gia vị Minh Châu","Nhập đầu tháng"],
+    ["11/08/2026","out",146,"Bếp các trường","Xuất định kỳ"]]},
+  {name:"Hạt nêm", unit:"gói", imported:300, stock:128, min:80, hist:[
+    ["02/08/2026","in",300,"Cửa hàng gia vị Minh Châu","Nhập đầu tháng"],
+    ["11/08/2026","out",172,"Bếp các trường","Xuất định kỳ"]]},
+  {name:"Nước tương", unit:"chai", imported:240, stock:150, min:60, hist:[
+    ["02/08/2026","in",240,"Cửa hàng gia vị Minh Châu","Nhập đầu tháng"],
+    ["11/08/2026","out",90,"Bếp các trường","Xuất định kỳ"]]},
+  {name:"Tiêu xay", unit:"kg", imported:40, stock:12, min:15, hist:[
+    ["02/08/2026","in",40,"Cửa hàng gia vị Minh Châu","Nhập đầu tháng"],
+    ["11/08/2026","out",28,"Bếp các trường","Xuất định kỳ"]]},
+  {name:"Bột canh", unit:"gói", imported:260, stock:176, min:80, hist:[
+    ["02/08/2026","in",260,"Cửa hàng gia vị Minh Châu","Nhập đầu tháng"],
+    ["11/08/2026","out",84,"Bếp các trường","Xuất định kỳ"]]},
+];
+function whByName(n){return WAREHOUSE.find(w=>w.name===n);}
+/* super = Kho tổng (chỉ nhập từ NCC) · kitchen = Kho phụ (nhập từ NCC hoặc Kho tổng) */
+function warehouseType(){return ROLE==='kitchen'?'phu':'tong';}
+function stockSources(){return warehouseType()==='phu'?['Kho tổng','Nhà cung cấp (NCC)']:['Nhà cung cấp (NCC)'];}
+
 const PARENTS = {
   "Trường TH Đoàn Thị Điểm":[
     ["Nguyễn Thu Hằng","0912 345 678","Nguyễn Minh Khôi","3A2"],
@@ -907,8 +1008,8 @@ let curParentRows = [];
    true = chỉ trường CÓ bếp; false = chỉ trường KHÔNG bếp.
    nav = danh sách data-page được phép nhìn thấy trên sidebar. */
 const ROLES = {
-  super:     {label:'Admin tổng',            user:'Nguyễn Quản Trị',  email:'admin@khotong.vn',  schoolFilter:null,  nav:['notif','source','supplier','order','kitchen','parent','process','users']},
-  kitchen:   {label:'Admin trường có bếp',   user:'Lê Thị Bếp Trưởng', email:'cobep@khotong.vn',  schoolFilter:true,  nav:['notif','source','supplier','order','kitchen','parent','process']},
+  super:     {label:'Admin tổng',            user:'Nguyễn Quản Trị',  email:'admin@khotong.vn',  schoolFilter:null,  nav:['notif','source','supplier','order','warehouse','kitchen','parent','process','users']},
+  kitchen:   {label:'Admin trường có bếp',   user:'Lê Thị Bếp Trưởng', email:'cobep@khotong.vn',  schoolFilter:true,  nav:['notif','source','supplier','order','warehouse','kitchen','parent','process']},
   nokitchen: {label:'Admin trường không bếp',user:'Trần Văn Điều Phối',email:'kobep@khotong.vn',  schoolFilter:false, nav:['notif','source','supplier','order','kitchen']},
 };
 let ROLE = 'super';
@@ -934,7 +1035,7 @@ function applyRole(){
   rp.textContent=r.label; rp.className='pill '+ROLE_PILL[ROLE];
   populateParentSchools();
   pagerState.notif=pagerState.order=pagerState.kitchen=pagerState.parent=1;
-  renderNotifs();renderOrders();renderKitchens();renderParents();renderUsers();
+  renderNotifs();renderOrders();renderWarehouse();renderKitchens();renderParents();renderUsers();
   const first=r.nav[0];
   go(first,document.querySelector('[data-page='+first+']'));
 }
@@ -960,9 +1061,9 @@ function renderNotifs(){
   drawPager('notif',info,'thông báo');
 }
 /* ---- pagination dùng chung (source / kitchen / parent) ---- */
-const pagerState={notif:1,source:1,supplier:1,order:1,kitchen:1,parent:1};
-const pagerPages={notif:1,source:1,supplier:1,order:1,kitchen:1,parent:1};
-const PER={notif:8,source:8,supplier:8,order:8,kitchen:8,parent:8};
+const pagerState={notif:1,source:1,supplier:1,order:1,warehouse:1,kitchen:1,parent:1};
+const pagerPages={notif:1,source:1,supplier:1,order:1,warehouse:1,kitchen:1,parent:1};
+const PER={notif:8,source:8,supplier:8,order:8,warehouse:8,kitchen:8,parent:8};
 function paginate(name,list){
   const per=PER[name];
   const pages=Math.max(1,Math.ceil(list.length/per));
@@ -977,7 +1078,7 @@ function drawPager(name,info,unit){
   document.getElementById(name+'Pages').textContent=info.pages;
   document.getElementById(name+'PageInput').value=info.page;
 }
-const renderByName={notif:()=>renderNotifs(),source:()=>renderSources(),supplier:()=>renderSuppliers(),order:()=>renderOrders(),kitchen:()=>renderKitchens(),parent:()=>renderParents(),process:()=>renderProcess()};
+const renderByName={notif:()=>renderNotifs(),source:()=>renderSources(),supplier:()=>renderSuppliers(),order:()=>renderOrders(),warehouse:()=>renderWarehouse(),kitchen:()=>renderKitchens(),parent:()=>renderParents(),process:()=>renderProcess()};
 /* format tiền VND: 22000 -> "22.000 đ" */
 function money(n){return (n||0).toLocaleString('vi-VN')+' đ';}
 function parseVN(d){const[a,b,c]=d.split('/');return new Date(+c,+b-1,+a);}
@@ -1050,8 +1151,15 @@ function openSupplierPanel(i){
 function renderOrders(){
   const q=(document.getElementById('orderSearch').value||'').toLowerCase().trim();
   const st=document.getElementById('orderStatus').value;
+  const from=document.getElementById('orderFrom').value; /* yyyy-mm-dd */
+  const to=document.getElementById('orderTo').value;
+  const ymdTs=s=>{const[y,m,d]=s.split('-');return new Date(+y,+m-1,+d).getTime();};
+  const inRange=d=>{const t=parseVN(d).getTime();
+    if(from&&t<ymdTs(from))return false;
+    if(to&&t>ymdTs(to))return false;
+    return true;};
   const list=ORDERS.map((o,i)=>({o,i})).filter(x=>
-    (!q||`${x.o.code} ${x.o.school}`.toLowerCase().includes(q)) && (!st||x.o.status===st) && schoolOk(x.o.school));
+    (!q||`${x.o.code} ${x.o.school}`.toLowerCase().includes(q)) && (!st||x.o.status===st) && inRange(x.o.date) && schoolOk(x.o.school));
   const info=paginate('order',list);
   document.getElementById('orderBody').innerHTML = info.slice.length ? info.slice.map(({o,i})=>`
     <tr class="tr-click" onclick="rowOpen(event,()=>openOrderDetail(${i}))">
@@ -1280,6 +1388,7 @@ function saveOrderEdit(i){
   if(ch.length)o.history.unshift({time:new Date().toLocaleString('vi-VN'),changes:ch});
   closeDrawer();renderOrders();
   if(curKitchen!=null){const k=KITCHENS[curKitchen];if(k&&!k.kitchen)renderSchoolOrders(k.name);}
+  if(document.getElementById('page-detail').classList.contains('on'))openOrderDetail(i);
   toast(ch.length?`Đã lưu · ${ch.length} thay đổi`:'Không có thay đổi');
 }
 function initKitchenFilters(){
@@ -1343,7 +1452,89 @@ function renderSchoolOrders(school){
 /* Các loại bữa hiển thị cho trường đang mở: bỏ "Ăn sáng" nếu trường không tổ chức bữa sáng */
 function mealKindsForCurrent(){
   const k = curKitchen!=null ? KITCHENS[curKitchen] : null;
-  return (k && k.breakfast===false) ? MEALKINDS.filter(x=>x.key!=='sang') : MEALKINDS;
+  if(!k) return MEALKINDS;
+  ensureMealCfg(k);
+  const kinds = MEALKINDS.filter(x=>k.mealOn[x.key]!==false);
+  return kinds.length ? kinds : MEALKINDS;
+}
+/* "95 kg" / "1.250 hộp" -> {qty:number, unit:string} (dấu . là ngăn cách nghìn) */
+function parseIngQty(str){
+  const m=(str||'').trim().match(/^([\d.,]+)\s*(.*)$/);
+  if(!m)return {qty:0,unit:(str||'').trim()};
+  return {qty:parseFloat(m[1].replace(/\./g,'').replace(',','.'))||0, unit:(m[2]||'').trim()};
+}
+/* Nguyên liệu của 1 bữa -> các dòng [tên, ĐVT, SL, đơn giá bán, thành tiền] */
+function menuMealLines(meal){
+  return (meal.ing||[]).map(x=>{
+    const {qty,unit}=parseIngQty(x[1]);
+    const s=sourceByName(x[0]);
+    const price=s?s.price:0;
+    return [x[0], unit||(s?s.unit:''), qty, price, qty*price];
+  });
+}
+/* Bảng nguyên liệu (giống bảng chi tiết đơn hàng của trường không bếp) */
+function menuMealTable(meal){
+  const lines=menuMealLines(meal);
+  if(!lines.length)return `<div class="ing"><div style="grid-column:1/-1;color:var(--muted);padding:8px 0">Chưa chọn nguyên liệu — bấm <b>🧺 Chọn nguyên liệu</b>.</div></div>`;
+  return `<div class="panel" style="box-shadow:none">
+    <table>
+      <thead><tr><th>Nguyên liệu</th><th>ĐVT</th><th style="text-align:right">Số lượng</th></tr></thead>
+      <tbody>${lines.map(l=>`<tr>
+        <td><b>${l[0]}</b></td>
+        <td style="color:var(--muted)">${l[1]}</td>
+        <td style="text-align:right;white-space:nowrap">${fmtQty(l[2])}</td></tr>`).join('')}</tbody>
+    </table>
+  </div>`;
+}
+/* In phiếu giao hàng cho 1 bữa trong thực đơn của trường đang mở */
+function printMenuSlip(day,mealKey){
+  const m=MENU[day], meal=m.meals[mealKey], kind=MEALKINDS.find(k=>k.key===mealKey)||MEALKINDS[1];
+  const k=curKitchen!=null?KITCHENS[curKitchen]:{name:'Trường',addr:''};
+  const lines=menuMealLines(meal);
+  const total=lines.reduce((s,l)=>s+l[4],0);
+  const dm=(m.d.split('·')[1]||'').trim(); /* "17/08" */
+  const date=dm?dm+'/2026':new Date().toLocaleDateString('vi-VN');
+  const w=window.open('','_blank');
+  if(!w){toast('Trình duyệt chặn cửa sổ in — hãy cho phép popup');return;}
+  const rows=lines.map((l,idx)=>`<tr><td class="c">${idx+1}</td><td>${l[0]}</td><td class="c">${l[1]}</td><td class="r">${fmtQty(l[2])}</td><td class="r">${fmtNum(l[3])}</td><td class="r">${fmtNum(l[4])}</td></tr>`).join('');
+  w.document.write(`<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><title>Phiếu giao hàng · ${k.name}</title>
+  <style>
+    *{box-sizing:border-box;font-family:'Times New Roman',serif}
+    body{margin:0;padding:28px 34px;color:#111;font-size:13.5px}
+    .co{font-weight:700;font-size:15px;text-transform:uppercase}
+    .co-sub{font-size:12px;margin-top:2px}
+    h1{text-align:center;font-size:22px;letter-spacing:1px;margin:14px 0 2px}
+    .meta{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+    .buyer{margin-top:6px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{border:1px solid #000;padding:5px 8px}
+    th{background:#f0f0f0;font-size:12px;text-transform:uppercase;text-align:center}
+    td.c{text-align:center}td.r{text-align:right;white-space:nowrap}
+    .tot td{font-weight:700}
+    .note{margin-top:12px;font-size:12.5px;font-style:italic}
+    .sign{display:flex;justify-content:space-around;margin-top:26px;text-align:center;font-size:13px}
+    .sign b{display:block}.sign i{font-size:12px;color:#333}
+    @media print{body{padding:0}}
+  </style></head><body>
+    <div class="co">CÔNG TY TNHH PTTM VÀ DV HỒNG ANH</div>
+    <div class="co-sub">ĐC: Số 5B Ngõ 22 Đặng Vũ Hỷ - Phường Việt Hưng - Hà Nội</div>
+    <div class="co-sub">Điện thoại: 0975.036.888 - Email: phamthilananh78@gmail.com</div>
+    <h1>PHIẾU GIAO HÀNG</h1>
+    <div class="meta"><span>NGÀY GIAO: ${date}</span><span>${kind.label} · ${m.d}</span></div>
+    <div class="buyer"><b>ĐƠN VỊ MUA HÀNG:</b> ${k.name}</div>
+    <div class="buyer"><b>Địa chỉ:</b> ${k.addr||''}</div>
+    <table>
+      <thead><tr><th style="width:34px">STT</th><th>TÊN HÀNG HOÁ</th><th style="width:70px">ĐƠN VỊ</th><th style="width:70px">SL</th><th style="width:90px">ĐƠN GIÁ</th><th style="width:110px">THÀNH TIỀN</th></tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot><tr class="tot"><td colspan="5" style="text-align:right">TỔNG CỘNG</td><td class="r">${fmtNum(total)}</td></tr></tfoot>
+    </table>
+    <div class="note">Xác nhận Thực Phẩm Tươi Ngon, đảm bảo VSATTP<br>(Nếu nhà trường nhập thực phẩm ngoài chợ, bên công ty hoàn toàn không chịu trách nhiệm)</div>
+    <div style="text-align:right;margin-top:14px;font-size:13px"><b>Ngày ${date.split('/')[0]} Tháng ${date.split('/')[1]} Năm ${date.split('/')[2]}</b></div>
+    <div class="sign"><div><b>NGƯỜI GIAO HÀNG</b><i>(Ký, ghi rõ họ tên)</i></div><div><b>ĐƠN VỊ NHẬN HÀNG</b><i>(Ký, ghi rõ họ tên)</i></div></div>
+    <script>window.onload=function(){window.print();}<\/script>
+  </body></html>`);
+  w.document.close();
+  toast('Đang mở phiếu giao hàng '+kind.label);
 }
 let mealTab={};   /* dayIndex -> meal key đang chọn trong ngày đó */
 let dayOpen={0:true}; /* dayIndex -> đang mở/đóng card ngày */
@@ -1355,9 +1546,9 @@ function renderMenu(){
   document.getElementById('ktab-menu').innerHTML =
     `<p style="color:var(--muted);margin-bottom:14px">Tuần 34 · 17/08 – 21/08/2026 · Chọn loại bữa trong từng ngày để xem/sửa. File import chỉ nhập <b>các món</b>, nguyên liệu do Admin tự chọn cho từng ngày.</p>` +
     MENU.map((m,i)=>{
-      const cur=kinds.some(k=>k.key===mealTab[i])?mealTab[i]:'truaHS';
-      const kind=kinds.find(k=>k.key===cur);
-      const meal=m.meals[cur];
+      const cur=kinds.some(k=>k.key===mealTab[i])?mealTab[i]:(kinds[0]?kinds[0].key:'truaHS');
+      const kind=kinds.find(k=>k.key===cur)||MEALKINDS[1];
+      const meal=m.meals[cur]||{dish:'—',ing:[]};
       const tabs=kinds.map(k=>`<button class="${k.key===cur?'active':''}" onclick="event.stopPropagation();pickDayMeal(${i},'${k.key}')">${k.ic} ${k.label}</button>`).join('');
       return `
     <div class="day ${dayOpen[i]?'open':''}">
@@ -1369,14 +1560,12 @@ function renderMenu(){
           <div class="mtabs">${tabs}</div>
           <div class="meal-actions">
             <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openIngredientPicker(${i},'${cur}')">🧺 Chọn nguyên liệu</button>
+            <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();printMenuSlip(${i},'${cur}')">🖨 In phiếu giao hàng</button>
             <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openReportPanel(${i},'${cur}')">📋 Xem báo cáo</button>
           </div>
         </div>
         <div class="menu-line" style="margin-bottom:12px">${kind.ic} <b>${meal.dish}</b></div>
-        <div class="ing">
-          <div class="h">Nguyên liệu</div><div class="h">Số lượng</div><div class="h">Nguồn</div>
-          ${meal.ing.length?meal.ing.map(x=>`<div>${x[0]}</div><div><b>${x[1]}</b></div><div style="color:var(--muted)">Kho tổng · lô ${170800+Math.floor(Math.random()*90)}</div>`).join(''):`<div style="grid-column:1/-1;color:var(--muted);padding:8px 0">Chưa chọn nguyên liệu — bấm <b>🧺 Chọn nguyên liệu</b>.</div>`}
-        </div>
+        ${menuMealTable(meal)}
       </div>
     </div>`;}).join('');
 }
@@ -1394,19 +1583,40 @@ function openIngredientPicker(day,mealKey){
 }
 function ingOptions(sel){return SOURCES.map(s=>`<option ${s.name===sel?'selected':''}>${s.name}</option>`).join('');}
 function addIngRow(name,qty){
-  const row=document.createElement('div');
-  row.className='ing-row';
-  row.innerHTML=`
-    <select class="f-input ing-name" onchange="updateIngUnit(this)">${ingOptions(name)}</select>
-    <input type="number" min="0" class="ing-qty" value="${qty!=null?qty:''}" placeholder="0">
-    <span class="ing-unit"></span>
-    <button type="button" class="icon-btn danger" data-tip="Xoá dòng" onclick="this.closest('.ing-row').remove()">✕</button>`;
-  document.getElementById('ingList').appendChild(row);
-  updateIngUnit(row.querySelector('.ing-name'));
+  const wrap=document.createElement('div');
+  wrap.className='ing-item';
+  wrap.innerHTML=`
+    <div class="ing-row">
+      <select class="f-input ing-name" onchange="updateIngUnit(this);checkIngStock(this)">${ingOptions(name)}</select>
+      <input type="number" min="0" class="ing-qty" value="${qty!=null?qty:''}" placeholder="0" oninput="checkIngStock(this)">
+      <span class="ing-unit"></span>
+      <button type="button" class="icon-btn danger" data-tip="Xoá dòng" onclick="this.closest('.ing-item').remove()">✕</button>
+    </div>
+    <div class="ing-warn"></div>`;
+  document.getElementById('ingList').appendChild(wrap);
+  const sel=wrap.querySelector('.ing-name');
+  updateIngUnit(sel);checkIngStock(sel);
 }
 function updateIngUnit(sel){
   const s=sourceByName(sel.value);
   sel.closest('.ing-row').querySelector('.ing-unit').textContent=s?s.unit:'kg';
+}
+/* Nếu nguyên liệu được quản lý trong kho: đối chiếu số lượng cần với tồn kho.
+   Không chặn lưu (theo chủ ý prototype) — chỉ cảnh báo để Admin nhập kho thêm. */
+function checkIngStock(el){
+  const item=el.closest('.ing-item');
+  const name=item.querySelector('.ing-name').value;
+  const qty=parseInt(item.querySelector('.ing-qty').value)||0;
+  const w=whByName(name);
+  const warn=item.querySelector('.ing-warn');
+  if(!w){warn.className='ing-warn';warn.innerHTML='';return;}
+  if(qty>w.stock){
+    warn.className='ing-warn on';
+    warn.innerHTML=`⚠ Lấy từ kho nhưng tồn chỉ còn <b>${fmtQty(w.stock)} ${w.unit}</b> (cần ${fmtQty(qty)} ${w.unit}). <a href="#" onclick="openStockIn('${name}');return false">Nhập kho thêm</a>`;
+  }else{
+    warn.className='ing-warn ok';
+    warn.innerHTML=`✓ Lấy từ kho nội bộ · tồn <b>${fmtQty(w.stock)} ${w.unit}</b>`;
+  }
 }
 function saveIngredientPick(day,mealKey){
   const ing=[];
@@ -1499,6 +1709,138 @@ const DEBT_MONTHS=['04/2026','05/2026','06/2026','07/2026','08/2026'];
 const DEBT_PAID={};    // key -> Set(tháng "MM/yyyy" đã thanh toán)
 const DEBT_FILTER={};  // key -> '' (tất cả) hoặc 'MM/yyyy'
 function sourceByName(n){return SOURCES.find(s=>s.name===n);}
+
+/* ============ KHO NỘI BỘ — render & thao tác ============ */
+function renderWarehouse(){
+  const phu=warehouseType()==='phu';
+  document.getElementById('whTitle').textContent=phu?'Kho phụ':'Kho tổng';
+  document.getElementById('whSub').innerHTML=phu
+    ? 'Kho nội bộ của trường — nhập nguyên liệu khô, gia vị từ <b>Kho tổng</b> hoặc <b>nhà cung cấp</b>. Thực đơn hằng ngày lấy trực tiếp từ kho.'
+    : 'Kho trung tâm — nhập nguyên liệu khô, gia vị từ <b>nhà cung cấp</b>. Thực đơn các bếp lấy trực tiếp từ kho thay vì đặt đơn NCC.';
+  const q=(document.getElementById('warehouseSearch').value||'').toLowerCase().trim();
+  const list=WAREHOUSE.map((w,i)=>({w,i})).filter(o=>!q||`${o.w.name} ${o.w.unit}`.toLowerCase().includes(q));
+  const info=paginate('warehouse',list);
+  document.getElementById('warehouseBody').innerHTML = info.slice.length ? info.slice.map(({w,i})=>{
+    const low=w.stock<=w.min;
+    return `
+    <tr class="tr-click" onclick="rowOpen(event,()=>openStockHistory(${i}))">
+      <td><a class="name-link" onclick="openStockHistory(${i})">${w.name}</a></td>
+      <td style="color:var(--muted)">${w.unit}</td>
+      <td style="text-align:right;white-space:nowrap">${fmtQty(w.imported)} ${w.unit}</td>
+      <td style="text-align:right;white-space:nowrap"><b>${fmtQty(w.stock)} ${w.unit}</b> <span class="pill ${low?'r':'g'}">${low?'Sắp hết':'Đủ'}</span></td>
+      <td style="text-align:right;white-space:nowrap">
+        <button class="icon-btn" data-tip="Nhập kho" onclick="openStockIn('${w.name}')">${ICON_IMPORT}</button>
+        <button class="icon-btn" data-tip="Lịch sử nhập / xuất kho" onclick="openStockHistory(${i})">${ICON_VIEW}</button>
+      </td>
+    </tr>`;}).join('') : `<tr><td colspan="5"><div class="empty">Không tìm thấy nguyên liệu trong kho.</div></td></tr>`;
+  drawPager('warehouse',info,'nguyên liệu');
+}
+/* Nhập kho nhiều dòng — mỗi dòng chọn 1 nguyên liệu, 1 nguồn, số lượng riêng.
+   prefName: mở sẵn dòng đầu với nguyên liệu đó (từ nút Nhập trên bảng / cảnh báo thực đơn). */
+function openStockIn(prefName){
+  openDrawer('Nhập kho · '+(warehouseType()==='phu'?'Kho phụ':'Kho tổng'),`
+    <p style="color:var(--muted);font-size:13.5px;margin-bottom:14px">Thêm từng dòng để nhập nhiều nguyên liệu từ nhiều nguồn cùng lúc. Chọn <b>Nhà cung cấp (NCC)</b> thì nhập tên nhà cung cấp.</p>
+    <div class="si-list-head"><span>Nguyên liệu</span><span style="text-align:right">Số lượng</span><span></span><span>Nguồn</span><span>Tên NCC</span><span></span></div>
+    <div id="stockInList"></div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:4px" onclick="addStockInRow()">+ Thêm nguyên liệu</button>
+    <div class="field" style="margin-top:16px"><label>Ngày nhập</label><input type="date" id="siDate" class="f-input" value="2026-08-17"></div>
+    <div class="field"><label>Ghi chú chung</label><input id="siNote" class="f-input" placeholder="VD: nhập bổ sung cho tuần 34"></div>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
+     <button class="btn btn-green" onclick="saveStockIn()">Xác nhận nhập kho</button>`,true);
+  document.getElementById('drawer').classList.add('xwide');
+  addStockInRow(prefName);
+}
+function addStockInRow(prefName){
+  const nameOpts=WAREHOUSE.map(w=>`<option ${w.name===prefName?'selected':''}>${w.name}</option>`).join('');
+  const srcOpts=stockSources().map(s=>`<option>${s}</option>`).join('');
+  const item=document.createElement('div');
+  item.className='stockin-item';
+  item.innerHTML=`
+    <div class="si-row">
+      <select class="f-input si-name" onchange="siRowUnit(this);siRowSrc(this.closest('.stockin-item').querySelector('.si-src'))">${nameOpts}</select>
+      <input type="number" min="0" class="si-qty" placeholder="0">
+      <span class="si-unit"></span>
+      <select class="f-input si-src" onchange="siRowSrc(this)">${srcOpts}</select>
+      <input class="f-input si-sup" placeholder="Tên nhà cung cấp" style="visibility:hidden">
+      <button type="button" class="icon-btn danger si-del" data-tip="Xoá dòng" onclick="this.closest('.stockin-item').remove()">✕</button>
+    </div>`;
+  document.getElementById('stockInList').appendChild(item);
+  siRowUnit(item.querySelector('.si-name'));
+  siRowSrc(item.querySelector('.si-src'));
+}
+function siRowUnit(sel){
+  const w=whByName(sel.value);
+  sel.closest('.stockin-item').querySelector('.si-unit').textContent=w?w.unit:'';
+}
+/* Nguồn = NCC → hiện ô nhập tên nhà cung cấp (gợi ý sẵn NCC của nguyên liệu nếu có). */
+function siRowSrc(srcSel){
+  const item=srcSel.closest('.stockin-item');
+  const sup=item.querySelector('.si-sup');
+  if(srcSel.value.includes('NCC')){
+    if(sup.style.visibility==='hidden'){
+      const s=sourceByName(item.querySelector('.si-name').value);
+      sup.value=s?s.dist:'';
+    }
+    sup.style.visibility='visible';
+  }else{
+    sup.style.visibility='hidden';
+  }
+}
+function saveStockIn(){
+  const dateV=document.getElementById('siDate').value;
+  const note=document.getElementById('siNote').value||'';
+  const d=dateV?dateV.split('-').reverse().join('/'):'17/08/2026';
+  let n=0;
+  document.querySelectorAll('#stockInList .stockin-item').forEach(item=>{
+    const name=item.querySelector('.si-name').value;
+    const qty=parseInt(item.querySelector('.si-qty').value)||0;
+    const srcSel=item.querySelector('.si-src').value;
+    const src=srcSel.includes('NCC')?(item.querySelector('.si-sup').value.trim()||'Nhà cung cấp'):'Kho tổng';
+    const w=whByName(name);
+    if(w&&qty>0){ w.imported+=qty; w.stock+=qty; w.hist.unshift([d,'in',qty,src,note]); n++; }
+  });
+  closeDrawer();renderWarehouse();
+  toast(n?`Đã nhập kho ${n} nguyên liệu`:'Đã lưu (mock)');
+}
+/* Chi tiết kho + lịch sử nhập / xuất — page riêng (không phải panel) */
+let stockHistIdx=0, stockHistTab='all';
+function openStockHistory(i){
+  stockHistIdx=i; stockHistTab='all';
+  const w=WAREHOUSE[i];
+  openDetailPage('📦 '+w.name, `Kho ${warehouseType()==='phu'?'phụ':'tổng'} · Đơn vị tính: ${w.unit}`,
+    `<button class="btn btn-green btn-sm" onclick="openStockIn('${w.name}')"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M12 3 7 8h3v6h4V8h3l-5-5ZM5 17h14v2H5z"/></svg>Nhập kho</button>`,`
+    <div class="debt-cards" style="grid-template-columns:repeat(2,1fr);margin-bottom:22px">
+      <div class="debt-card"><span>Đã nhập</span><b>${fmtQty(w.imported)} ${w.unit}</b></div>
+      <div class="debt-card"><span>Tồn kho</span><b>${fmtQty(w.stock)} ${w.unit}</b></div>
+    </div>
+    <div class="chips" id="shChips">
+      <button class="chip active" onclick="stockHistFilter('all',this)">Tất cả</button>
+      <button class="chip" onclick="stockHistFilter('in',this)">↓ Nhập kho</button>
+      <button class="chip" onclick="stockHistFilter('out',this)">↑ Xuất kho</button>
+    </div>
+    <div class="panel">
+      <table>
+        <thead><tr><th>Ngày</th><th>Loại</th><th>Nguồn / Nơi nhận</th><th>Ghi chú</th><th style="text-align:right">Số lượng</th></tr></thead>
+        <tbody id="shBody"></tbody>
+      </table>
+    </div>`,
+    ()=>go('warehouse',navBtn('warehouse')));
+  renderStockHist();
+}
+function stockHistFilter(t,btn){stockHistTab=t;document.querySelectorAll('#shChips .chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderStockHist();}
+function renderStockHist(){
+  const w=WAREHOUSE[stockHistIdx];
+  const rows=w.hist.filter(h=>stockHistTab==='all'||h[1]===stockHistTab);
+  document.getElementById('shBody').innerHTML = rows.length ? rows.map(h=>{
+    const isIn=h[1]==='in';
+    return `<tr>
+      <td style="white-space:nowrap">${h[0]}</td>
+      <td><span class="pill ${isIn?'g':'a'}">${isIn?'Nhập kho':'Xuất kho'}</span></td>
+      <td>${h[3]}</td>
+      <td style="color:var(--muted)">${h[4]||'—'}</td>
+      <td style="text-align:right;white-space:nowrap;font-weight:700;color:${isIn?'var(--green-d)':'var(--amber)'}">${isIn?'+':'−'}${fmtQty(h[2])} ${w.unit}</td>
+    </tr>`;}).join('') : `<tr><td colspan="5"><div class="empty">Chưa có lịch sử ${stockHistTab==='in'?'nhập':stockHistTab==='out'?'xuất':''} kho.</div></td></tr>`;
+}
 function orderMonth(d){const p=d.split('/');return p[1]+'/'+p[2];}
 function mLabel(m){return 'Tháng '+(+m.split('/')[0]);}
 function debtKey(kind,name){return kind+'::'+name;}
@@ -1526,8 +1868,9 @@ function debtBlock(kind,name){
     rows.map(r=>`<button class="chip ${paid.has(r.month)?'paid':''} ${sel===r.month?'active':''}" onclick="setDebtFilter('${kind}','${nEsc}','${r.month}')">${paid.has(r.month)?'<span class="cdot"></span>':''}${mLabel(r.month)}</button>`).join('')+
     `<button class="chip mfilter ${sel!==''?'active':''}" onclick="openMonthMenu('${kind}','${nEsc}',this)">📅 ${sel!==''?mLabel(sel):'Chọn tháng'}</button>`;
   const shown=rows.filter(r=>!sel||r.month===sel);
+  const isSup=kind==='supplier';
   const trs=shown.map(r=>`
-    <tr>
+    <tr ${isSup?`class="tr-click" onclick="rowOpen(event,()=>setDebtFilter('${kind}','${nEsc}','${r.month}'))"`:''}>
       <td><b>${mLabel(r.month)}</b> <span style="color:var(--muted)">/2026</span></td>
       <td style="text-align:right;white-space:nowrap"><b>${money(r.total)}</b></td>
       <td style="text-align:center"><span class="pill ${paid.has(r.month)?'g':'a'}">${paid.has(r.month)?'Đã thanh toán':'Chưa thanh toán'}</span></td>
@@ -1536,9 +1879,9 @@ function debtBlock(kind,name){
   return `
     <div class="debt-cards" style="grid-template-columns:repeat(2,1fr)">
       <div class="debt-card"><span>${noun} · 5 tháng</span><b>${money(grand)}</b></div>
-      <div class="debt-card"><span>${remainLbl}</span><b style="color:${unpaid>0?'var(--red)':'var(--green-d)'}">${money(unpaid)}</b></div>
+      ${isSup?'':`<div class="debt-card"><span>${remainLbl}</span><b style="color:${unpaid>0?'var(--red)':'var(--green-d)'}">${money(unpaid)}</b></div>`}
     </div>
-    <p style="color:var(--muted);font-size:13.5px;margin:16px 0 12px;max-width:560px">Công nợ tổng hợp theo tháng · bấm để đánh dấu trạng thái thanh toán. Tháng đã thanh toán hiển thị màu xanh trên bộ lọc.</p>
+    <p style="color:var(--muted);font-size:13.5px;margin:16px 0 12px;max-width:560px">Công nợ tổng hợp theo tháng · ${isSup?'bấm vào một tháng để xem nguyên liệu đã nhập từng ngày.':'bấm để đánh dấu trạng thái thanh toán. Tháng đã thanh toán hiển thị màu xanh trên bộ lọc.'}</p>
     <div class="chips">${chips}</div>
     <div class="panel">
       <table>
@@ -1556,7 +1899,7 @@ function toggleDebtMonth(kind,name,m){
 }
 function rerenderDebt(kind,name){
   if(kind==='school')document.getElementById('ktab-debt').innerHTML=debtBlock('school',name);
-  else document.getElementById('drawerBody').innerHTML=supplierDetailBody(name);
+  else document.getElementById('detailBody').innerHTML=supplierDetailBody(name);
 }
 function renderDebt(school){document.getElementById('ktab-debt').innerHTML=debtBlock('school',school);}
 /* Lịch chọn tháng cạnh các chip tháng nhanh — highlight xanh tháng đã thanh toán */
@@ -1586,25 +1929,73 @@ document.addEventListener('click',e=>{if(!e.target.closest('.mfilter')&&!e.targe
 function supplierDetailBody(name){
   const sup=SUPPLIERS.find(s=>s.name===name)||{};
   const items=SOURCES.filter(s=>s.dist===name).map(s=>s.name);
+  const sel=DEBT_FILTER[debtKey('supplier',name)]||'';
+  const daily = sel ? supplierDailyBlock(name,sel) : '';
   return `
-    <div style="background:#FAFBF9;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:6px">
-      <b style="font-size:16px">${sup.name||name}</b>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+    <div style="background:#FAFBF9;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:6px;max-width:680px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
         <div><div style="color:var(--muted);font-size:12px">Người liên hệ</div><div style="font-weight:600">${sup.contact||'—'}</div></div>
         <div><div style="color:var(--muted);font-size:12px">Điện thoại</div><div style="font-weight:600">${sup.phone||'—'}</div></div>
         <div><div style="color:var(--muted);font-size:12px">Địa chỉ</div><div style="font-weight:600">${sup.addr||'—'}</div></div>
         <div><div style="color:var(--muted);font-size:12px">Truy xuất</div><a href="#" onclick="toast('Mở trang truy xuất: ${sup.link||''}');return false" style="font-weight:600">Xem nguồn gốc</a></div>
       </div>
-      <div style="margin-top:12px"><div style="color:var(--muted);font-size:12px;margin-bottom:3px">Mặt hàng cung cấp</div><div style="font-size:13.5px">${items.join(', ')||'—'}</div></div>
+      <div style="margin-top:14px"><div style="color:var(--muted);font-size:12px;margin-bottom:3px">Mặt hàng cung cấp</div><div style="font-size:13.5px">${items.join(', ')||'—'}</div></div>
     </div>
-    <div style="border-top:1px solid var(--line);margin:16px 0 14px;padding-top:14px"><b style="font-size:13.5px">Công nợ nhà cung cấp theo tháng</b></div>
-    ${debtBlock('supplier',name)}`;
+    <div style="margin:20px 0 14px"><b style="font-size:14px">Công nợ nhà cung cấp theo tháng</b> <span style="color:var(--muted);font-size:12.5px">· chọn một tháng để xem nguyên liệu đã nhập từng ngày</span></div>
+    ${debtBlock('supplier',name)}
+    ${daily}`;
+}
+/* Sinh dữ liệu nhập nguyên liệu theo ngày (ổn định cho demo) của 1 NCC trong 1 tháng.
+   Mỗi ngày liệt kê: nguyên liệu, số lượng, và nhập cho thực đơn của những trường nào. */
+function seededRand(n){const x=Math.sin(n*97.13+13.7)*10000;return x-Math.floor(x);}
+function supplierMonthDays(name,month){
+  const ings=SOURCES.filter(s=>s.dist===name);
+  if(!ings.length)return [];
+  const [mm,yy]=month.split('/'), monthNum=+mm, year=+yy;
+  const daysInMonth=new Date(year,monthNum,0).getDate();
+  const schools=KITCHENS.map(k=>k.name);
+  const out=[];
+  for(let day=2;day<=daysInMonth;day+=3){
+    const base=monthNum*1000+day;
+    const rows=ings.map((s,idx)=>({s,idx})).filter(({idx})=>seededRand(base+idx*7)>0.35).map(({s,idx})=>{
+      const qty=Math.round(20+seededRand(base+idx*13)*180);
+      const nSchools=1+Math.floor(seededRand(base+idx*3)*3);
+      const chosen=[];
+      for(let j=0;j<nSchools;j++){
+        const si=Math.floor(seededRand(base+idx*5+j*11)*schools.length);
+        if(!chosen.includes(schools[si]))chosen.push(schools[si]);
+      }
+      return {name:s.name,qty,unit:s.unit,schools:chosen};
+    });
+    if(rows.length)out.push({date:`${String(day).padStart(2,'0')}/${mm}/${yy}`,rows});
+  }
+  return out;
+}
+function supplierDailyBlock(name,month){
+  const days=supplierMonthDays(name,month);
+  const head=`<div style="margin:22px 0 12px"><b style="font-size:14px">Nguyên liệu đã nhập từng ngày · ${mLabel(month)}/${month.split('/')[1]}</b></div>`;
+  if(!days.length)return head+`<div class="panel"><div class="empty">Không có dữ liệu nhập trong tháng này.</div></div>`;
+  const body=days.map(d=>d.rows.map((r,ri)=>`
+    <tr>
+      ${ri===0?`<td rowspan="${d.rows.length}" style="white-space:nowrap;vertical-align:top;font-weight:600">${d.date}</td>`:''}
+      <td><b>${r.name}</b></td>
+      <td style="color:var(--muted)">${r.unit}</td>
+      <td style="text-align:right;white-space:nowrap">${fmtQty(r.qty)}</td>
+      <td style="font-size:13px;line-height:1.7">${r.schools.map(s=>s.replace('Trường ','')).join('<br>')}</td>
+    </tr>`).join('')).join('');
+  return head+`<div class="panel">
+    <table>
+      <thead><tr><th>Ngày</th><th>Nguyên liệu</th><th>Đơn vị tính</th><th style="text-align:right">Số lượng</th><th>Trường</th></tr></thead>
+      <tbody>${body}</tbody>
+    </table>
+  </div>`;
 }
 function openSupplierDetail(i){
   const sup=SUPPLIERS[i];
-  openDrawer('Chi tiết nhà cung cấp',supplierDetailBody(sup.name),
-    `<button class="btn btn-ghost" onclick="closeDrawer()">Đóng</button>
-     <button class="btn btn-green" onclick="openSupplierPanel(${i})">Sửa nhà cung cấp</button>`,true);
+  openDetailPage('🏭 '+sup.name, sup.addr||'',
+    `<button class="btn btn-green btn-sm" onclick="openSupplierPanel(${i})"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25ZM20.7 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z"/></svg>Sửa nhà cung cấp</button>`,
+    supplierDetailBody(sup.name),
+    ()=>go('supplier',navBtn('supplier')));
 }
 
 /* ===== TỔNG HỢP ĐƠN NHẬP (gom nguyên liệu từ các đơn chưa hoàn thành) ===== */
@@ -1720,24 +2111,25 @@ function openSourceDetail(i){
     }
     return `<tr><td style="white-space:nowrap">${h[0]}</td><td style="text-align:right"><b>${money(h[1])}</b>/${s.unit}</td><td style="text-align:right;white-space:nowrap">${idx===0?'<span class="pill g">Hiện tại</span>':chg}</td></tr>`;
   }).join('');
-  openDrawer('Chi tiết nguyên liệu',`
-    <b style="font-size:16px">${s.name}</b>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 6px">
-      <div><div style="color:var(--muted);font-size:12px">Nhà cung cấp</div><div style="font-weight:600">${s.dist}</div></div>
-      <div><div style="color:var(--muted);font-size:12px">Xuất xứ</div><div style="font-weight:600">${s.origin}</div></div>
-      <div><div style="color:var(--muted);font-size:12px">Giá nhập từ NCC</div><div style="font-weight:600">${money(s.cost)}/${s.unit}</div></div>
-      <div><div style="color:var(--muted);font-size:12px">Giá bán cho trường</div><div style="font-weight:600">${money(s.price)}/${s.unit}</div></div>
-      <div><div style="color:var(--muted);font-size:12px">Truy xuất</div><a href="#" onclick="toast('Mở trang truy xuất: ${s.link}');return false" style="font-weight:600">Xem nguồn gốc</a></div>
+  openDetailPage('📦 '+s.name, `${s.dist} · ${s.origin}`,
+    `<button class="btn btn-green btn-sm" onclick="openSourcePanel(${i})"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25ZM20.7 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z"/></svg>Sửa nguyên liệu</button>`,`
+    <div style="background:#FAFBF9;border:1px solid var(--line);border-radius:14px;padding:16px 18px;max-width:640px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div><div style="color:var(--muted);font-size:12px">Nhà cung cấp</div><div style="font-weight:600">${s.dist}</div></div>
+        <div><div style="color:var(--muted);font-size:12px">Xuất xứ</div><div style="font-weight:600">${s.origin}</div></div>
+        <div><div style="color:var(--muted);font-size:12px">Giá nhập từ NCC</div><div style="font-weight:600">${money(s.cost)}/${s.unit}</div></div>
+        <div><div style="color:var(--muted);font-size:12px">Giá bán cho trường</div><div style="font-weight:600">${money(s.price)}/${s.unit}</div></div>
+        <div><div style="color:var(--muted);font-size:12px">Truy xuất</div><a href="#" onclick="toast('Mở trang truy xuất: ${s.link}');return false" style="font-weight:600">Xem nguồn gốc</a></div>
+      </div>
     </div>
-    <div style="border-top:1px solid var(--line);margin:16px 0 12px;padding-top:14px"><b style="font-size:13.5px">Lịch sử thay đổi giá</b></div>
-    <div class="panel">
+    <div style="margin:20px 0 12px"><b style="font-size:14px">Lịch sử thay đổi giá</b></div>
+    <div class="panel" style="max-width:640px">
       <table>
         <thead><tr><th>Ngày áp dụng</th><th style="text-align:right">Đơn giá</th><th style="text-align:right">Thay đổi</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>`,
-    `<button class="btn btn-ghost" onclick="closeDrawer()">Đóng</button>
-     <button class="btn btn-green" onclick="openSourcePanel(${i})">Sửa nguyên liệu</button>`);
+    ()=>go('source',navBtn('source')));
 }
 function openImportPanel(title,msg){
   openDrawer(title,`
@@ -1751,20 +2143,61 @@ function openImportPanel(title,msg){
     `<button class="btn btn-ghost" onclick="closeDrawer()">Đóng</button>
      <button class="btn btn-green" onclick="fileImport('${msg}')">Chọn file</button>`);
 }
-function openKitchenPanel(i){
-  const edit = i!=null, k = edit?KITCHENS[i]:{name:'',addr:'',size:'',kitchen:true,user:''};
-  openDrawer(edit?'Sửa thông tin trường':'Tạo trường mới',`
-    <div class="field"><label>Tên trường</label><input value="${k.name}" placeholder="VD: Trường TH Kim Liên"></div>
-    <div class="field"><label>Địa chỉ</label><input value="${k.addr}" placeholder="VD: Đống Đa, Hà Nội"></div>
-    <div class="field"><label>Có bếp nấu ăn tại trường</label><select><option ${k.kitchen?'selected':''}>Có</option><option ${!k.kitchen?'selected':''}>Không</option></select></div>
-    <div style="border-top:1px solid var(--line);margin:20px 0 16px;padding-top:16px"><b style="font-size:13.5px">Tài khoản đăng nhập của trường</b><p style="color:var(--muted);font-size:12.5px;margin-top:3px">Mỗi trường một tài khoản dùng chung cho app Bếp</p></div>
-    <div class="field"><label>Tên đăng nhập</label><input value="${k.user||''}" placeholder="VD: kimlien.bep"></div>
-    <div class="field"><label>Mật khẩu</label><input type="password" value="${edit?'123456':''}" placeholder="••••••••"></div>`,
-    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
-     <button class="btn btn-green" onclick="closeDrawer();toast('${edit?'Đã lưu thông tin trường (mock)':'Đã tạo trường mới (mock)'}')">${edit?'Lưu':'Tạo trường'}</button>`);
+/* Khởi tạo cấu hình suất ăn cho trường (mock, lazy): bật/tắt + đơn giá từng loại */
+function ensureMealCfg(k){
+  if(!k.mealOn)k.mealOn={sang:k.breakfast!==false,truaHS:true,truaGV:true};
+  if(!k.mealPrice)k.mealPrice={sang:MEAL_PRICE.sang,truaHS:MEAL_PRICE.truaHS,truaGV:MEAL_PRICE.truaGV};
+  return k;
 }
+function openKitchenPanel(i){
+  const edit = i!=null, k = ensureMealCfg(edit?KITCHENS[i]:{name:'',addr:'',size:'',kitchen:true});
+  const mealRows=MEAL_SEQ.map(key=>`
+    <div style="display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:10px">
+      <label class="f-check" style="border:none;padding:0;gap:8px;flex:1">
+        <input type="checkbox" class="kmeal-on" data-key="${key}" ${k.mealOn[key]?'checked':''}>
+        <b style="font-weight:600">${MEAL_LABEL[key]}</b>
+      </label>
+      <div style="width:150px">
+        <div style="font-size:11.5px;color:var(--muted);margin-bottom:3px">Đơn giá (đ)</div>
+        <input type="number" min="0" class="f-input kmeal-price" data-key="${key}" value="${k.mealPrice[key]}" style="width:100%">
+      </div>
+    </div>`).join('');
+  openDrawer(edit?'Sửa thông tin trường':'Tạo trường mới',`
+    <div class="field"><label>Tên trường</label><input id="kName" value="${k.name}" placeholder="VD: Trường TH Kim Liên"></div>
+    <div class="field"><label>Địa chỉ</label><input id="kAddr" value="${k.addr}" placeholder="VD: Đống Đa, Hà Nội"></div>
+    <div class="field"><label>Có bếp nấu ăn tại trường</label><select id="kHasKitchen"><option value="1" ${k.kitchen?'selected':''}>Có</option><option value="0" ${!k.kitchen?'selected':''}>Không</option></select></div>
+    <div style="border-top:1px solid var(--line);margin:20px 0 16px;padding-top:16px"><b style="font-size:13.5px">Suất ăn &amp; đơn giá</b><p style="color:var(--muted);font-size:12.5px;margin-top:3px">Bật/tắt loại suất ăn áp dụng cho trường và đặt đơn giá từng loại.</p></div>
+    ${mealRows}`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
+     <button class="btn btn-green" onclick="saveKitchen(${edit?i:-1})">${edit?'Lưu':'Tạo trường'}</button>`);
+}
+function saveKitchen(i){
+  const mealOn={}, mealPrice={};
+  document.querySelectorAll('.kmeal-on').forEach(c=>mealOn[c.dataset.key]=c.checked);
+  document.querySelectorAll('.kmeal-price').forEach(p=>mealPrice[p.dataset.key]=parseInt(p.value)||0);
+  if(i>=0){
+    const k=KITCHENS[i];
+    k.name=document.getElementById('kName').value.trim()||k.name;
+    k.addr=document.getElementById('kAddr').value.trim()||k.addr;
+    k.kitchen=document.getElementById('kHasKitchen').value==='1';
+    k.mealOn=mealOn; k.mealPrice=mealPrice; k.breakfast=mealOn.sang;
+    closeDrawer();renderKitchens();
+    if(curKitchen===i)openKitchen(i);
+    toast('Đã lưu thông tin trường (mock)');
+  }else{
+    closeDrawer();toast('Đã tạo trường mới (mock)');
+  }
+}
+let curOrderBack='order'; /* 'order' = danh sách đơn · 'kitchen' = chi tiết trường */
 function openOrderDetail(i){
   const o=ORDERS[i];
+  /* Xác định màn quay lại theo nơi mở đơn; giữ nguyên khi tự vẽ lại (đang ở trang chi tiết) */
+  if(!document.getElementById('page-detail').classList.contains('on')){
+    curOrderBack = document.getElementById('page-kdetail').classList.contains('on') ? 'kitchen' : 'order';
+  }
+  const backFn = curOrderBack==='kitchen' && curKitchen!=null
+    ? ()=>openKitchen(curKitchen)
+    : ()=>go('order',navBtn('order'));
   const nameCol=o.meals?'Loại suất ăn':'Nguyên liệu';
   const rows=orderLines(o).map(l=>`
     <tr><td>${l[0]}</td><td style="color:var(--muted)">${l[1]}</td>
@@ -1777,8 +2210,10 @@ function openOrderDetail(i){
         <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${h.time}</div>
         <div style="font-size:13px;line-height:1.6">${h.changes.map(c=>'· '+c).join('<br>')}</div>
       </div>`).join('')}` : '';
-  openDrawer('Chi tiết đơn hàng',`
-    <div style="background:#FAFBF9;border:1px solid var(--line);border-radius:12px;padding:16px 18px">
+  openDetailPage('🧾 Đơn '+o.code, `Số hoá đơn: ${invNo(o)} · ${o.school}`,
+    `<button class="btn btn-ghost btn-sm" onclick="openOrderEdit(${i})"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25ZM20.7 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z"/></svg>Sửa đơn</button>
+     <button class="btn btn-green btn-sm" onclick="setOrderStatus(${i},'${o.status==='Hoàn thành'?'Chờ duyệt':'Hoàn thành'}');openOrderDetail(${i})">${o.status==='Hoàn thành'?'Chuyển về Chờ duyệt':'✓ Hoàn thành đơn'}</button>`,`
+    <div style="background:#FAFBF9;border:1px solid var(--line);border-radius:14px;padding:16px 18px;max-width:700px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
         <div><div style="color:var(--muted);font-size:12px;margin-bottom:2px">Mã đơn</div><b style="font-size:17px">${o.code}</b><div style="color:var(--muted);font-size:12.5px">Số hoá đơn: ${invNo(o)}</div></div>
         <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
@@ -1794,14 +2229,13 @@ function openOrderDetail(i){
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
       <button class="btn btn-ghost btn-sm" onclick="printOrder(${i})">🖨 In phiếu giao hàng</button>
       <button class="btn btn-ghost btn-sm" onclick="exportOrderExcel(${i})">⬇ Tải Excel</button>
-      <button class="btn btn-ghost btn-sm" onclick="closeDrawer();openOrderEdit(${i})">✏️ Sửa đơn</button>
       <button class="btn btn-ghost btn-sm" onclick="toggleOrderPaid(${i});openOrderDetail(${i})">${o.paid?'↺ Đánh dấu chưa TT':'✓ Đánh dấu đã TT'}</button>
     </div>
-    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:22px 0 12px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:22px 0 12px;max-width:820px">
       <b style="font-size:14px">Chi tiết đơn hàng</b>
       <span style="color:var(--muted);font-size:12px">Đơn giá tại thời điểm đặt</span>
     </div>
-    <div class="panel">
+    <div class="panel" style="max-width:820px">
       <table>
         <thead><tr><th>${nameCol}</th><th>ĐVT</th><th style="text-align:right">Số lượng</th><th style="text-align:right">Đơn giá</th><th style="text-align:right">Thành tiền</th></tr></thead>
         <tbody>${rows}</tbody>
@@ -1809,8 +2243,7 @@ function openOrderDetail(i){
       </table>
     </div>
     ${histBlock}`,
-    `<button class="btn btn-ghost" onclick="closeDrawer()">Đóng</button>
-     <button class="btn btn-green" onclick="setOrderStatus(${i},'${o.status==='Hoàn thành'?'Chờ duyệt':'Hoàn thành'}');closeDrawer()">${o.status==='Hoàn thành'?'Chuyển về Chờ duyệt':'✓ Hoàn thành đơn'}</button>`, true);
+    backFn);
 }
 function openOrderPanel(){
   const opts=KITCHENS.filter(roleKitchenOk).map(k=>`<option>${k.name}</option>`).join('');
@@ -2013,6 +2446,18 @@ function go(p,btn){
   document.getElementById('app').classList.remove('nav-open');/* chọn xong đóng menu trên mobile */
   window.scrollTo(0,0);
 }
+function navBtn(p){return document.querySelector('[data-page='+p+']');}
+/* ---- Trang chi tiết dùng chung (full trang, có nút back) ---- */
+let detailBackFn=null;
+function openDetailPage(title,meta,actionsHTML,bodyHTML,backFn){
+  detailBackFn=backFn||(()=>go('notif',navBtn('notif')));
+  document.getElementById('detailTitle').innerHTML=title;
+  document.getElementById('detailMeta').innerHTML=meta||'';
+  document.getElementById('detailActions').innerHTML=actionsHTML||'';
+  document.getElementById('detailBody').innerHTML=bodyHTML;
+  go('detail');
+}
+function detailBack(){const fn=detailBackFn;detailBackFn=null;if(fn)fn();}
 let curKitchen=null;
 function openKitchen(i){
   curKitchen=i;
@@ -2045,6 +2490,7 @@ function openDrawer(title,body,foot,wide){
   document.getElementById('drawerFoot').innerHTML=foot;
   document.getElementById('drawerOverlay').classList.add('on');
   const d=document.getElementById('drawer');
+  d.classList.remove('xwide');
   d.classList.toggle('wide',!!wide);
   d.classList.add('on');
 }
@@ -2089,7 +2535,7 @@ function showTip(target){
 document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(t);});
 document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tipEl.classList.remove('on');});
 
-renderNotifs();renderSources();renderSuppliers();renderOrders();renderKitchens();renderMenu();renderParents();renderProcess();renderUsers();
+renderNotifs();renderSources();renderSuppliers();renderOrders();renderWarehouse();renderKitchens();renderMenu();renderParents();renderProcess();renderUsers();
 </script>
 </body>
 </html>

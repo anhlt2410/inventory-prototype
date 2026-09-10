@@ -517,12 +517,13 @@ function setRole(r,btn){
   document.querySelectorAll('.seg-btn[data-role]').forEach(b=>b.classList.toggle('on',b===btn));
 }
 function login(){
-  if(mode==='shop'){
-    show('s-shop');document.getElementById('navShop').classList.add('on');
-    renderShop();renderDebt();renderOrderList();
-    return;
-  }
-  // Có bếp — hai vai trò: Nhà trường (chỉ đăng ký + xem) hoặc Bếp (báo cáo)
+  if(mode==='shop'){ setupShop(); tabShop('shop',navShopBtn('shop')); return; }
+  setupKitchen();
+  tab('menu',navBtn('menu'));
+}
+// Dựng nav "có bếp" theo vai trò hiện tại (school/bep). Idempotent — gọi lại được.
+function setupKitchen(){
+  mode='kitchen';
   const school = role==='school';
   const nav=document.getElementById('nav');
   nav.classList.toggle('two', school);
@@ -531,14 +532,42 @@ function login(){
   document.getElementById('todayBlock').style.display = school ? 'none' : '';
   if(!school) renderToday();
   renderWeek();
-  tab('menu',navBtn('menu'));
+  document.getElementById('navShop').classList.remove('on');
   nav.classList.add('on');
+}
+function setupShop(){
+  mode='shop';
+  document.getElementById('nav').classList.remove('on');
+  document.getElementById('navShop').classList.add('on');
+  renderShop();renderDebt();renderOrderList();
 }
 function logout(){
   document.getElementById('nav').classList.remove('on');
   document.getElementById('navShop').classList.remove('on');
   show('login');
+  setHash('');
 }
+
+/* ===== Routing bằng hash — mỗi tab 1 path riêng, giữ khi reload/back ===== */
+const KITCHEN_TABS=['menu','log','report'], SHOP_TABS=['shop','orders','debt'];
+function setHash(h){ if(location.hash.slice(1)!==h) location.hash=h; }
+function route(){
+  const h=decodeURIComponent(location.hash.slice(1));
+  if(KITCHEN_TABS.includes(h)){
+    if(h==='report') role='bep';
+    setupKitchen();
+    tab(h,navBtn(h));
+  } else if(SHOP_TABS.includes(h)){
+    setupShop();
+    tabShop(h,navShopBtn(h));
+  } else {
+    document.getElementById('nav').classList.remove('on');
+    document.getElementById('navShop').classList.remove('on');
+    show('login');
+  }
+}
+window.addEventListener('hashchange',route);
+window.addEventListener('DOMContentLoaded',route);
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');document.getElementById(id).scrollTop=0;}
 function navBtn(t){return document.querySelector('.nav button[data-tab="'+t+'"]');}
 function tab(t,btn){
@@ -547,6 +576,7 @@ function tab(t,btn){
   if(btn)btn.classList.add('active');
   if(t==='report')renderReport();
   if(t==='log')renderLogList();
+  setHash(t);
 }
 
 /* ===== Thực đơn — mỗi ngày tối đa 3 bữa, collapsed ===== */
@@ -869,6 +899,7 @@ function tabShop(t,btn){
   if(t==='shop'){renderShop();renderCartBar();}
   if(t==='orders')renderOrderList();
   if(t==='debt')renderDebt();
+  setHash(t);
 }
 
 /* ----- Đặt hàng (catalog) ----- */

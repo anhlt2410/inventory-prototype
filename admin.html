@@ -2436,7 +2436,7 @@ function saveUser(i){
 
 /* ============ ACTIONS ============ */
 function doLogin(role){ROLE=role||'super';document.getElementById('login').style.display='none';document.getElementById('app').classList.add('on');applyRole();}
-function doLogout(){document.getElementById('app').classList.remove('on');document.getElementById('login').style.display='flex';toast('Đã đăng xuất');}
+function doLogout(){document.getElementById('app').classList.remove('on');document.getElementById('login').style.display='flex';setHash('');toast('Đã đăng xuất');}
 function toggleNav(){document.getElementById('app').classList.toggle('nav-open');}
 function go(p,btn){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
@@ -2445,8 +2445,30 @@ function go(p,btn){
   if(btn&&btn.dataset.page)btn.classList.add('active');
   document.getElementById('app').classList.remove('nav-open');/* chọn xong đóng menu trên mobile */
   window.scrollTo(0,0);
+  if(ADMIN_PAGES.includes(p)) setHash(p);/* trang chi tiết (detail/kdetail) giữ hash của trang cha */
 }
 function navBtn(p){return document.querySelector('[data-page='+p+']');}
+
+/* ===== Routing bằng hash — mỗi trang sidebar 1 path riêng, giữ khi reload/back ===== */
+const ADMIN_PAGES=['notif','source','supplier','order','warehouse','kitchen','parent','process','users'];
+function setHash(h){ if(location.hash.slice(1)!==h) location.hash=h; }
+function route(){
+  const h=decodeURIComponent(location.hash.slice(1));
+  if(ADMIN_PAGES.includes(h)){
+    if(!document.getElementById('app').classList.contains('on')){
+      ROLE='super';/* deep-link khi chưa đăng nhập → vào bằng Admin tổng */
+      document.getElementById('login').style.display='none';
+      document.getElementById('app').classList.add('on');
+      applyRole();
+    }
+    go(h,navBtn(h));
+  } else {
+    document.getElementById('app').classList.remove('on');
+    document.getElementById('login').style.display='flex';
+  }
+}
+window.addEventListener('hashchange',route);
+window.addEventListener('DOMContentLoaded',route);
 /* ---- Trang chi tiết dùng chung (full trang, có nút back) ---- */
 let detailBackFn=null;
 function openDetailPage(title,meta,actionsHTML,bodyHTML,backFn){

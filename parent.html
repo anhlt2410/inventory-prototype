@@ -89,6 +89,12 @@ a{color:var(--teal);text-decoration:none;font-weight:600}
 .today-tag{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:var(--teal);color:#fff;padding:3px 9px;border-radius:999px}
 .empty{text-align:center;color:var(--muted);font-size:14px;padding:26px 12px}
 .menu-card .dish{font-size:15.5px;font-weight:700;line-height:1.5;color:var(--ink)}
+.meals{display:flex;flex-direction:column;gap:8px}
+.meal{display:flex;gap:8px;align-items:baseline}
+.meal-tag{flex-shrink:0;font-size:11px;font-weight:800;letter-spacing:.02em;padding:3px 9px;border-radius:999px;line-height:1.5}
+.meal-tag.bf{background:var(--teal-soft);color:var(--teal-dark)}
+.meal-tag.lu{background:var(--teal);color:#fff}
+.meal-dish{font-size:14.5px;font-weight:700;line-height:1.5;color:var(--ink)}
 .mc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:11px}
 .status-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px}
 .status-chip.done{background:var(--teal-soft);color:var(--teal-dark)}
@@ -113,6 +119,10 @@ a{color:var(--teal);text-decoration:none;font-weight:600}
 .sheet-close:active{background:rgba(255,255,255,.45)}
 .sheet-head .d{font-size:13px;opacity:.9;margin-bottom:3px;padding-right:44px}
 .sheet-head h2{font-size:18px;font-weight:800;line-height:1.4;padding-right:44px}
+.sheet-head .meals-h{display:flex;flex-direction:column;gap:8px;padding-right:44px;margin-top:4px}
+.sheet-head .meal-h{display:flex;gap:9px;align-items:baseline}
+.sheet-head .mh-tag{flex-shrink:0;font-size:11px;font-weight:800;letter-spacing:.02em;background:rgba(255,255,255,.22);padding:3px 9px;border-radius:999px}
+.sheet-head .mh-dish{font-size:16px;font-weight:800;line-height:1.4}
 .sheet-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:16px 16px 30px}
 
 /* progress */
@@ -235,7 +245,7 @@ a{color:var(--teal);text-decoration:none;font-weight:600}
         <div class="sheet-grip"></div>
         <button class="sheet-close" onclick="closeDay()">✕</button>
         <div class="d" id="mDate"></div>
-        <h2 id="mDish"></h2>
+        <div class="meals-h" id="mMeals"></div>
       </div>
       <div class="sheet-body">
         <div class="status-banner" id="mBanner">
@@ -287,6 +297,7 @@ const PLAN_STEPS=PROCESS.map(s=>({s:'',t:'Dự kiến · '+s.desc[0]}));
 const MENU=[
   {dk:"17",iso:"2026-08-17",today:true,day:"Thứ Hai · 17/08",date:"Thứ Hai, 17/08/2026",
    st:{k:'doing',icon:'🍲',title:'Bếp đang chế biến',sub:'Cập nhật 09:12 · Bếp TH Đoàn Thị Điểm'},
+   bf:"Cháo gà · Sữa tươi",
    dish:"Cơm gạo ST25 · Thịt kho trứng cút · Canh cải ngọt nấu tôm · Dưa hấu",
    steps:DOING_STEPS,
    ing:[["Gạo ST25","Lộc Trời · Sóc Trăng","76 g/suất","https://truyxuat.vn/gao-st25"],
@@ -297,6 +308,7 @@ const MENU=[
         ["Dưa hấu","HTX Gò Công · Tiền Giang","56 g/suất","https://truyxuat.vn/gocong-dua"]]},
   {dk:"18",iso:"2026-08-18",day:"Thứ Ba · 18/08",date:"Thứ Ba, 18/08/2026",
    st:{k:'plan',icon:'🕒',title:'Chưa bắt đầu',sub:'Dự kiến bắt đầu 06:00'},
+   bf:"Bánh mì trứng ốp · Sữa đậu nành",
    dish:"Cơm · Gà rang gừng · Canh bí đỏ · Sữa chua",
    steps:PLAN_STEPS,
    ing:[["Gạo ST25","Lộc Trời · Sóc Trăng","76 g/suất","https://truyxuat.vn/gao-st25"],
@@ -305,6 +317,7 @@ const MENU=[
         ["Sữa chua","Vinamilk","1 hộp/suất","https://truyxuat.vn/vnm-suachua"]]},
   {dk:"19",iso:"2026-08-19",day:"Thứ Tư · 19/08",date:"Thứ Tư, 19/08/2026",
    st:{k:'plan',icon:'🕒',title:'Chưa bắt đầu',sub:'Dự kiến bắt đầu 06:00'},
+   bf:"Xôi gấc · Sữa tươi",
    dish:"Cơm · Cá basa sốt cà · Rau muống xào tỏi · Chuối",
    steps:PLAN_STEPS,
    ing:[["Cá basa phi lê","Vĩnh Hoàn · Đồng Tháp","48 g/suất","https://truyxuat.vn/vh-basa"],
@@ -313,6 +326,7 @@ const MENU=[
         ["Chuối tây","Hoàng Anh Gia Lai","1 quả/suất","https://truyxuat.vn/hagl-chuoi"]]},
   {dk:"20",iso:"2026-08-20",day:"Thứ Năm · 20/08",date:"Thứ Năm, 20/08/2026",
    st:{k:'plan',icon:'🕒',title:'Chưa bắt đầu',sub:'Dự kiến bắt đầu 06:00'},
+   bf:"Bún riêu cua · Sữa tươi",
    dish:"Cơm · Đậu phụ nhồi thịt · Canh chua · Thanh long",
    steps:PLAN_STEPS,
    ing:[["Đậu phụ","Cơ sở Phú Bình · Hà Nội","28 g/suất","https://truyxuat.vn/phubinh-dau"],
@@ -352,6 +366,12 @@ function route(){
 window.addEventListener('hashchange',route);
 window.addEventListener('DOMContentLoaded',route);
 
+function mealRows(m){
+  return `<div class="meals">
+      ${m.bf?`<div class="meal"><span class="meal-tag bf">Sáng</span><span class="meal-dish">${m.bf}</span></div>`:''}
+      <div class="meal"><span class="meal-tag lu">Trưa</span><span class="meal-dish">${m.dish}</span></div>
+    </div>`;
+}
 function cardHTML(i,feat){
   const m=MENU[i];
   return `<button class="menu-card${feat?' feat':''}" onclick="openDay(${i})">
@@ -359,7 +379,7 @@ function cardHTML(i,feat){
         <span class="mc-date">${m.day}</span>
         ${m.today?'<span class="today-tag">Hôm nay</span>':''}
       </div>
-      <div class="dish">${m.dish}</div>
+      ${mealRows(m)}
       <div class="mc-foot">
         <span class="status-chip ${m.st.k}">${m.st.icon} ${m.st.title}</span>
         <span class="mc-cta">Xem chi tiết ›</span>
@@ -387,7 +407,9 @@ function renderList(){
 function openDay(i){
   const m=MENU[i];
   document.getElementById('mDate').textContent=m.date;
-  document.getElementById('mDish').textContent=m.dish;
+  document.getElementById('mMeals').innerHTML=
+    (m.bf?`<div class="meal-h"><span class="mh-tag">Sáng</span><span class="mh-dish">${m.bf}</span></div>`:'')
+    +`<div class="meal-h"><span class="mh-tag">Trưa</span><span class="mh-dish">${m.dish}</span></div>`;
   const b=document.getElementById('mBanner');
   b.className='status-banner '+m.st.k;
   document.getElementById('mBannerIcon').textContent=m.st.icon;

@@ -143,6 +143,19 @@ tr.tr-click{cursor:pointer}
 .debt-card span{color:var(--muted);font-size:12.5px;display:block;margin-bottom:4px}
 .debt-card b{font-size:19px;font-weight:800}
 @media(max-width:560px){.debt-cards{grid-template-columns:1fr}}
+/* chi tiết NCC: thông tin chung + công nợ = 2 card cùng hàng */
+.sup-top{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}
+/* bảng gọn cho màn chi tiết NCC — row cao vừa đủ nội dung */
+.sup-compact th{padding:9px 18px}
+.sup-compact td{padding:8px 18px}
+.sup-compact td .trg{line-height:1.45}
+.sup-card{background:#FAFBF9;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.sup-card-t{font-weight:700;font-size:13.5px;margin-bottom:14px}
+.sup-info,.sup-stats{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+.sup-card .sk{color:var(--muted);font-size:12px}
+.sup-info .sv{font-weight:600}
+.sup-stat-v{font-size:19px;font-weight:800;margin-top:2px}
+@media(max-width:720px){.sup-top{grid-template-columns:1fr}}
 
 /* filter mở lịch chọn tháng (công nợ) */
 .chip.mfilter{border-style:dashed}
@@ -1857,18 +1870,29 @@ function monthlyDebt(kind,name){
   const base=real['08/2026'] || (kind==='school'?(((KITCHENS.find(k=>k.name===name)||{}).size)||600)*15000:8000000);
   return DEBT_MONTHS.map((m,idx)=>({month:m,total:real[m]!=null?real[m]:Math.round(base*(0.62+0.1*idx)/1000)*1000}));
 }
-function debtBlock(kind,name){
-  const rows=monthlyDebt(kind,name), paid=paidSet(kind,name), fk=debtKey(kind,name);
-  const sel=DEBT_FILTER[fk]||'', nEsc=name.replace(/'/g,"\\'");
+/* Thẻ tổng quan công nợ (dùng cho màn trường). NCC dùng thẻ riêng trong supplierDetailBody. */
+function debtSummaryHTML(kind,name){
+  const rows=monthlyDebt(kind,name), paid=paidSet(kind,name);
   const grand=rows.reduce((s,r)=>s+r.total,0);
   const unpaid=rows.filter(r=>!paid.has(r.month)).reduce((s,r)=>s+r.total,0);
   const noun=kind==='school'?'Tổng đơn hàng':'Tổng tiền nhập';
   const remainLbl=kind==='school'?'Còn phải thu':'Còn phải trả';
+  return `
+    <div class="debt-cards" style="grid-template-columns:repeat(2,1fr)">
+      <div class="debt-card"><span>${noun} · 5 tháng</span><b>${money(grand)}</b></div>
+      <div class="debt-card"><span>${remainLbl}</span><b style="color:${unpaid>0?'var(--red)':'var(--green-d)'}">${money(unpaid)}</b></div>
+    </div>`;
+}
+/* Bảng công nợ theo tháng + bộ lọc chip (không kèm thẻ tổng quan) */
+function debtTableHTML(kind,name){
+  const rows=monthlyDebt(kind,name), paid=paidSet(kind,name), fk=debtKey(kind,name);
+  const sel=DEBT_FILTER[fk]||'', nEsc=name.replace(/'/g,"\\'");
+  const noun=kind==='school'?'Tổng đơn hàng':'Tổng tiền nhập';
+  const isSup=kind==='supplier';
   const chips=`<button class="chip ${sel===''?'active':''}" onclick="setDebtFilter('${kind}','${nEsc}','')">Tất cả</button>`+
     rows.map(r=>`<button class="chip ${paid.has(r.month)?'paid':''} ${sel===r.month?'active':''}" onclick="setDebtFilter('${kind}','${nEsc}','${r.month}')">${paid.has(r.month)?'<span class="cdot"></span>':''}${mLabel(r.month)}</button>`).join('')+
     `<button class="chip mfilter ${sel!==''?'active':''}" onclick="openMonthMenu('${kind}','${nEsc}',this)">📅 ${sel!==''?mLabel(sel):'Chọn tháng'}</button>`;
   const shown=rows.filter(r=>!sel||r.month===sel);
-  const isSup=kind==='supplier';
   const trs=shown.map(r=>`
     <tr ${isSup?`class="tr-click" onclick="rowOpen(event,()=>setDebtFilter('${kind}','${nEsc}','${r.month}'))"`:''}>
       <td><b>${mLabel(r.month)}</b> <span style="color:var(--muted)">/2026</span></td>
@@ -1877,20 +1901,17 @@ function debtBlock(kind,name){
       <td style="text-align:right;white-space:nowrap"><button class="icon-btn" data-tip="${paid.has(r.month)?'Đánh dấu chưa thanh toán':'Đánh dấu đã thanh toán'}" onclick="toggleDebtMonth('${kind}','${nEsc}','${r.month}')">${paid.has(r.month)?ICON_UNDO:ICON_CHECK}</button></td>
     </tr>`).join('');
   return `
-    <div class="debt-cards" style="grid-template-columns:repeat(2,1fr)">
-      <div class="debt-card"><span>${noun} · 5 tháng</span><b>${money(grand)}</b></div>
-      ${isSup?'':`<div class="debt-card"><span>${remainLbl}</span><b style="color:${unpaid>0?'var(--red)':'var(--green-d)'}">${money(unpaid)}</b></div>`}
-    </div>
-    <p style="color:var(--muted);font-size:13.5px;margin:16px 0 12px;max-width:560px">Công nợ tổng hợp theo tháng · ${isSup?'bấm vào một tháng để xem nguyên liệu đã nhập từng ngày.':'bấm để đánh dấu trạng thái thanh toán. Tháng đã thanh toán hiển thị màu xanh trên bộ lọc.'}</p>
-    <div class="chips">${chips}</div>
-    <div class="panel">
+    ${isSup?'':`<p style="color:var(--muted);font-size:13.5px;margin:16px 0 12px;max-width:560px">Công nợ tổng hợp theo tháng · bấm để đánh dấu trạng thái thanh toán. Tháng đã thanh toán hiển thị màu xanh trên bộ lọc.</p>`}
+    <div class="chips"${isSup?' style="margin-top:2px"':''}>${chips}</div>
+    <div class="panel${isSup?' sup-compact':''}">
       <table>
         <thead><tr><th>Tháng</th><th style="text-align:right">${noun}</th><th style="text-align:center">Trạng thái</th><th style="text-align:right">Thao tác</th></tr></thead>
         <tbody>${trs||`<tr><td colspan="4"><div class="empty">Không có dữ liệu.</div></td></tr>`}</tbody>
       </table>
     </div>`;
 }
-function setDebtFilter(kind,name,m){DEBT_FILTER[debtKey(kind,name)]=m;rerenderDebt(kind,name);}
+function debtBlock(kind,name){return debtSummaryHTML(kind,name)+debtTableHTML(kind,name);}
+function setDebtFilter(kind,name,m){DEBT_FILTER[debtKey(kind,name)]=m;if(kind==='supplier')supplierDailyPage=1;rerenderDebt(kind,name);}
 function toggleDebtMonth(kind,name,m){
   const s=paidSet(kind,name);
   if(s.has(m))s.delete(m);else s.add(m);
@@ -1927,22 +1948,39 @@ document.addEventListener('click',e=>{if(!e.target.closest('.mfilter')&&!e.targe
 
 /* ===== CHI TIẾT NHÀ CUNG CẤP (thông tin + công nợ theo tháng) ===== */
 function supplierDetailBody(name){
+  curSupplierName=name;
   const sup=SUPPLIERS.find(s=>s.name===name)||{};
   const items=SOURCES.filter(s=>s.dist===name).map(s=>s.name);
   const sel=DEBT_FILTER[debtKey('supplier',name)]||'';
   const daily = sel ? supplierDailyBlock(name,sel) : '';
+  /* Tổng quan công nợ NCC */
+  const drows=monthlyDebt('supplier',name), spaid=paidSet('supplier',name);
+  const grand=drows.reduce((s,r)=>s+r.total,0);
+  const unpaid=drows.filter(r=>!spaid.has(r.month)).reduce((s,r)=>s+r.total,0);
+  const paidCount=drows.filter(r=>spaid.has(r.month)).length;
   return `
-    <div style="background:#FAFBF9;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:6px;max-width:680px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-        <div><div style="color:var(--muted);font-size:12px">Người liên hệ</div><div style="font-weight:600">${sup.contact||'—'}</div></div>
-        <div><div style="color:var(--muted);font-size:12px">Điện thoại</div><div style="font-weight:600">${sup.phone||'—'}</div></div>
-        <div><div style="color:var(--muted);font-size:12px">Địa chỉ</div><div style="font-weight:600">${sup.addr||'—'}</div></div>
-        <div><div style="color:var(--muted);font-size:12px">Truy xuất</div><a href="#" onclick="toast('Mở trang truy xuất: ${sup.link||''}');return false" style="font-weight:600">Xem nguồn gốc</a></div>
+    <div class="sup-top">
+      <div class="sup-card">
+        <div class="sup-card-t">Thông tin chung</div>
+        <div class="sup-info">
+          <div><div class="sk">Người liên hệ</div><div class="sv">${sup.contact||'—'}</div></div>
+          <div><div class="sk">Điện thoại</div><div class="sv">${sup.phone||'—'}</div></div>
+          <div><div class="sk">Địa chỉ</div><div class="sv">${sup.addr||'—'}</div></div>
+          <div><div class="sk">Truy xuất</div><a href="#" onclick="toast('Mở trang truy xuất: ${sup.link||''}');return false" class="sv" style="color:var(--green)">Xem nguồn gốc</a></div>
+        </div>
+        <div style="margin-top:14px"><div class="sk" style="margin-bottom:3px">Mặt hàng cung cấp</div><div style="font-size:13.5px">${items.join(', ')||'—'}</div></div>
       </div>
-      <div style="margin-top:14px"><div style="color:var(--muted);font-size:12px;margin-bottom:3px">Mặt hàng cung cấp</div><div style="font-size:13.5px">${items.join(', ')||'—'}</div></div>
+      <div class="sup-card">
+        <div class="sup-card-t">Công nợ</div>
+        <div class="sup-stats">
+          <div><div class="sk">Tổng tiền nhập · 5 tháng</div><div class="sup-stat-v">${money(grand)}</div></div>
+          <div><div class="sk">Còn phải trả</div><div class="sup-stat-v" style="color:${unpaid>0?'var(--red)':'var(--green-d)'}">${money(unpaid)}</div></div>
+        </div>
+        <div class="sk" style="margin-top:12px">Đã thanh toán ${paidCount}/${drows.length} tháng</div>
+      </div>
     </div>
-    <div style="margin:20px 0 14px"><b style="font-size:14px">Công nợ nhà cung cấp theo tháng</b> <span style="color:var(--muted);font-size:12.5px">· chọn một tháng để xem nguyên liệu đã nhập từng ngày</span></div>
-    ${debtBlock('supplier',name)}
+    <div style="margin:22px 0 10px"><b style="font-size:14px">Công nợ nhà cung cấp theo tháng</b> <span style="color:var(--muted);font-size:12.5px">· chọn một tháng để xem nguyên liệu đã nhập từng ngày</span></div>
+    ${debtTableHTML('supplier',name)}
     ${daily}`;
 }
 /* Sinh dữ liệu nhập nguyên liệu theo ngày (ổn định cho demo) của 1 NCC trong 1 tháng.
@@ -1971,27 +2009,49 @@ function supplierMonthDays(name,month){
   }
   return out;
 }
+/* Phân trang theo NGÀY để bảng luôn gọn trong 1 màn, không phải scroll dài. */
+let curSupplierName=null, supplierDailyPage=1;
+const SUP_DAILY_PER=4;
 function supplierDailyBlock(name,month){
   const days=supplierMonthDays(name,month);
   const head=`<div style="margin:22px 0 12px"><b style="font-size:14px">Nguyên liệu đã nhập từng ngày · ${mLabel(month)}/${month.split('/')[1]}</b></div>`;
   if(!days.length)return head+`<div class="panel"><div class="empty">Không có dữ liệu nhập trong tháng này.</div></div>`;
-  const body=days.map(d=>d.rows.map((r,ri)=>`
+  const pages=Math.max(1,Math.ceil(days.length/SUP_DAILY_PER));
+  if(supplierDailyPage>pages)supplierDailyPage=pages;
+  const start=(supplierDailyPage-1)*SUP_DAILY_PER;
+  const slice=days.slice(start,start+SUP_DAILY_PER);
+  const body=slice.map(d=>d.rows.map((r,ri)=>`
     <tr>
       ${ri===0?`<td rowspan="${d.rows.length}" style="white-space:nowrap;vertical-align:top;font-weight:600">${d.date}</td>`:''}
       <td><b>${r.name}</b></td>
       <td style="color:var(--muted)">${r.unit}</td>
       <td style="text-align:right;white-space:nowrap">${fmtQty(r.qty)}</td>
-      <td style="font-size:13px;line-height:1.7">${r.schools.map(s=>s.replace('Trường ','')).join('<br>')}</td>
+      <td><div class="trg" style="font-size:13px">${r.schools.map(s=>s.replace('Trường ','')).join('<br>')}</div></td>
     </tr>`).join('')).join('');
-  return head+`<div class="panel">
+  const pager = days.length>SUP_DAILY_PER ? `
+    <div class="pager">
+      <span>Hiển thị ${start+1}–${start+slice.length} / ${days.length} ngày</span>
+      <div class="pager-ctrl">
+        <button onclick="supplierDailyStep(-1)" title="Trang trước">‹</button>
+        <span>Trang <b>${supplierDailyPage}</b> / <b>${pages}</b></span>
+        <button onclick="supplierDailyStep(1)" title="Trang sau">›</button>
+      </div>
+    </div>` : '';
+  return head+`<div class="panel sup-compact">
     <table>
       <thead><tr><th>Ngày</th><th>Nguyên liệu</th><th>Đơn vị tính</th><th style="text-align:right">Số lượng</th><th>Trường</th></tr></thead>
       <tbody>${body}</tbody>
     </table>
+    ${pager}
   </div>`;
+}
+function supplierDailyStep(d){
+  supplierDailyPage=Math.max(1,supplierDailyPage+d);
+  if(curSupplierName)document.getElementById('detailBody').innerHTML=supplierDetailBody(curSupplierName);
 }
 function openSupplierDetail(i){
   const sup=SUPPLIERS[i];
+  supplierDailyPage=1;
   openDetailPage('🏭 '+sup.name, sup.addr||'',
     `<button class="btn btn-green btn-sm" onclick="openSupplierPanel(${i})"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25ZM20.7 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z"/></svg>Sửa nhà cung cấp</button>`,
     supplierDetailBody(sup.name),

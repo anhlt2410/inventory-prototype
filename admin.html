@@ -66,6 +66,7 @@ a{color:var(--green-d)}
 .field input:focus, .field select:focus, .field textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 4px rgba(72,192,120,.16)}
 .btn{border:none;border-radius:12px;padding:12px 16px;font:600 14px 'Be Vietnam Pro';transition:filter .15s,transform .1s,box-shadow .15s;display:inline-flex;align-items:center;gap:6px;justify-content:center}
 .btn:hover{filter:brightness(1.04)}
+.btn:disabled{opacity:.45;cursor:default;filter:none;pointer-events:none}
 .btn:active{transform:translateY(1px)}
 .btn-primary{background:var(--grad);color:#fff;width:100%;padding:14px;font-size:15px;box-shadow:0 10px 24px rgba(46,158,91,.36),inset 0 1px 0 rgba(255,255,255,.35)}
 .btn-sm{padding:7px 12px;font-size:13px}
@@ -2086,39 +2087,71 @@ const IMPORT_AGG = [
   {sup:"Vinamilk", items:[
     {name:"Sữa tươi học đường", unit:"hộp", schools:[["TH Đoàn Thị Điểm",1250],["TH Kim Liên",1100],["MN Hoa Sen",420],["MN Việt Bun",360],["MN Sao Mai",410],["TH Trung Tự",640]]}]},
 ];
+let aggPage=1;
+const AGG_PER=9;
+/* Làm phẳng IMPORT_AGG thành list dòng nguyên liệu (giữ thứ tự NCC liền nhau) */
+function aggFlat(){
+  const flat=[];
+  IMPORT_AGG.forEach(g=>g.items.forEach(it=>{
+    flat.push({sup:g.sup,name:it.name,unit:it.unit,
+      qty:it.schools.reduce((s,x)=>s+x[1],0),
+      schools:it.schools.map(x=>x[0]).join(', ')});
+  }));
+  return flat;
+}
 function openPurchaseAgg(){
   const n=new Date();
   const today=`${String(n.getDate()).padStart(2,'0')}/${String(n.getMonth()+1).padStart(2,'0')}/${n.getFullYear()}`;
-  let nSup=0, nItem=0;
-  const body=IMPORT_AGG.map(g=>{
-    nSup++;
-    return g.items.map((it,i)=>{
-      nItem++;
-      const qty=it.schools.reduce((s,x)=>s+x[1],0);
-      const schools=it.schools.map(x=>x[0]).join(', ');
-      return `<tr>
-        ${i===0?`<td rowspan="${g.items.length}" style="vertical-align:top;font-weight:700">${g.sup}</td>`:''}
-        <td style="white-space:nowrap">${it.name}</td>
-        <td style="text-align:center">${it.unit}</td>
-        <td style="text-align:right;white-space:nowrap;font-weight:700">${fmtQty(qty)}</td>
-        <td style="color:var(--muted);font-size:13px">${schools}</td>
-      </tr>`;
-    }).join('');
-  }).join('');
+  const nSup=IMPORT_AGG.length, nItem=aggFlat().length;
+  aggPage=1;
   openDrawer('Tổng hợp đơn nhập',`
-    <p style="font-size:14px;margin-bottom:14px">Tổng hợp đơn nhập nguyên liệu cho các trường có bếp trong ngày <b>${today}</b>.</p>
-    <div class="panel">
-      <table>
-        <thead><tr>
-          <th>NCC</th><th>Nguyên liệu</th><th style="text-align:center">ĐVT</th>
-          <th style="text-align:right">Số lượng</th><th>Trường</th>
-        </tr></thead>
-        <tbody>${body}</tbody>
-      </table>
+    <div style="display:flex;flex-direction:column;min-height:100%">
+      <p style="font-size:14px;margin-bottom:14px">Tổng hợp đơn nhập nguyên liệu cho các trường có bếp trong ngày <b>${today}</b>.</p>
+      <div class="panel">
+        <table>
+          <thead><tr>
+            <th>NCC</th><th>Nguyên liệu</th><th style="text-align:center">ĐVT</th>
+            <th style="text-align:right;white-space:nowrap;min-width:82px">Số lượng</th><th>Trường</th>
+          </tr></thead>
+          <tbody id="aggBody"></tbody>
+        </table>
+      </div>
+      <div id="aggPager" style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:14px;font-size:13px;color:var(--muted)"></div>
     </div>`,
     `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
      <button class="btn btn-green" onclick="closeDrawer();toast('Đã tạo đơn nhập cho ${nSup} NCC · ${nItem} nguyên liệu (mock)')">Xác nhận đơn nhập</button>`);
   document.getElementById('drawer').classList.add('xwide');
+  renderAgg();
+}
+function aggGo(d){
+  const pages=Math.max(1,Math.ceil(aggFlat().length/AGG_PER));
+  aggPage=Math.min(pages,Math.max(1,aggPage+d));
+  renderAgg();
+}
+function renderAgg(){
+  const flat=aggFlat();
+  const pages=Math.max(1,Math.ceil(flat.length/AGG_PER));
+  if(aggPage>pages)aggPage=pages;
+  const start=(aggPage-1)*AGG_PER, slice=flat.slice(start,start+AGG_PER);
+  document.getElementById('aggBody').innerHTML=slice.map((r,idx)=>{
+    const firstOfSup = idx===0 || slice[idx-1].sup!==r.sup;
+    let span=1;
+    if(firstOfSup) for(let j=idx+1;j<slice.length && slice[j].sup===r.sup;j++) span++;
+    return `<tr>
+      ${firstOfSup?`<td rowspan="${span}" style="vertical-align:top;font-weight:700">${r.sup}</td>`:''}
+      <td style="white-space:nowrap">${r.name}</td>
+      <td style="text-align:center">${r.unit}</td>
+      <td style="text-align:right;white-space:nowrap;font-weight:700">${fmtQty(r.qty)}</td>
+      <td style="color:var(--muted);font-size:13px">${r.schools}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('aggPager').innerHTML=`
+    <span>Hiển thị ${start+1}–${Math.min(start+AGG_PER,flat.length)} trên ${flat.length} nguyên liệu</span>
+    <span style="display:flex;align-items:center;gap:8px">
+      <button class="btn btn-ghost btn-sm" ${aggPage<=1?'disabled':''} onclick="aggGo(-1)">‹ Trước</button>
+      <span>Trang <b>${aggPage}</b> / ${pages}</span>
+      <button class="btn btn-ghost btn-sm" ${aggPage>=pages?'disabled':''} onclick="aggGo(1)">Sau ›</button>
+    </span>`;
 }
 function renderParents(){
   const sel = document.getElementById('parentSchool');

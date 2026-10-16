@@ -2,7 +2,7 @@
 
 Tài liệu trích xuất từ `admin.html` (prototype). Dùng làm spec để dựng lại UI khi code thực tế (framework bất kỳ). Mọi giá trị dưới đây là **nguồn sự thật** về màu, kích thước, spacing, component và tương tác của app Quản trị kho.
 
-- **App**: Quản trị kho nguyên liệu (desktop) — điều phối bếp ăn trường học.
+- **App**: Quản trị kho thực phẩm (desktop) — điều phối bếp ăn trường học.
 - **Phong cách**: gọn, dày thông tin, ít thao tác thừa. Nền xanh lá nhạt, sidebar xanh rừng đậm, accent xanh lá.
 - **Ngôn ngữ**: tiếng Việt có dấu, copy ngắn, động từ chủ động.
 - **Font**: `'Be Vietnam Pro'`, weights 400/500/600/700/800 (Google Fonts). Fallback: `system-ui, sans-serif`.
@@ -112,14 +112,35 @@ Tài liệu trích xuất từ `admin.html` (prototype). Dùng làm spec để d
 
 ## 3. Navigation (sidebar)
 
-Thứ tự menu cố định, mỗi item có icon SVG 19×19 + label, item active có nền gradient:
+Menu gom theo **cụm chức năng** (nhãn chuẩn HanoiCheck). Mỗi cụm là `div.nav-group` mở đầu bằng `div.nav-cap` (caption uppercase 10.5px, `rgba(255,255,255,.62)`, cách cụm trên 15px). Mỗi item có icon SVG 19×19 + label, item active có nền gradient.
 
-1. **Thông báo** (`notif`) — có badge số (mặc định `3`), icon chuông.
-2. **Nguyên liệu** (`source`) — icon khối 3D.
-3. **Nhà cung cấp** (`supplier`) — icon xe tải.
-4. **Đơn hàng** (`order`) — icon clipboard.
-5. **Quản lý trường** (`kitchen`) — icon đầu bếp.
-6. **Tài khoản PHHS** (`parent`) — icon người.
+| Cụm (`.nav-cap`) | Item | `data-page` | Icon |
+|---|---|---|---|
+| **Cấu hình nhà cung ứng** | Quản lý tài khoản | `users` | khiên |
+| | Quản lý nhân sự | `employees` | 2 người |
+| | Quản lý NCC phụ | `supplier` | xe tải |
+| | Quản lý kho (danh sách kho) | `warehouses` | nhà kho |
+| | Quản lý cơ sở sản xuất | `facilities` | nhà xưởng |
+| **Quản lý quy trình sản xuất** | Quản lý khâu sản xuất | `process` | clipboard dòng |
+| | Quản lý quy trình sản xuất | `workflows` | sơ đồ |
+| **Quản lý thực phẩm** | Danh mục thực phẩm chuẩn | `stdcat` | bảng kẻ |
+| | Quản lý thực phẩm | `source` | khối 3D |
+| | Quản lý món ăn | `dishes` | mái vòm |
+| | QL lô nhập hàng | `batches` | khối lô |
+| | Quản lý thực đơn | `menus` | sổ đánh dấu |
+| **Quản lý đơn hàng** | Quản lý đơn | `order` | clipboard |
+| | Danh sách trường | `kitchen` | đầu bếp |
+| **Riêng Smart Kitchen** | Báo cáo | `report` | tài liệu + biểu đồ cột |
+| | Thông báo | `notif` | chuông + badge số (mặc định `3`) |
+| | Tài khoản PHHS | `parent` | người |
+
+- **Tồn kho** (`page-warehouse`) không còn là mục nav — mở qua nút "Xem tồn kho" trên từng dòng của `warehouses` (`openWarehouseStock(i)` đặt `curWarehouse` rồi `go('warehouse')`). `renderWarehouse()` lấy tiêu đề từ `curWarehouse` nếu có, nếu không thì theo vai trò (Kho tổng/Kho phụ).
+- `page-stdcat` (Danh mục thực phẩm chuẩn) **chỉ đọc**: không nút CRUD, phân trang 10, bấm dòng mở Drawer chi tiết (quy đổi gram, loại TP, ghi chú).
+- Khâu sản xuất (`page-process`) giữ thanh **hạn giờ đăng ký suất ăn** (`mealDeadlineBar`) + nút export — chức năng riêng Smart Kitchen. `PROCESS` thêm field `code` (Mã) + `note` (Ghi chú).
+- **Phần D (4 màn phức tạp):** `employees` (chi tiết + form: khối KSK/ATTP/Vận chuyển hiện theo vai trò đã tick); `workflows` (kéo-thả khâu qua HTML5 DnD `wfDrag*` + nút ▲▼ `wfMove`, Số khâu disabled tự đếm); `dishes` & `batches` dùng **Drawer 2 bước** (`stepBar()`/`stepGo()`, section `.dstep`, footer `Tiếp tục`/`Quay lại` render qua `*FootRender`). Lô có **Mã QR** tự sinh `batchQR()` (disabled). Dòng động + ảnh minh chứng: `photoGrid()`/`addPhotoTo()`.
+- `aside nav` có `overflow-y:auto` + scrollbar mảnh — danh sách menu sẽ còn dài thêm.
+- `applyRole()` ẩn button không thuộc `ROLES[ROLE].nav`, rồi ẩn luôn `.nav-group` nếu cụm đó không còn button nào hiển thị.
+- Trang mặc định sau đăng nhập = `ROLES[ROLE].nav[0]` (`notif`), **không** phải item đầu trên DOM.
 
 - Active state: `.active{ background:var(--grad); color:#fff; font-weight:600 }`.
 - Hover (không active): chữ trắng + nền `rgba(255,255,255,.06)`.
@@ -167,9 +188,22 @@ Base: `border-radius:10px; padding:11px 16px; font:600 14px; inline-flex; gap:6p
 | `.pill.b` | blue-soft | blue | Thông tin / đếm số |
 | `.pill.r` | red-soft | red | Tiêu cực / "Không" |
 
-**Map trạng thái trường** (field `s` trong data): `a`=Đang chế biến, `b`=Đã nhập nguyên liệu, `g`=Hoàn tất hôm nay, `r`=Chưa bắt đầu.
+**Map trạng thái trường** (field `s` trong data): `a`=Đang chế biến, `b`=Đã nhập thực phẩm, `g`=Hoàn tất hôm nay, `r`=Chưa bắt đầu.
 
-**Status-pill (đơn hàng)** — bấm mở menu đổi trạng thái: `.status-pill.st-g` (Đã giao, xanh), `.status-pill.st-a` (Chờ giao, amber). Menu bung ra là `.status-menu` (position:fixed, đặt dưới nút, có dot màu + dấu ✓ mục đang chọn).
+**Status-pill (đơn hàng)** — bấm mở menu đổi trạng thái. **8 trạng thái chuẩn HanoiCheck**, khai báo một chỗ ở `ORDER_STATUS` (`{v, cls, color}`); class pill = `st-${orderStatusCls(status)}`:
+
+| Trạng thái | class | màu |
+|---|---|---|
+| Chờ xác nhận | `st-a` | hổ phách |
+| Từ chối | `st-r` | đỏ |
+| Đang chuẩn bị | `st-b` | xanh dương |
+| Đang giao | `st-b` | xanh dương |
+| Đã giao | `st-b` | xanh dương |
+| Giao hàng thành công | `st-g` | xanh lá |
+| Trả hàng | `st-r` | đỏ |
+| Hủy | `st-r` | đỏ |
+
+Hằng số phụ: `ORDER_DONE` (= Giao hàng thành công), `ORDER_CLOSED` (đơn đã chốt — `orderOpen()` phủ định), `ORDER_VOID` (Từ chối/Hủy — loại khỏi công nợ). Bộ lọc trạng thái đổ bằng `populateOrderStatusFilter()`, đừng hard-code 8 option vào markup. Menu bung ra là `.status-menu` (position:fixed, đặt dưới nút, có dot màu + dấu ✓ mục đang chọn).
 
 ### 4.4 Filters & Toolbar
 
@@ -201,7 +235,7 @@ Base: `border-radius:10px; padding:11px 16px; font:600 14px; inline-flex; gap:6p
 ### 4.8 Timeline thực đơn (`.day`)
 
 - Card accordion: `.day-head` (nền #FAFBF9, click toggle `.open`) + `.day-body` (ẩn, hiện khi `.open`).
-- `.ing`: grid 3 cột `1fr 110px 1fr` (Nguyên liệu / Số lượng / Nguồn), header `.h` uppercase muted, mỗi ô border-bottom dashed.
+- `.ing`: grid 3 cột `1fr 110px 1fr` (Thực phẩm / Số lượng / Nguồn), header `.h` uppercase muted, mỗi ô border-bottom dashed.
 
 ### 4.9 Báo cáo quy trình (`.steps`)
 
@@ -238,10 +272,35 @@ Base: `border-radius:10px; padding:11px 16px; font:600 14px; inline-flex; gap:6p
 ## 5. Màn Login
 
 - Center full-viewport. `.login-box`: trắng, border line, radius 18px, padding 40px, `width:380px`.
-- Logo box gradient `52×52` (SVG nhà kho) → h1 "Quản trị kho nguyên liệu" → p mô tả → 2 field (user/password) → `.btn-primary` "Đăng nhập" → hint → link "← Về trang chủ".
+- Logo box gradient `52×52` (SVG nhà kho) → h1 "Quản trị kho thực phẩm" → p mô tả → 2 field (user/password) → `.btn-primary` "Đăng nhập" → hint → link "← Về trang chủ".
 - **Không validation** — nhập gì cũng vào (`doLogin()` chỉ ẩn login, hiện app).
 
 ---
+
+## Màn Báo cáo (`page-report`)
+
+Admin chọn ngày → xem trường nào chưa báo cáo quy trình bếp. **Chỉ hiện trường `kitchen:true`.**
+
+- Bộ lọc trong `.tbar-right`: `input[type=date]` (mặc định `TODAY_DEMO`) · select 3 trạng thái · ô tìm theo tên/mã trường.
+- Thanh tóm tắt `.rsum` nằm bên trái `.tbar`, **sát trên bảng**: `Tổng N trường có bếp · Đã đủ a · Thiếu b · Chưa báo cáo c`.
+- Cột Tiến độ: `{x}/{y} bước` + `.prog` (progress bar). Class đổi theo trạng thái: `.prog.d` đỏ (x=0), `.prog.w` hổ phách (0<x<y), `.prog` gradient xanh (đủ).
+- Highlight dòng: `tr.rp-danger` (nền đỏ nhạt + viền trái đỏ) khi chưa báo cáo, `tr.rp-warn` (vàng nhạt) khi thiếu, không class khi đủ.
+- `openReportDetail(school, iso)` → Drawer **chỉ xem** (`wide`), tái dùng `.step`: hiện **toàn bộ** bước theo thứ tự. Bước đã báo cáo → ghi chú + ảnh `.photo.view` (bấm mở `#pvOverlay`) + người & giờ báo cáo. Bước chưa báo cáo → `.step.none` + chip `.nope` "Chưa báo cáo". Footer chỉ có nút Đóng.
+
+## Màn Quản lý thực đơn (`page-menus`)
+
+CRUD thủ công, **không thay** luồng import Excel theo tuần ở chi tiết trường (`renderMenu()` — khác `renderMenus()`).
+
+- 5 bộ lọc: nhóm tuổi · trường · trạng thái · thứ · tìm kiếm. Thực đơn **dùng chung** (`schools` rỗng) luôn khớp mọi bộ lọc trường.
+- Drawer Thêm/Sửa dùng **stepper dọc 4 section** (`.sect`), rộng `wide`:
+  1. Thông tin — tên, mã, nhóm tuổi, trạng thái, ghi chú
+  2. Lịch áp dụng — chips thứ (`.pick`) + 2 ô ngày → vùng xem trước `.mf-prev` **cập nhật tức thì**
+  3. Trường áp dụng — chips chọn nhiều + "Chọn tất cả" / "Bỏ chọn"; **để trống = dùng chung**
+  4. Cấu hình bữa ăn — 4 nhóm chips món, **lọc theo nhóm tuổi** đã chọn ở section 1
+- State form giữ ở biến `mf`; mỗi thao tác gọi `mfRender*()` để vẽ lại vùng liên quan. Đổi nhóm tuổi sẽ **bỏ món không còn hợp** và toast báo số món bị bỏ.
+- Cảnh báo dùng `.alert` (`warn`/`danger`/`info`) — **không chặn nút Lưu** (prototype không validate): Đến ngày < Từ ngày · 0 ngày · > `MENU_DAYS_WARN` (200) ngày · trùng thực đơn · sửa thực đơn đang áp dụng.
+- Trùng thực đơn tính theo **nhóm tuổi + trường + ngày + bữa**, cho chọn `Ghi đè` / `Bỏ qua ngày trùng` (`mf.dup`).
+
 
 ## 6. Cấu trúc dữ liệu (mock) & render
 
@@ -249,13 +308,16 @@ Data là các const array/object ở đầu `<script>`; mỗi màn có hàm `ren
 
 | Biến | Schema | Ghi chú |
 |---|---|---|
-| `SOURCES` | `{name, dist, origin, link, price, unit, hist:[[date,price],...]}` | Nguyên liệu; `dist` khớp `SUPPLIERS.name`; `hist` mới nhất trước |
-| `SUPPLIERS` | `{name, contact, phone, addr}` | Nhà cung cấp — nguồn chọn khi thêm nguyên liệu |
+| `SOURCES` | `{name, dist, origin, link, price, unit, hist:[[date,price],...]}` | Thực phẩm; `dist` khớp `SUPPLIERS.name`; `hist` mới nhất trước |
+| `SUPPLIERS` | `{name, contact, phone, addr}` | Nhà cung ứng phụ — nguồn chọn khi thêm thực phẩm |
 | `KITCHENS` | `{name, addr, size, status, s, kitchen, user, lunch}` | Trường/bếp; `s`=màu pill; `size`=suất/ngày |
 | `NOTIFS` | `[icon, bgVar, html, time, unread, date]` | Mảng vị trí, không phải object |
 | `MENU` | `{d, dish, ing:[[tên, sốlượng],...]}` | Thực đơn theo ngày (tuần 34) |
 | `REPORT_STEPS` | `{cls, ic, t, sub, ph}` | 6 bước quy trình; `ph`=số ảnh |
-| `ORDERS` | `{code, school, date, status, items:[[tên,SL,đơngiá,ĐVT],...]}` | Mã đơn = `yyyyMMdd`+số thứ tự trong ngày |
+| `MENUS` | `{code, name, age, status, note, wd, from, to, schools, meals}` | `age`=chỉ số `AGE_GROUPS`; `wd`=mảng thứ (`Date.getDay()`); `schools` **rỗng = dùng chung mọi trường** |
+| `DISHES` | `{code, name, slot, ages}` | Nguồn chọn món cho thực đơn; `slot` khớp `MEAL_SLOTS.k` |
+| `REPORT_PLAN` | `{ngày: {tên trường: số bước đã báo cáo}}` | `buildReportSteps()` nở ra chi tiết từng bước theo `PROCESS` |
+| `ORDERS` | `{code, inv, school, date, status, paid, meals\|items, history}` | Mã đơn = `yyyyMMdd`+số thứ tự. `status` ∈ `ORDER_STATUS`. Trường có bếp dùng `meals`, không bếp dùng `items` — **luôn guard `o.items` trước khi loop** |
 | `PAYMENTS` | `{ [school]: [[ngày, sốtiền, ghichú],...] }` | Thanh toán ghi tay → tính công nợ |
 | `PARENTS` | `{ [school]: [[tênPH, sđt, tênHS, lớp],...] }` | SĐT = tên đăng nhập |
 

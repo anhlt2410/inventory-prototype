@@ -1,6 +1,6 @@
 # inventory-prototype
 
-Demo prototype: hệ thống kho nguyên liệu → bếp trường → phụ huynh.
+Demo prototype: hệ thống kho thực phẩm → bếp trường → phụ huynh.
 Static HTML thuần, không build step, không validation — chỉ để hình dung luồng.
 
 ## Cấu trúc

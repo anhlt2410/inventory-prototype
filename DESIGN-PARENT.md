@@ -127,7 +127,7 @@ Sắp xếp danh sách: ngày giảm dần (`iso.localeCompare` đảo); thẻ h
 - `.modal`: `inset:0`, nền `rgba(8,20,17,.5)`, mở dần + `backdrop-filter:blur(3px)`.
 - `.sheet`: từ `top:34px` xuống đáy, radius `26px 26px 0 0`, trượt lên (`translateY(101%→0)`), transition `.42s cubic-bezier(.22,1,.36,1)`.
 - `.sheet-head`: gradient teal, có `.sheet-grip` (thanh kéo) + `.sheet-close` (nút tròn ✕) + ngày (`.d`) + món (`h2`).
-- `.sheet-body`: cuộn dọc, chứa banner trạng thái + timeline + nguyên liệu.
+- `.sheet-body`: cuộn dọc, chứa banner trạng thái + timeline + thực phẩm.
 
 ### 4.5 Status banner + Timeline dọc (`.tl`)
 
@@ -136,7 +136,7 @@ Sắp xếp danh sách: ngày giảm dần (`iso.localeCompare` đảo); thẻ h
   - `.done .dot` → nền teal, dấu ✓; `.doing .dot` → viền amber + icon bước; chưa bắt đầu → trống.
 - `.tstep .photos`/`.photo` (74×56, gradient teal nhạt, 📷): ảnh do bếp gửi tại từng bước.
 
-### 4.6 Nguyên liệu & nguồn gốc
+### 4.6 Thực phẩm & nguồn gốc
 
 - `.ing`: dòng flex — trái: `.n` (tên) + `.s` (nguồn) + `.trace` (link "🔗 Truy xuất nguồn gốc"); phải: `.qty` (định lượng/suất, teal-dark). Border-bottom dashed.
 - Link truy xuất → chỉ `toast('Mở trang truy xuất: ...')`.

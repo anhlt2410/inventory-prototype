@@ -377,7 +377,7 @@ button{font-family:inherit;cursor:pointer}
 <script>
 /* ===== Dữ liệu ===== */
 // Thực đơn theo ngày: mỗi ngày tối đa 3 bữa (bữa sáng · trưa học sinh · trưa giáo viên).
-// type = tên bữa, ic = icon, dish = chi tiết món, portions = số suất, ing = nguyên liệu.
+// type = tên bữa, ic = icon, dish = chi tiết món, portions = số suất, ing = thực phẩm.
 const TODAY_MENU={dow:'Thứ Hai', date:'17/08', meals:[
   {type:'Bữa sáng', ic:'🥣', dish:'Cháo gà hạt sen · Sữa tươi Vinamilk', portions:'980 suất',
    ing:[['Gạo tẻ','25 kg'],['Thịt gà','20 kg'],['Hạt sen','5 kg'],['Sữa tươi','980 hộp']]},
@@ -484,7 +484,7 @@ const PROCESS=[
   {ic:"🔪", t:"Sơ chế - rửa thực phẩm", time:"06h45 – 07h30",
    desc:["Rửa sạch thực phẩm, thái sơ chế thực phẩm sống","Vệ sinh sạch sẽ khu vực sơ chế"]},
   {ic:"🍲", t:"Chế biến thực phẩm", time:"07h45 – 09h45",
-   desc:["Đối chiếu thực đơn, tẩm ướp, chế biến nguyên liệu thành món ăn","Đánh giá cảm quan món ăn","Vệ sinh khu vực bếp"]},
+   desc:["Đối chiếu thực đơn, tẩm ướp, chế biến thực phẩm thành món ăn","Đánh giá cảm quan món ăn","Vệ sinh khu vực bếp"]},
   {ic:"🍱", t:"Lưu mẫu - chia ăn - bảo quản - vận chuyển", time:"09h45 – 10h45",
    desc:["Lưu mẫu (lưu nghiệm) thức ăn 24h theo quy định","Chia món ăn, cơm vào từng suất; ủ ấm; chia canh vào thùng inox","Chuyển suất ăn, canh lên khu vực ăn"]},
   {ic:"🍽️", t:"Giao nhận suất ăn", time:"10h45 – 11h00",
@@ -597,7 +597,7 @@ function mealCard(m,open){
       <h3>${m.dish}</h3>
       <span class="pill">${m.portions}</span>
       <div class="ing-list" style="background:var(--bg);margin-top:12px">
-        <div class="section-title" style="margin:12px 0 2px">Nguyên liệu</div>
+        <div class="section-title" style="margin:12px 0 2px">Thực phẩm</div>
         ${m.ing.map(x=>`<div class="ing-row"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}
       </div>
     </div>
@@ -842,7 +842,7 @@ function send(){
 /* ===================================================================
    ===== TRƯỜNG KHÔNG BẾP — Đặt hàng / Đơn hàng / Công nợ =====
    =================================================================== */
-// Danh mục nguyên liệu + đơn giá — đồng bộ với SOURCES bên admin.html (Web Admin)
+// Danh mục thực phẩm + đơn giá — đồng bộ với SOURCES bên admin.html (Web Admin)
 const CATALOG=[
   {cat:'Gạo & thực phẩm khô', items:[
     {id:'gao',  ic:'🌾', name:'Gạo ST25', unit:'kg', sup:'Tập đoàn Lộc Trời', price:22000},

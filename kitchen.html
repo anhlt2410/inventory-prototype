@@ -45,14 +45,24 @@ button{font-family:inherit;cursor:pointer}
 #login .sub{text-align:center;color:var(--muted);font-size:16px;margin:6px 0 30px}
 .field{margin-bottom:16px}
 .field label{display:block;font-weight:700;font-size:16px;margin-bottom:8px}
-.field input{width:100%;padding:16px;border:2px solid var(--line);border-radius:14px;font:400 18px 'Be Vietnam Pro';background:#fff}
-.field input:focus{outline:none;border-color:var(--orange)}
+.field label .req{color:var(--orange-dk)}
+.field input,.field select,.field textarea{width:100%;padding:16px;border:2px solid var(--line);border-radius:14px;font:400 18px 'Be Vietnam Pro';background:#fff;color:var(--ink)}
+.field select{min-height:58px}
+.field textarea{min-height:92px;resize:none;line-height:1.5;font-size:17px}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--orange)}
+.field input:disabled,.field .ro{background:var(--bg);color:var(--muted);font-weight:600;-webkit-text-fill-color:var(--muted)}
+.field .ro{padding:16px;border:2px solid var(--line);border-radius:14px;font:600 17px 'Be Vietnam Pro'}
+.frow{display:flex;gap:12px}
+.frow>*{flex:1;min-width:0}
+.frow .unit{flex:0 0 96px;display:flex;align-items:center;justify-content:center;border:2px solid var(--line);border-radius:14px;background:var(--bg);font:700 18px 'Be Vietnam Pro';color:var(--muted)}
+.form-note{background:var(--orange-soft);color:var(--orange-dk);border-radius:16px;padding:16px;font-size:15px;font-weight:600;line-height:1.5;margin-bottom:18px}
 .hint{text-align:center;color:var(--muted);font-size:13px;margin-top:14px}
 
 /* tabs bottom nav */
 .nav{display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px 8px calc(12px + env(safe-area-inset-bottom));grid-template-columns:1fr 1fr 1fr;box-shadow:0 -6px 24px rgba(38,34,30,.06);z-index:20}
 .nav.on{display:grid}
 .nav.two{grid-template-columns:1fr 1fr}
+.nav.one{grid-template-columns:1fr}
 .nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;font:600 13px 'Be Vietnam Pro';color:var(--muted);padding:8px 6px;border-radius:14px;transition:.15s}
 .nav button .i{font-size:26px}
 .nav button.active{color:var(--orange);background:var(--orange-soft)}
@@ -289,30 +299,48 @@ button{font-family:inherit;cursor:pointer}
     </div>
   </div>
 
-  <!-- NHẬT KÝ (danh sách) -->
-  <div class="screen" id="s-log">
-    <div class="head"><h1>Nhật ký bếp</h1><p>Xem lại theo từng ngày</p></div>
-    <div class="content">
-      <div class="filter">
-        <input type="date" id="logDate" onchange="renderLogList()">
-        <button class="clr" onclick="clearFilter()">Tất cả</button>
-      </div>
-      <div id="logList"></div>
-    </div>
-  </div>
-
-  <!-- NHẬT KÝ (chi tiết 1 ngày) -->
+  <!-- BÁO CÁO (chi tiết 1 ngày trong lịch sử) -->
   <div class="screen" id="s-logdetail">
     <div class="content">
-      <button class="back" onclick="tab('log',navBtn('log'))">← Danh sách nhật ký</button>
+      <button class="back" onclick="tab('report',navBtn('report'))">← Lịch sử báo cáo</button>
       <div id="logDetailBody"></div>
     </div>
   </div>
 
-  <!-- BÁO CÁO -->
+  <!-- BÁO CÁO (lịch sử) -->
   <div class="screen" id="s-report">
-    <div class="head"><h1>Báo cáo công việc</h1><p>Bữa trưa hôm nay · Thứ Hai 17/08</p></div>
-    <div class="content" id="reportBody"></div>
+    <div class="head"><h1>Báo cáo công việc</h1><p>Lịch sử báo cáo theo từng ngày</p></div>
+    <div class="content">
+      <button class="btn btn-orange" style="margin-bottom:18px" onclick="openReportForm()">📷 Báo cáo hôm nay</button>
+      <div id="reportHistory"></div>
+    </div>
+  </div>
+
+  <!-- BÁO CÁO HÔM NAY (form) -->
+  <div class="screen" id="s-reportform">
+    <div class="head"><h1>Báo cáo hôm nay</h1><p>Bữa trưa hôm nay · Thứ Hai 17/08</p></div>
+    <div class="content">
+      <button class="back" onclick="tab('report',navBtn('report'))">← Lịch sử báo cáo</button>
+      <div id="reportBody"></div>
+    </div>
+  </div>
+
+  <!-- LÔ HÀNG (lịch sử nhập) -->
+  <div class="screen" id="s-batch">
+    <div class="head"><h1>Lô hàng</h1><p>Lịch sử nhập lô hàng · gửi lên Kho tổng</p></div>
+    <div class="content">
+      <button class="btn btn-orange" style="margin-bottom:18px" onclick="openBatchIntake()">📦 Nhập lô hàng</button>
+      <div id="batchList"></div>
+    </div>
+  </div>
+
+  <!-- NHẬP LÔ HÀNG (form) -->
+  <div class="screen" id="s-batchform">
+    <div class="head"><h1>Nhập lô hàng</h1><p>Ghi nhận lô thực phẩm nhập kho</p></div>
+    <div class="content">
+      <button class="back" onclick="tab('batch',navBtn('batch'))">← Lịch sử lô hàng</button>
+      <div id="batchFormBody"></div>
+    </div>
   </div>
 
   <!-- ===== TRƯỜNG KHÔNG BẾP (shopping) ===== -->
@@ -355,7 +383,7 @@ button{font-family:inherit;cursor:pointer}
 
   <div class="nav" id="nav">
     <button class="active" data-tab="menu" onclick="tab('menu',this)"><span class="i">🍽️</span>Thực đơn</button>
-    <button data-tab="log" onclick="tab('log',this)"><span class="i">📖</span>Nhật ký</button>
+    <button id="navBatch" data-tab="batch" onclick="tab('batch',this)"><span class="i">📦</span>Lô hàng</button>
     <button id="navReport" data-tab="report" onclick="tab('report',this)"><span class="i">📷</span>Báo cáo</button>
   </div>
 
@@ -526,8 +554,9 @@ function setupKitchen(){
   mode='kitchen';
   const school = role==='school';
   const nav=document.getElementById('nav');
-  nav.classList.toggle('two', school);
+  nav.classList.toggle('one', school);
   document.getElementById('navReport').style.display = school ? 'none' : '';
+  document.getElementById('navBatch').style.display = school ? 'none' : '';
   document.getElementById('regBtnWrap').style.display = school ? 'block' : 'none';
   document.getElementById('todayBlock').style.display = school ? 'none' : '';
   if(!school) renderToday();
@@ -549,12 +578,12 @@ function logout(){
 }
 
 /* ===== Routing bằng hash — mỗi tab 1 path riêng, giữ khi reload/back ===== */
-const KITCHEN_TABS=['menu','log','report'], SHOP_TABS=['shop','orders','debt'];
+const KITCHEN_TABS=['menu','batch','report'], SHOP_TABS=['shop','orders','debt'];
 function setHash(h){ if(location.hash.slice(1)!==h) location.hash=h; }
 function route(){
   const h=decodeURIComponent(location.hash.slice(1));
   if(KITCHEN_TABS.includes(h)){
-    if(h==='report') role='bep';
+    if(h==='report'||h==='batch') role='bep';
     setupKitchen();
     tab(h,navBtn(h));
   } else if(SHOP_TABS.includes(h)){
@@ -574,8 +603,8 @@ function tab(t,btn){
   show('s-'+t);
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
-  if(t==='report')renderReport();
-  if(t==='log')renderLogList();
+  if(t==='report')renderReportHistory();
+  if(t==='batch')renderBatchList();
   setHash(t);
 }
 
@@ -713,15 +742,9 @@ function submitRegister(){
   toast('✅ Đã đăng ký '+n.toLocaleString('vi-VN')+' suất ăn · '+d.dow+' '+d.date);
 }
 
-/* ===== Nhật ký — danh sách + lọc ===== */
-function clearFilter(){document.getElementById('logDate').value='';renderLogList();}
-function renderLogList(){
-  const f=document.getElementById('logDate').value;
-  const list=LOGS.filter(l=>!f||l.iso===f);
-  const box=document.getElementById('logList');
-  if(!list.length){box.innerHTML=`<div class="empty">Không có nhật ký cho ngày này 🗓️</div>`;return;}
-  box.innerHTML=list.map(l=>{
-    const idx=LOGS.indexOf(l);
+/* ===== Báo cáo — lịch sử theo ngày ===== */
+function renderReportHistory(){
+  document.getElementById('reportHistory').innerHTML='<div class="section-title" style="margin-top:0">Lịch sử báo cáo</div>'+LOGS.map((l,idx)=>{
     const badge=l.status==='done'?'<span class="badge done">Hoàn tất</span>':'<span class="badge progress">Đang thực hiện</span>';
     return `<button class="log-card" onclick="openLog(${idx})">
       <span class="ic">${l.ic}</span>
@@ -734,6 +757,7 @@ function renderLogList(){
     </button>`;
   }).join('');
 }
+function openReportForm(){renderReport();show('s-reportform');}
 function openLog(idx){
   const l=LOGS[idx];
   const badge=l.status==='done'?'<span class="badge done">Hoàn tất</span>':'<span class="badge progress">Đang thực hiện</span>';
@@ -744,7 +768,7 @@ function openLog(idx){
       <h2>${l.dish}</h2>
       ${badge} <span class="pill" style="margin-left:6px">${doneCount}/${l.steps.length} bước</span>
     </div>
-    ${(l.today && role!=='school')?`<button class="btn btn-orange" style="margin-bottom:18px" onclick="tab('report',navBtn('report'))">📷 Báo cáo bước tiếp theo</button>`:''}
+    ${(l.today && role!=='school')?`<button class="btn btn-orange" style="margin-bottom:18px" onclick="openReportForm()">📷 Báo cáo bước tiếp theo</button>`:''}
     <div class="section-title" style="margin-top:0">Quy trình chế biến</div>
     <div class="card" style="padding:4px 18px">
       ${l.steps.map((s,i)=>{
@@ -837,6 +861,119 @@ function send(){
       <p>Bước <b>${STEPS[i].t}</b> đã hoàn thành · ${photos} ảnh${note?`<br>Ghi chú: “${note}”`:''}<br>đã gửi lên Kho tổng lúc ${t}.</p>
       <br>
       <button class="btn btn-outline" onclick="renderReport()">Báo cáo bước khác</button>
+      <button class="btn btn-outline" style="margin-top:12px" onclick="tab('report',navBtn('report'))">Về lịch sử báo cáo</button>
+    </div>`;
+}
+
+/* ===================================================================
+   ===== NHẬP LÔ HÀNG (role Bếp) — ghi nhận lô vào QL lô nhập hàng =====
+   Dữ liệu mock in-memory, gửi lên Kho tổng = toast + màn thành công.
+   Trường dữ liệu khớp màn QL lô nhập hàng bên Web Admin.
+   =================================================================== */
+// Thực phẩm: lấy từ CATALOG, suy loại (tươi/khô) theo nhóm để chọn quy trình.
+// FOODS & BATCH_SUPS được dựng sau khi CATALOG khai báo (xem dưới const ITEM)
+const BATCH_WH=[  // đồng bộ với WAREHOUSES bên admin
+  {code:'KHO-01', name:'Kho tổng trung tâm'},
+  {code:'KHO-02', name:'Kho phụ Cầu Giấy'},
+  {code:'KHO-03', name:'Kho lạnh bảo quản'},
+];
+const BATCH_STAFF=['Trần Thị Hoa','Lê Minh Tuấn','Phạm Thị Bích','Đỗ Thị Lan']; // tổ bếp TH Đoàn Thị Điểm
+function batchWorkflow(kind){return kind==='Đồ khô'?'Quy trình nhập đồ khô':'Quy trình kiểm nhập thực phẩm tươi';}
+let BATCHES=[
+  {code:'LO-020', name:'Lô Rau cải ngọt 15/08', food:'Rau cải ngọt', unit:'kg', qty:40, importDate:'15/08/2026', wh:'KHO-01', supplier:'HTX Vân Nội', photos:2},
+  {code:'LO-019', name:'Lô Thịt lợn nạc vai 14/08', food:'Thịt lợn nạc vai', unit:'kg', qty:62, importDate:'14/08/2026', wh:'KHO-03', supplier:'CP Việt Nam', photos:1},
+  {code:'LO-018', name:'Lô Gạo ST25 13/08', food:'Gạo ST25', unit:'kg', qty:95, importDate:'13/08/2026', wh:'KHO-01', supplier:'Tập đoàn Lộc Trời', photos:1},
+], batchSeq=21, batchPhotos=0;
+function renderBatchList(){
+  const wn=c=>(BATCH_WH.find(w=>w.code===c)||{}).name||c;
+  document.getElementById('batchList').innerHTML='<div class="section-title" style="margin-top:0">Lịch sử nhập lô hàng</div>'+
+    [...BATCHES].reverse().map(b=>`<div class="log-card" style="cursor:default">
+      <span class="ic">📦</span>
+      <span class="info"><b>${b.name}</b>
+        <span class="dish">${b.code} · ${b.qty} ${b.unit} · ${b.importDate}<br>${wn(b.wh)} · ${b.supplier||'—'}</span>
+        <span><span class="badge progress">Chờ đẩy</span></span></span>
+    </div>`).join('');
+}
+
+function openBatchIntake(){
+  batchPhotos=0;
+  const code='LO-'+String(batchSeq).padStart(3,'0');
+  const foodOpts=FOODS.map((f,i)=>`<option value="${i}">${f.ic} ${f.name}</option>`).join('');
+  const whOpts=BATCH_WH.map(w=>`<option value="${w.code}">${w.name}</option>`).join('');
+  const supOpts=BATCH_SUPS.map(s=>`<option value="${s}">${s}</option>`).join('');
+  const staffOpts=BATCH_STAFF.map(s=>`<option value="${s}">${s}</option>`).join('');
+  const req='<span class="req">*</span>';
+  document.getElementById('batchFormBody').innerHTML=`
+    <div class="form-note">📦 Nhập thông tin lô thực phẩm vừa nhận. Dữ liệu từng khâu sản xuất được ghi ở phần <b>Báo cáo công việc</b>.</div>
+    <div class="field"><label>Thực phẩm ${req}</label><select id="bkFood" onchange="batchFoodChange()">${foodOpts}</select></div>
+    <div class="field"><label>Quy trình sản xuất</label><div class="ro" id="bkWf"></div></div>
+    <div class="field"><label>Tên lô ${req}</label><input id="bkName" oninput="this.dataset.touched=1" placeholder="VD: Lô rau cải ngày 17/08"></div>
+    <div class="field"><label>Mã lô (NCC) ${req}</label><input id="bkCode" value="${code}" placeholder="VD: LO-021"></div>
+    <div class="field"><label>Số lượng nhập ${req}</label>
+      <div class="frow"><input id="bkQty" type="number" inputmode="decimal" min="0" step="0.001" placeholder="0"><div class="unit" id="bkUnit">kg</div></div>
+    </div>
+    <div class="field"><label>Ngày nhập ${req}</label><input id="bkImport" type="date" value="2026-08-17"></div>
+    <div class="field"><label>Ngày sản xuất</label><input id="bkProd" type="date"></div>
+    <div class="field"><label>Hạn dùng</label><input id="bkExp" type="date"></div>
+    <div class="field"><label>Kho phân bổ ${req}</label><select id="bkWh">${whOpts}</select></div>
+    <div class="field"><label>Nhà cung ứng phụ</label><select id="bkSup">${supOpts}</select></div>
+    <div class="field"><label>Người nhập kho</label><select id="bkStaff">${staffOpts}</select></div>
+    <div class="field"><label>Địa chỉ thu mua</label><input id="bkAddr" placeholder="VD: Chợ đầu mối Long Biên"></div>
+    <div class="field"><label>Mô tả</label><textarea id="bkDesc" placeholder="Ghi chú ngắn về lô, nguồn gốc, cảm quan…"></textarea></div>
+    <div class="section-title" style="margin-left:0">Ảnh / giấy tờ minh chứng</div>
+    <div class="photo-zone" onclick="batchSnap()"><span class="i">🖼️</span>Bấm để tải ảnh lên<br><small style="font-size:14px;font-weight:500">Hoá đơn · phiếu giao · ảnh thực phẩm</small></div>
+    <div class="thumbs" id="bkThumbs"></div>
+    <button class="btn btn-orange" onclick="saveBatchIntake()">Lưu lô hàng · Gửi lên Kho tổng</button>`;
+  batchFoodChange();
+  show('s-batchform');
+}
+// Chọn thực phẩm → tự điền đơn vị, NCC phụ, quy trình, gợi ý tên lô.
+function batchFoodChange(){
+  const f=FOODS[+document.getElementById('bkFood').value]||FOODS[0];
+  document.getElementById('bkUnit').textContent=f.unit;
+  document.getElementById('bkWf').textContent=batchWorkflow(f.kind);
+  const sup=document.getElementById('bkSup'); if([...sup.options].some(o=>o.value===f.sup)) sup.value=f.sup;
+  const nameEl=document.getElementById('bkName');
+  if(!nameEl.dataset.touched) nameEl.value=`Lô ${f.name} 17/08`;
+}
+function batchSnap(){
+  const cam=document.getElementById('cam');
+  cam.onchange=()=>{
+    const files=[...cam.files];
+    const box=document.getElementById('bkThumbs');
+    if(!files.length){const img=document.createElement('img');img.className='thumb';img.style.background='#EAE4DC';box.appendChild(img);batchPhotos++;}
+    files.forEach(f=>{batchPhotos++;const img=document.createElement('img');img.className='thumb';img.src=URL.createObjectURL(f);box.appendChild(img);});
+    toast('Đã thêm ảnh ('+batchPhotos+')');
+    cam.value='';
+  };
+  cam.click();
+}
+function saveBatchIntake(){
+  const gv=id=>{const e=document.getElementById(id);return e?e.value:'';};
+  const isoToVN=v=>{if(!v)return '';const[y,m,d]=v.split('-');return `${d}/${m}/${y}`;};
+  const f=FOODS[+gv('bkFood')]||FOODS[0];
+  const code=gv('bkCode').trim()||('LO-'+String(batchSeq).padStart(3,'0'));
+  const b={
+    code, name:gv('bkName').trim()||`Lô ${f.name}`,
+    food:f.name, foodId:f.id, unit:f.unit, kind:f.kind,
+    qty:parseFloat(gv('bkQty'))||0,
+    importDate:isoToVN(gv('bkImport'))||'17/08/2026',
+    prodDate:isoToVN(gv('bkProd')), expDate:isoToVN(gv('bkExp')),
+    wh:gv('bkWh'), supplier:gv('bkSup'), enteredBy:gv('bkStaff'),
+    purchaseAddr:gv('bkAddr'), desc:gv('bkDesc'),
+    workflow:batchWorkflow(f.kind), photos:batchPhotos,
+    syncState:'PENDING', stageData:{},
+  };
+  BATCHES.push(b); batchSeq++;
+  toast('Đã lưu lô hàng (mock)');
+  document.getElementById('batchFormBody').innerHTML=`
+    <div class="success">
+      <div class="i">✅</div>
+      <h2>Đã lưu lô hàng!</h2>
+      <p>Lô <b>${b.code}</b> · ${b.food} ${b.qty?b.qty+' '+b.unit:''}<br>${b.photos} ảnh minh chứng<br>đã gửi lên <b>QL lô nhập hàng</b> của Kho tổng.</p>
+      <br>
+      <button class="btn btn-orange" onclick="openBatchIntake()">Nhập lô khác</button>
+      <button class="btn btn-outline" style="margin-top:12px" onclick="tab('batch',navBtn('batch'))">Về lịch sử lô hàng</button>
     </div>`;
 }
 /* ===================================================================
@@ -869,6 +1006,8 @@ const CATALOG=[
   ]},
 ];
 const ITEM=Object.fromEntries(CATALOG.flatMap(c=>c.items).map(i=>[i.id,i]));
+const FOODS=CATALOG.flatMap(c=>c.items.map(it=>({...it, kind:/khô|Sữa/i.test(c.cat)?'Đồ khô':'Đồ tươi'})));
+const BATCH_SUPS=[...new Set(FOODS.map(f=>f.sup))];
 
 // Đơn hàng (mới nhất trước). status: 'Chờ duyệt' | 'Hoàn thành'
 let ORDERS=[

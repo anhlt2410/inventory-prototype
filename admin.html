@@ -147,6 +147,12 @@ main{padding:28px 32px;max-width:1320px;width:100%;min-width:0;margin:0 auto}
 .po-info{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;font-size:13.5px}
 .po-info span{display:block;color:var(--muted);font-size:12px}
 .po-info small{display:block;color:var(--muted);font-size:12.5px}
+.rc-table .rc-sup td{background:var(--green-soft);font-weight:700;font-size:13px;padding:7px 12px}
+.rc-table input[type=checkbox]{width:17px;height:17px;accent-color:var(--green);cursor:pointer}
+.rc-table tr.off td:not(:first-child){opacity:.4}
+.rc-qty{display:flex;align-items:center;justify-content:flex-end;gap:6px}
+.rc-qty .f-input{width:100px;padding:6px 8px;text-align:right;font-weight:700}
+.rc-qty span{width:34px;color:var(--muted);font-size:13px}
 /* ---------- TABLE / CARD ---------- */
 .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--sh-md)}
 table{width:100%;border-collapse:collapse}
@@ -337,6 +343,10 @@ tr.tr-click{cursor:pointer}
 .si-row .si-qty{width:100%;padding:9px;border:1.5px solid var(--line);border-radius:11px;font:600 13px 'Be Vietnam Pro';text-align:right;background:#fff}
 .si-row .si-unit{color:var(--muted);font-size:12.5px;font-weight:600}
 .si-list-head{display:grid;grid-template-columns:1.25fr 70px 26px 0.9fr 1.1fr 26px;gap:8px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600;margin-bottom:8px;padding:0 2px}
+/* kiểm kê kho — thực phẩm · số lượng · đơn vị · lý do · tồn sau · xoá */
+.si-row.sk,.si-list-head.sk{grid-template-columns:1.2fr 70px 30px 1.2fr 110px 26px}
+.si-row .sk-after{font-size:12.5px;color:var(--muted);white-space:nowrap;text-align:right}
+.si-row .sk-after b{color:var(--ink)}
 
 /* tab loại bữa trong từng ngày — kiểu tab folder gắn liền với data phía dưới */
 .meal-bar{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:14px}
@@ -765,7 +775,7 @@ tr.rp-warn td:first-child{box-shadow:inset 3px 0 0 var(--amber)}
         <div class="actions">
           <button class="btn btn-ghost btn-sm" onclick="poExport()">Xuất Excel</button>
           <button class="btn btn-ghost btn-sm" onclick="poOpenAlloc()">Phiếu chia hàng</button>
-          <button class="btn btn-green btn-sm" onclick="poSendAll()">Gửi tất cả NCC phụ</button>
+          <button class="btn btn-green btn-sm" onclick="poOpenReceiptAll()">Nhập kho tất cả</button>
         </div>
       </div>
       <div class="tbar">
@@ -788,6 +798,7 @@ tr.rp-warn td:first-child{box-shadow:inset 3px 0 0 var(--amber)}
         <div><button class="back" onclick="go('warehouses',navBtn('warehouses'))">← Quay lại danh sách kho</button>
           <h2 id="whTitle">Kho tổng</h2><p id="whSub"></p></div>
         <div class="actions">
+          <button class="btn btn-ghost btn-sm" onclick="openStockCheck()">Kiểm kê kho</button>
           <button class="btn btn-green btn-sm" onclick="openStockIn()">+ Nhập kho</button>
         </div>
       </div>
@@ -1805,18 +1816,71 @@ let ORDERS = [
    meals:[["sang",1250,15000],["truaHS",1250,25000],["truaGV",71,35000]], history:[]},
   {code:"202608172", inv:110420, school:"Trường TH Kim Liên", date:"17/08/2026", status:"Hủy", paid:false,
    meals:[["sang",1098,15000],["truaHS",1100,25000],["truaGV",63,35000]], history:[]},
-  /* Trường KHÔNG bếp — phiếu giao thực phẩm */
+  /* Trường KHÔNG bếp (TH Kim Đồng, TH Thành Công) — đặt THỰC PHẨM trực tiếp, không đặt suất ăn.
+     Đơn giá = giá bán SOURCES tại thời điểm đặt. */
+  {code:"202608032", inv:110433, school:"Trường TH Kim Đồng", date:"03/08/2026", status:"Giao hàng thành công", paid:true, deliverer:"Chu Văn Nam", 
+   items:[["Gạo ST25",60,22000,"kg"],["Thịt lợn nạc vai",28,125000,"kg"],["Rau cải ngọt",22,15000,"kg"],["Đậu phụ",15,13000,"kg"],["Nước mắm",4,38000,"chai"]], history:[]},
+  {code:"202608042", inv:110434, school:"Trường TH Thành Công", date:"04/08/2026", status:"Giao hàng thành công", paid:true, deliverer:"Đinh Văn Phúc", 
+   items:[["Gạo ST25",80,22000,"kg"],["Thịt lợn nạc vai",36,125000,"kg"],["Rau cải ngọt",30,15000,"kg"],["Đậu phụ",20,13000,"kg"],["Dầu ăn Simply",8,52000,"chai"]], history:[]},
+  {code:"202608062", inv:110435, school:"Trường TH Kim Đồng", date:"06/08/2026", status:"Giao hàng thành công", paid:true, deliverer:"Chu Văn Nam", 
+   items:[["Gạo ST25",58,22000,"kg"],["Thịt gà ta",24,95000,"kg"],["Bí đỏ",16,14000,"kg"],["Cà chua",10,18000,"kg"],["Sữa tươi học đường",760,7500,"hộp"]], history:[]},
+  {code:"202608072", inv:110436, school:"Trường TH Thành Công", date:"07/08/2026", status:"Giao hàng thành công", paid:true, deliverer:"Đinh Văn Phúc", 
+   items:[["Gạo ST25",82,22000,"kg"],["Thịt gà ta",32,95000,"kg"],["Bí đỏ",22,14000,"kg"],["Cà chua",14,18000,"kg"],["Sữa tươi học đường",1020,7500,"hộp"]], history:[]},
+  {code:"202608102", inv:110437, school:"Trường TH Kim Đồng", date:"10/08/2026", status:"Giao hàng thành công", paid:false, deliverer:"Chu Văn Nam", 
+   items:[["Gạo ST25",60,22000,"kg"],["Cá basa phi lê",20,68000,"kg"],["Cà chua",12,18000,"kg"],["Rau cải ngọt",20,15000,"kg"],["Dưa hấu",26,12000,"kg"]], history:[]},
+  {code:"202608112", inv:110438, school:"Trường TH Thành Công", date:"11/08/2026", status:"Đã giao", paid:false, deliverer:"Đinh Văn Phúc", 
+   items:[["Gạo ST25",80,22000,"kg"],["Cá basa phi lê",26,68000,"kg"],["Cà chua",16,18000,"kg"],["Rau cải ngọt",28,15000,"kg"],["Dưa hấu",36,12000,"kg"]], history:[],
+   returns:[{code:"PT-003", date:"11/08/2026", reason:"Thực phẩm kém chất lượng", note:"Dưa hấu dập, tổ bán trú không nhận", lines:[
+     {name:"Dưa hấu", unit:"kg", qty:6, price:12000, act:"ncc"}]}]},
   {code:"202608131", inv:110427, school:"Trường TH Kim Đồng", date:"13/08/2026", status:"Giao hàng thành công", paid:true,
-   items:[["Khoai tây",11.4,21000,"kg"],["Hành tây",1.5,45000,"kg"],["Cà rốt",1.9,35000,"kg"],["Cà chua",5,25000,"kg"],["Bí đỏ",11.3,14000,"kg"],["Thịt lợn nạc vai",9.7,152000,"kg"],["Tôm thẻ",2.5,400000,"kg"]], history:[]},
+   items:[["Khoai tây",11.4,21000,"kg"],["Hành tây",1.5,45000,"kg"],["Cà rốt",1.9,35000,"kg"],["Cà chua",5,25000,"kg"],["Bí đỏ",11.3,14000,"kg"],["Thịt lợn nạc vai",9.7,152000,"kg"],["Tôm thẻ",2.5,400000,"kg"]], history:[],
+   returns:[{code:"PT-002", date:"13/08/2026", reason:"Thực phẩm kém chất lượng", note:"Cà chua dập, bếp từ chối nhận 1 phần", lines:[
+     {name:"Cà chua", unit:"kg", qty:1, price:25000, act:"dispose"}]}]},
+  {code:"202608141", inv:110439, school:"Trường TH Thành Công", date:"14/08/2026", status:"Hủy", paid:false, procNote:"Trường đổi thực đơn, đặt lại đơn ngày 17/08", 
+   items:[["Gạo ST25",80,22000,"kg"],["Thịt bò",20,265000,"kg"],["Bí đỏ",20,14000,"kg"],["Rau cải ngọt",28,15000,"kg"],["Dưa hấu",34,12000,"kg"]], history:[]},
   {code:"202608161b", inv:110429, school:"Trường TH Thành Công", date:"16/08/2026", status:"Trả hàng", paid:false,
-   items:[["Gạo ST25",60,22000,"kg"],["Cá basa phi lê",18,68000,"kg"],["Thịt gà ta",22,95000,"kg"],["Bí đỏ",14,14000,"kg"],["Dưa hấu",30,12000,"kg"]], history:[]},
+   items:[["Gạo ST25",60,22000,"kg"],["Cá basa phi lê",18,68000,"kg"],["Thịt gà ta",22,95000,"kg"],["Bí đỏ",14,14000,"kg"],["Dưa hấu",30,12000,"kg"]], history:[],
+   returns:[{code:"PT-001", date:"16/08/2026", reason:"Trường nghỉ học / đổi lịch", note:"Trường báo nghỉ đột xuất sau khi xe đã giao", lines:[
+     {name:"Gạo ST25", unit:"kg", qty:60, price:22000, act:"stock"},
+     {name:"Cá basa phi lê", unit:"kg", qty:18, price:68000, act:"dispose"},
+     {name:"Thịt gà ta", unit:"kg", qty:22, price:95000, act:"ncc"},
+     {name:"Bí đỏ", unit:"kg", qty:14, price:14000, act:"dispose"},
+     {name:"Dưa hấu", unit:"kg", qty:30, price:12000, act:"ncc"}]}]},
+  {code:"202608173", inv:110440, school:"Trường TH Kim Đồng", date:"17/08/2026", status:"Đang giao", paid:false, deliverer:"Chu Văn Nam", 
+   items:[["Gạo ST25",62,22000,"kg"],["Thịt bò",16,265000,"kg"],["Bí đỏ",14,14000,"kg"],["Trứng cút",6,62000,"kg"],["Sữa tươi học đường",760,7500,"hộp"]], history:[]},
+  {code:"202608174", inv:110441, school:"Trường TH Thành Công", date:"17/08/2026", status:"Đang chuẩn bị", paid:false, 
+   items:[["Gạo ST25",84,22000,"kg"],["Thịt lợn nạc vai",35,125000,"kg"],["Bí đỏ",20,14000,"kg"],["Trứng cút",8,62000,"kg"],["Nước mắm",5,38000,"chai"]], history:[]},
   {code:"202608181", inv:110431, school:"Trường TH Kim Đồng", date:"18/08/2026", status:"Chờ xác nhận", paid:false,
    items:[["Gạo ST25",64,22000,"kg"],["Thịt bò",18,265000,"kg"],["Cà chua",12,18000,"kg"],["Rau cải ngọt",20,15000,"kg"],["Trứng cút",6,62000,"kg"]], history:[]},
+  {code:"202608182", inv:110442, school:"Trường TH Thành Công", date:"18/08/2026", status:"Chờ xác nhận", paid:false, 
+   items:[["Gạo ST25",80,22000,"kg"],["Thịt gà ta",33,95000,"kg"],["Rau cải ngọt",30,15000,"kg"],["Đậu phụ",20,13000,"kg"],["Sữa tươi học đường",1020,7500,"hộp"]], history:[]},
+  {code:"202608191", inv:110443, school:"Trường TH Kim Đồng", date:"19/08/2026", status:"Đang chuẩn bị", paid:false, 
+   items:[["Gạo ST25",60,22000,"kg"],["Tôm thẻ",9,185000,"kg"],["Rau cải ngọt",22,15000,"kg"],["Đậu phụ",14,13000,"kg"],["Dưa hấu",28,12000,"kg"]], history:[]},
+  {code:"202608201", inv:110444, school:"Trường TH Kim Đồng", date:"20/08/2026", status:"Từ chối", paid:false, procNote:"Trùng đơn ngày 19/08, trường đề nghị huỷ", 
+   items:[["Gạo ST25",60,22000,"kg"],["Thịt lợn nạc vai",27,125000,"kg"],["Cà chua",12,18000,"kg"],["Rau cải ngọt",20,15000,"kg"],["Dưa hấu",26,12000,"kg"]], history:[]},
   {code:"202608211", inv:110432, school:"Trường TH Kim Đồng", date:"21/08/2026", status:"Chờ xác nhận", paid:false,
    items:[["Gạo ST25",64,22000,"kg"],["Thịt bò",18,265000,"kg"],["Cà chua",12,18000,"kg"],["Rau cải ngọt",20,15000,"kg"],["Trứng cút",6,62000,"kg"]], history:[]},
+  {code:"202608212", inv:110445, school:"Trường TH Thành Công", date:"21/08/2026", status:"Chờ xác nhận", paid:false, 
+   items:[["Gạo ST25",82,22000,"kg"],["Tôm thẻ",12,185000,"kg"],["Cà chua",15,18000,"kg"],["Bí đỏ",20,14000,"kg"],["Dưa hấu",35,12000,"kg"]], history:[]},
 ];
-let INV_SEQ = 110433; /* số hoá đơn kế tiếp cho đơn mới */
+let INV_SEQ = 110446; /* số hoá đơn kế tiếp cho đơn mới */
 function orderTotal(o){return (o.meals||o.items).reduce((s,r)=>s+r[1]*r[2],0);}
+/* ---- Trả hàng theo đơn ----
+   o.returns = [{code:'PT-xxx', date, reason, note, lines:[{name, unit, qty, price, act}]}]
+   act: stock = nhập lại kho (cộng tồn) · dispose = hủy bỏ · ncc = trả NCC phụ (giảm công nợ NCC phụ).
+   Giá trị trả luôn trừ vào công nợ của trường (orderNet). */
+const RETURN_ACT = {
+  stock:  {label:'Nhập lại kho', cls:'b'},
+  dispose:{label:'Hủy bỏ',       cls:'r'},
+  ncc:    {label:'Trả NCC phụ',  cls:'a'},
+};
+const RETURN_REASONS = ['Trường nghỉ học / đổi lịch','Giao dư so với đơn','Giao nhầm thực phẩm','Thực phẩm kém chất lượng','Sai quy cách / bao bì'];
+const RETURNABLE = ['Đã giao','Giao hàng thành công','Trả hàng'];
+let RT_SEQ = 4;
+function orderReturns(o){return o.returns||(o.returns=[]);}
+function orderReturnTotal(o){return orderReturns(o).reduce((s,r)=>s+r.lines.reduce((a,l)=>a+l.qty*l.price,0),0);}
+function orderNet(o){return orderTotal(o)-orderReturnTotal(o);}
+function returnedQty(o,name,act){return orderReturns(o).reduce((s,r)=>s+r.lines.filter(l=>l.name===name&&(!act||l.act===act)).reduce((a,l)=>a+l.qty,0),0);}
 /* Trả về các dòng chi tiết dạng thống nhất: [tên, ĐVT, số lượng, đơn giá] */
 function orderLines(o){
   return o.meals ? o.meals.map(m=>[MEAL_LABEL[m[0]],"suất",m[1],m[2]])
@@ -1831,17 +1895,20 @@ function fmtQty(n){return (n||0).toLocaleString('vi-VN');}
 /* Một số thực phẩm khô/gia vị nhập sẵn về kho; thực đơn hằng ngày LẤY TỪ KHO
    thay vì tạo đơn nhập NCC phụ. Tên khớp SOURCES (nếu có) để đối chiếu tồn kho khi
    Admin chọn thực phẩm cho thực đơn. w = {name, unit, imported, stock, min, hist}
-   hist = [[date, 'in'|'out', qty, nguồn/nơi nhận, ghi chú]] — mới nhất trước.
+   hist = [[date, 'in'|'out'|'ret'|'loss', qty, nguồn/nơi nhận, ghi chú]] — mới nhất trước.
    In-memory: nhập kho chỉ cộng dồn trong phiên demo (reset khi reload). */
 let WAREHOUSE = [
   {name:"Gạo ST25", unit:"kg", imported:800, stock:60, min:120, hist:[
     ["05/08/2026","in",500,"Tập đoàn Lộc Trời","Nhập bổ sung đầu tháng"],
     ["06/08/2026","out",240,"Bếp TH Đoàn Thị Điểm","Xuất theo thực đơn tuần 33"],
+    ["17/08/2026","out",360,"Bếp TH Cát Linh","Xuất theo thực đơn tuần 34"],
+    ["16/08/2026","ret",60,"Trả về · Trường TH Thành Công (đơn 202608161b)","Trường nghỉ học / đổi lịch · PT-001"],
     ["12/08/2026","out",200,"Bếp TH Kim Liên","Xuất theo thực đơn tuần 33"],
     ["01/08/2026","in",300,"Tập đoàn Lộc Trời","Tồn đầu kỳ"]]},
   {name:"Dầu ăn Simply", unit:"chai", imported:600, stock:184, min:100, hist:[
     ["01/08/2026","in",400,"Calofic","Nhập đầu tháng"],
     ["03/08/2026","in",200,"Calofic","Nhập bổ sung"],
+    ["16/08/2026","out",200,"Bếp các trường","Xuất định kỳ tuần 34"],
     ["09/08/2026","out",216,"Bếp các trường","Xuất định kỳ tuần 33"]]},
   {name:"Nước mắm", unit:"chai", imported:400, stock:132, min:80, hist:[
     ["01/08/2026","in",400,"Nam Ngư","Nhập đầu tháng"],
@@ -1851,7 +1918,8 @@ let WAREHOUSE = [
     ["11/08/2026","out",124,"Bếp các trường","Xuất định kỳ"]]},
   {name:"Đường trắng", unit:"kg", imported:180, stock:34, min:50, hist:[
     ["01/08/2026","in",180,"Cửa hàng gia vị Minh Châu","Nhập đầu tháng"],
-    ["11/08/2026","out",146,"Bếp các trường","Xuất định kỳ"]]},
+    ["20/08/2026","loss",4,"Hủy bỏ","Côn trùng, chuột · KK-002"],
+    ["11/08/2026","out",142,"Bếp các trường","Xuất định kỳ"]]},
   {name:"Hạt nêm", unit:"gói", imported:300, stock:128, min:80, hist:[
     ["02/08/2026","in",300,"Cửa hàng gia vị Minh Châu","Nhập đầu tháng"],
     ["11/08/2026","out",172,"Bếp các trường","Xuất định kỳ"]]},
@@ -1860,7 +1928,8 @@ let WAREHOUSE = [
     ["11/08/2026","out",90,"Bếp các trường","Xuất định kỳ"]]},
   {name:"Tiêu xay", unit:"kg", imported:40, stock:12, min:15, hist:[
     ["02/08/2026","in",40,"Cửa hàng gia vị Minh Châu","Nhập đầu tháng"],
-    ["11/08/2026","out",28,"Bếp các trường","Xuất định kỳ"]]},
+    ["19/08/2026","loss",3,"Hủy bỏ","Bao bì rách, ẩm · KK-001"],
+    ["11/08/2026","out",25,"Bếp các trường","Xuất định kỳ"]]},
   {name:"Bột canh", unit:"gói", imported:260, stock:176, min:80, hist:[
     ["02/08/2026","in",260,"Cửa hàng gia vị Minh Châu","Nhập đầu tháng"],
     ["11/08/2026","out",84,"Bếp các trường","Xuất định kỳ"]]},
@@ -2131,11 +2200,12 @@ function renderOrders(){
       <td><a class="name-link" onclick="openOrderDetail(${i})">${o.code}</a><div style="color:var(--muted);font-size:12px">${invNo(o)}</div></td>
       <td><div class="clamp2" data-tip="${o.school}">${o.school}</div></td>
       <td style="white-space:nowrap">${o.date}</td>
-      <td style="white-space:nowrap"><b>${money(orderTotal(o))}</b></td>
-      <td><button class="status-pill st-${orderStatusCls(o.status)}" onclick="openStatusMenu(${i},this)">${o.status}</button></td>
+      <td style="white-space:nowrap"><b>${money(orderNet(o))}</b>${orderReturnTotal(o)?`<div style="color:var(--red);font-size:12px">↺ trả ${money(orderReturnTotal(o))}</div>`:''}</td>
+      <td><button class="status-pill st-${orderStatusCls(o.status)}" onclick="openStatusMenu(${i},this)">${o.status}</button>${orderReturnTotal(o)&&o.status!=='Trả hàng'?'<div><span class="pill r" style="margin-top:4px;font-size:11px">Trả 1 phần</span></div>':''}</td>
       <td>${payPill(i,o)}</td>
       <td style="text-align:right;white-space:nowrap">
         <button class="icon-btn" data-tip="Xử lý nhanh" onclick="openQuickProcess(${i})">⚡</button>
+        ${RETURNABLE.includes(o.status)&&orderNet(o)>0?`<button class="icon-btn" data-tip="Tạo phiếu trả hàng" onclick="openReturnForm(${i})">${ICON_UNDO}</button>`:''}
         <button class="icon-btn" data-tip="Xem chi tiết" onclick="openOrderDetail(${i})">${ICON_VIEW}</button>
         <button class="icon-btn" data-tip="Sửa đơn" onclick="openOrderEdit(${i})">${ICON_EDIT}</button>
         <button class="icon-btn" data-tip="In phiếu giao hàng" onclick="printOrder(${i})">${ICON_PRINT}</button>
@@ -2145,6 +2215,7 @@ function renderOrders(){
 }
 function setOrderStatus(i,v){
   if(ORDERS[i].status===v)return;
+  if(v==='Trả hàng'){openReturnForm(i,true);return;}
   ORDERS[i].status=v;
   renderOrders();
   toast(`Đơn ${ORDERS[i].code} → ${v}`);
@@ -2387,7 +2458,7 @@ function renderKitchens(){
 function renderSchoolOrders(school){
   const list=ORDERS.map((o,i)=>({o,i})).filter(x=>x.o.school===school);
   const grand=list.reduce((s,x)=>s+orderTotal(x.o),0);
-  const unpaid=list.filter(x=>!x.o.paid&&!ORDER_VOID.includes(x.o.status)).reduce((s,x)=>s+orderTotal(x.o),0);
+  const unpaid=list.filter(x=>!x.o.paid&&!ORDER_VOID.includes(x.o.status)).reduce((s,x)=>s+orderNet(x.o),0);
   const rows=list.length?list.map(({o,i})=>`
     <tr class="tr-click" onclick="rowOpen(event,()=>openOrderDetail(${i}))">
       <td><a class="name-link" onclick="openOrderDetail(${i})">${o.code}</a><div style="color:var(--muted);font-size:12px">${invNo(o)}</div></td>
@@ -2702,6 +2773,7 @@ function renderWarehouse(){
       <td style="text-align:right;white-space:nowrap"><b>${fmtQty(w.stock)} ${w.unit}</b> <span class="pill ${low?'r':'g'}">${low?'Sắp hết':'Đủ'}</span></td>
       <td style="text-align:right;white-space:nowrap">
         <button class="icon-btn" data-tip="Nhập kho" onclick="openStockIn('${w.name}')">${ICON_IMPORT}</button>
+        <button class="icon-btn" data-tip="Kiểm kê (trả về / hủy hỏng)" onclick="openStockCheck('${w.name}')">${ICON_UNDO}</button>
         <button class="icon-btn" data-tip="Lịch sử nhập / xuất kho" onclick="openStockHistory(${i})">${ICON_VIEW}</button>
       </td>
     </tr>`;}).join('') : `<tr><td colspan="5"><div class="empty">Không tìm thấy thực phẩm trong kho.</div></td></tr>`;
@@ -2774,13 +2846,98 @@ function saveStockIn(){
   closeDrawer();renderWarehouse();
   toast(n?`Đã nhập kho ${n} thực phẩm`:'Đã lưu (mock)');
 }
+/* Kiểm kê kho — chỉ 2 trường hợp:
+   ret  = Nhận hàng trả về (trường trả lại) → cộng tồn
+   loss = Hủy hàng hỏng / bỏ đi             → trừ tồn
+   Mỗi phiếu có mã KK-xxx, ghi 1 dòng vào w.hist cho từng thực phẩm. */
+const STOCK_CHECK = {
+  ret:  {label:'↺ Nhận hàng trả về',     sign:+1, reasons:['Trường trả lại, dùng thừa','Giao dư so với đơn','Giao nhầm thực phẩm','Sai quy cách / bao bì']},
+  loss: {label:'✕ Hủy hàng hỏng, bỏ đi', sign:-1, reasons:['Hỏng, mốc','Hết hạn sử dụng','Bao bì rách, ẩm','Côn trùng, chuột','Hao hụt khi kiểm đếm']},
+};
+let skType='ret', SK_SEQ=3;
+function openStockCheck(prefName){
+  skType='ret';
+  openDrawer('Kiểm kê kho · '+(curWarehouse?curWarehouse.name:(warehouseType()==='phu'?'Kho phụ':'Kho tổng')),`
+    <div class="chips" id="skChips">
+      <button class="chip active" onclick="skSetType('ret',this)">${STOCK_CHECK.ret.label}</button>
+      <button class="chip" onclick="skSetType('loss',this)">${STOCK_CHECK.loss.label}</button>
+    </div>
+    <p id="skHint" style="color:var(--muted);font-size:13.5px;margin-bottom:14px"></p>
+    <div class="si-list-head sk"><span>Thực phẩm</span><span style="text-align:right">Số lượng</span><span></span><span>Lý do</span><span style="text-align:right">Tồn sau</span><span></span></div>
+    <div id="skList"></div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:4px" onclick="addStockCheckRow()">+ Thêm thực phẩm</button>
+    <div class="field" style="margin-top:16px"><label>Ngày kiểm kê</label><input type="date" id="skDate" class="f-input" value="${TODAY_DEMO}"></div>
+    <div class="field"><label>Ghi chú</label><input id="skNote" class="f-input" placeholder="VD: Tổ bếp kiểm đếm cuối ngày"></div>
+    <div class="field"><label>Ảnh minh chứng</label>${photoGridFor('skPhotos',0)}</div>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
+     <button class="btn btn-green" onclick="saveStockCheck()">Xác nhận kiểm kê</button>`,true);
+  document.getElementById('drawer').classList.add('xwide');
+  addStockCheckRow(prefName);
+  skSetType('ret');
+}
+function skSetType(t,btn){
+  skType=t;
+  if(btn){document.querySelectorAll('#skChips .chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}
+  document.getElementById('skHint').innerHTML = t==='ret'
+    ? 'Thực phẩm trả về kho không theo đơn, còn dùng được → <b>cộng lại vào tồn kho</b>. Trả hàng theo đơn thì tạo <b>phiếu trả hàng</b> ở Quản lý đơn để trừ cả công nợ.'
+    : 'Thực phẩm hỏng, hết hạn hoặc phải bỏ đi → <b>trừ khỏi tồn kho</b>.';
+  document.querySelectorAll('#skList .sk-reason').forEach(sel=>{
+    sel.innerHTML=STOCK_CHECK[t].reasons.map(r=>`<option>${r}</option>`).join('');
+  });
+  document.querySelectorAll('#skList .stockin-item').forEach(skRowCalc);
+}
+function addStockCheckRow(prefName){
+  const nameOpts=WAREHOUSE.map(w=>`<option ${w.name===prefName?'selected':''}>${w.name}</option>`).join('');
+  const item=document.createElement('div');
+  item.className='stockin-item';
+  item.innerHTML=`
+    <div class="si-row sk">
+      <select class="f-input si-name" onchange="skRowCalc(this.closest('.stockin-item'))">${nameOpts}</select>
+      <input type="number" min="0" class="si-qty" placeholder="0" oninput="skRowCalc(this.closest('.stockin-item'))">
+      <span class="si-unit"></span>
+      <select class="f-input sk-reason">${STOCK_CHECK[skType].reasons.map(r=>`<option>${r}</option>`).join('')}</select>
+      <span class="sk-after"></span>
+      <button type="button" class="icon-btn danger si-del" data-tip="Xoá dòng" onclick="this.closest('.stockin-item').remove()">✕</button>
+    </div>`;
+  document.getElementById('skList').appendChild(item);
+  skRowCalc(item);
+}
+/* Xem trước tồn: hiện tại → sau khi kiểm kê */
+function skRowCalc(item){
+  const w=whByName(item.querySelector('.si-name').value); if(!w)return;
+  const qty=parseFloat(item.querySelector('.si-qty').value)||0;
+  item.querySelector('.si-unit').textContent=w.unit;
+  const after=w.stock+STOCK_CHECK[skType].sign*qty;
+  item.querySelector('.sk-after').innerHTML=`${fmtQty(w.stock)} → <b>${fmtQty(after)}</b>`;
+}
+function saveStockCheck(){
+  const dateV=document.getElementById('skDate').value;
+  const d=dateV?dateV.split('-').reverse().join('/'):'21/08/2026';
+  const note=document.getElementById('skNote').value.trim();
+  const code='KK-'+String(SK_SEQ++).padStart(3,'0');
+  const cfg=STOCK_CHECK[skType];
+  let n=0;
+  document.querySelectorAll('#skList .stockin-item').forEach(item=>{
+    const w=whByName(item.querySelector('.si-name').value);
+    const qty=parseFloat(item.querySelector('.si-qty').value)||0;
+    if(!w||!qty)return;
+    w.stock+=cfg.sign*qty;
+    const where=skType==='ret'?'Trả về kho':'Hủy bỏ';
+    w.hist.unshift([d,skType,qty,where,[item.querySelector('.sk-reason').value,note,code].filter(Boolean).join(' · ')]);
+    n++;
+  });
+  closeDrawer();renderWarehouse();
+  if(document.getElementById('page-detail').classList.contains('on')&&document.getElementById('shBody'))openStockHistory(stockHistIdx);
+  toast(n?`${code} · ${skType==='ret'?'Đã cộng lại':'Đã trừ'} tồn ${n} thực phẩm`:'Đã lưu (mock)');
+}
 /* Chi tiết kho + lịch sử nhập / xuất — page riêng (không phải panel) */
 let stockHistIdx=0, stockHistTab='all';
 function openStockHistory(i){
   stockHistIdx=i; stockHistTab='all';
   const w=WAREHOUSE[i];
   openDetailPage('📦 '+w.name, `Kho ${warehouseType()==='phu'?'phụ':'tổng'} · Đơn vị tính: ${w.unit}`,
-    `<button class="btn btn-green btn-sm" onclick="openStockIn('${w.name}')"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M12 3 7 8h3v6h4V8h3l-5-5ZM5 17h14v2H5z"/></svg>Nhập kho</button>`,`
+    `<button class="btn btn-ghost btn-sm" onclick="openStockCheck('${w.name}')">Kiểm kê kho</button>
+     <button class="btn btn-green btn-sm" onclick="openStockIn('${w.name}')"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M12 3 7 8h3v6h4V8h3l-5-5ZM5 17h14v2H5z"/></svg>Nhập kho</button>`,`
     <div class="debt-cards" style="grid-template-columns:repeat(2,1fr);margin-bottom:22px">
       <div class="debt-card"><span>Đã nhập</span><b>${fmtQty(w.imported)} ${w.unit}</b></div>
       <div class="debt-card"><span>Tồn kho</span><b>${fmtQty(w.stock)} ${w.unit}</b></div>
@@ -2789,6 +2946,8 @@ function openStockHistory(i){
       <button class="chip active" onclick="stockHistFilter('all',this)">Tất cả</button>
       <button class="chip" onclick="stockHistFilter('in',this)">↓ Nhập kho</button>
       <button class="chip" onclick="stockHistFilter('out',this)">↑ Xuất kho</button>
+      <button class="chip" onclick="stockHistFilter('ret',this)">↺ Trả về</button>
+      <button class="chip" onclick="stockHistFilter('loss',this)">✕ Hủy hỏng</button>
     </div>
     <div class="panel">
       <table>
@@ -2799,19 +2958,26 @@ function openStockHistory(i){
     ()=>go('warehouse',navBtn('warehouse')));
   renderStockHist();
 }
+/* Loại phát sinh trong sổ kho: in/out (nhập/xuất) · ret/loss (từ Kiểm kê kho) */
+const HIST_TYPE = {
+  in:  {label:'Nhập kho',  cls:'g', color:'var(--green-d)', plus:true},
+  out: {label:'Xuất kho',  cls:'a', color:'var(--amber)',   plus:false},
+  ret: {label:'Trả về',    cls:'b', color:'var(--blue)',    plus:true},
+  loss:{label:'Hủy hỏng',  cls:'r', color:'var(--red)',     plus:false},
+};
 function stockHistFilter(t,btn){stockHistTab=t;document.querySelectorAll('#shChips .chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderStockHist();}
 function renderStockHist(){
   const w=WAREHOUSE[stockHistIdx];
   const rows=w.hist.filter(h=>stockHistTab==='all'||h[1]===stockHistTab);
   document.getElementById('shBody').innerHTML = rows.length ? rows.map(h=>{
-    const isIn=h[1]==='in';
+    const t=HIST_TYPE[h[1]]||HIST_TYPE.out;
     return `<tr>
       <td style="white-space:nowrap">${h[0]}</td>
-      <td><span class="pill ${isIn?'g':'a'}">${isIn?'Nhập kho':'Xuất kho'}</span></td>
+      <td><span class="pill ${t.cls}">${t.label}</span></td>
       <td>${h[3]}</td>
       <td style="color:var(--muted)">${h[4]||'—'}</td>
-      <td style="text-align:right;white-space:nowrap;font-weight:700;color:${isIn?'var(--green-d)':'var(--amber)'}">${isIn?'+':'−'}${fmtQty(h[2])} ${w.unit}</td>
-    </tr>`;}).join('') : `<tr><td colspan="5"><div class="empty">Chưa có lịch sử ${stockHistTab==='in'?'nhập':stockHistTab==='out'?'xuất':''} kho.</div></td></tr>`;
+      <td style="text-align:right;white-space:nowrap;font-weight:700;color:${t.color}">${t.plus?'+':'−'}${fmtQty(h[2])} ${w.unit}</td>
+    </tr>`;}).join('') : `<tr><td colspan="5"><div class="empty">Chưa có lịch sử${stockHistTab==='all'?'':' '+HIST_TYPE[stockHistTab].label.toLowerCase()}.</div></td></tr>`;
 }
 function orderMonth(d){const p=d.split('/');return p[1]+'/'+p[2];}
 function mLabel(m){return 'Tháng '+(+m.split('/')[0]);}
@@ -2822,9 +2988,10 @@ function paidSet(kind,name){const k=debtKey(kind,name);if(!DEBT_PAID[k])DEBT_PAI
 function monthlyDebt(kind,name){
   const real={};
   if(kind==='school'){
-    ORDERS.filter(o=>o.school===name).forEach(o=>{const m=orderMonth(o.date);real[m]=(real[m]||0)+orderTotal(o);});
+    ORDERS.filter(o=>o.school===name&&!ORDER_VOID.includes(o.status)).forEach(o=>{const m=orderMonth(o.date);real[m]=(real[m]||0)+orderNet(o);});
   }else{
-    ORDERS.forEach(o=>(o.items||[]).forEach(it=>{const s=sourceByName(it[0]);if(s&&s.dist===name){const m=orderMonth(o.date);real[m]=(real[m]||0)+s.cost*it[1];}}));
+    /* hàng trả NCC phụ (act 'ncc') không tính vào công nợ NCC phụ */
+    ORDERS.filter(o=>!ORDER_VOID.includes(o.status)).forEach(o=>(o.items||[]).forEach(it=>{const s=sourceByName(it[0]);if(s&&s.dist===name){const m=orderMonth(o.date);real[m]=(real[m]||0)+s.cost*(it[1]-returnedQty(o,it[0],'ncc'));}}));
   }
   const base=real['08/2026'] || (kind==='school'?(((KITCHENS.find(k=>k.name===name)||{}).size)||600)*15000:8000000);
   return DEBT_MONTHS.map((m,idx)=>({month:m,total:real[m]!=null?real[m]:Math.round(base*(0.62+0.1*idx)/1000)*1000}));
@@ -3047,14 +3214,13 @@ const IMPORT_AGG = [
 ];
 /* Thông tin kỳ chốt; ngày đặt/ngày nhận được poSetDate() điền theo ngày đang lọc. */
 const PO_INFO={cutoff:'16h00',eta:'trước 05h00',receiver:'Nguyễn Văn Kiên',phone:'0901 000 010'};
-const PO_REQUIRE='Vui lòng kèm mã lô, ngày sản xuất, hạn dùng và giấy tờ ATTP khi giao.';
 const PO_NO_SUP='Chưa gán NCC phụ';
 /* Đơn thực phẩm còn cần cấp hàng thì cộng vào tổng hợp; "Chờ xác nhận" được đánh dấu chưa chốt */
 const PO_ORDER_ST=['Chờ xác nhận','Đang chuẩn bị'];
-const PO_STATUS={'Nháp':'n','Đã gửi':'b','NCC phụ đã xác nhận':'g','Giao một phần':'a','Không giao được':'r','Đã nhận hàng':'g'};
+const PO_STATUS={'Chưa nhập kho':'n','Nhập thiếu':'a','Đã nhập kho':'g'};
 let PO_QTY={};   /* tên thực phẩm → SL báo NCC sửa tay */
 let PO_SUP={};   /* tên thực phẩm → NCC phụ thay thế */
-let PO_SHEET={}; /* NCC phụ → {status, sent:{tên thực phẩm: SL đã báo}, supp: số phiếu bổ sung} */
+let PO_SHEET={}; /* NCC phụ → phiếu nhập kho: {status, sent:{tên: SL đã chốt}, recv:{tên: SL thực nhận cộng dồn}, supp: số lần nhập bổ sung} */
 let PO_ALLOC={}; /* 'trường|thực phẩm' → SL thực chia */
 let PO_DATE=TODAY_DEMO;
 const PO_DAYS={}; /* ngày nhận (yyyy-mm-dd) → số sửa tay, NCC đổi, phiếu đã gửi, số chia của ngày đó */
@@ -3105,18 +3271,21 @@ function poRows(){
   return Object.values(map).map(r=>{
     const src=SOURCES.find(s=>s.name===r.name), w=WAREHOUSE.find(x=>x.name===r.name);
     const total=Object.values(r.schools).reduce((a,b)=>a+b,0);
-    const need=Math.max(0,w?total-(w.stock-w.min):total);
-    const suggested=Math.ceil(need);
     const sup=PO_SUP[r.name]||r.baseSup, sheet=PO_SHEET[sup];
+    const recv=sheet?(sheet.recv[r.name]||0):0;
+    /* tính trên tồn TRƯỚC khi nhập hàng của ngày này, để số gợi ý không tụt sau khi nhập kho */
+    const need=Math.max(0,w?total-(w.stock-recv-w.min):total);
+    const suggested=Math.ceil(need);
     const sentQty=sheet?(sheet.sent[r.name]||0):null;
     const qty=sheet?sentQty:(PO_QTY[r.name]!==undefined?PO_QTY[r.name]:suggested);
     return {...r,sup,total,need,suggested,qty,locked:!!sheet,delta:sheet?Math.max(0,suggested-sentQty):0,
+      recv,short:sheet?Math.max(0,sentQty-recv):0,
       stock:w?w.stock:null,min:w?w.min:null,cost:src?src.cost:0,code:src?src.code:'—',
       paused:!PO_SUP[r.name]&&!!src&&src.supplyStatus==='Tạm ngừng'};
   });
 }
 function poSupInfo(sup){return SUPPLIERS.find(s=>s.name===sup)||{};}
-function poStatus(sup){return PO_SHEET[sup]?PO_SHEET[sup].status:'Nháp';}
+function poStatus(sup){return PO_SHEET[sup]?PO_SHEET[sup].status:'Chưa nhập kho';}
 function poGroups(rows){
   const out=[];
   rows.forEach(r=>{let g=out.find(x=>x.sup===r.sup);if(!g){g={sup:r.sup,rows:[]};out.push(g);}g.rows.push(r);});
@@ -3149,15 +3318,15 @@ function renderPurchase(){
   const cols=schools.length+5;
   document.getElementById('poBody').innerHTML=rows.length?poGroups(rows).map(g=>{
     const info=poSupInfo(g.sup), st=poStatus(g.sup);
-    const full=all.filter(r=>r.sup===g.sup), hasDelta=full.some(r=>r.delta>0);
+    const full=all.filter(r=>r.sup===g.sup), done=!!PO_SHEET[g.sup];
+    const canIn=done?full.some(r=>r.delta>0||r.short>0):full.some(r=>r.qty>0);
     const value=full.reduce((s,r)=>s+r.qty*r.cost,0);
     const head=`<tr class="po-group"><td colspan="${cols}"><div class="po-group-in">
       <b>${g.sup}</b>
       ${info.phone?`<span class="po-muted">${info.contact} · ${info.phone}</span>`:''}
       <span class="po-muted">${full.length} thực phẩm · ${money(value)}</span>
       <span class="pill ${PO_STATUS[st]}">${st}</span>
-      <button class="btn btn-ghost btn-sm" onclick="poOpenSheet('${esc(g.sup)}')">Xem phiếu</button>
-      ${hasDelta?`<button class="btn btn-green btn-sm" onclick="poOpenSheet('${esc(g.sup)}',true)">Tạo phiếu bổ sung</button>`:''}
+      ${canIn?`<button class="btn btn-green btn-sm" onclick="poOpenReceipt(['${esc(g.sup)}'])">${done?'Nhập bổ sung':'Nhập kho'}</button>`:''}
     </div></td></tr>`;
     return head+g.rows.map(r=>`<tr>
       <td class="po-l"><b>${r.name}</b>${r.paused&&!r.locked?poSwapControl(r):''}</td>
@@ -3166,7 +3335,7 @@ function renderPurchase(){
       <td class="po-n po-r3"><b>${fmtQty(r.total)}</b></td>
       <td class="po-n po-r2">${r.stock===null?'<span class="po-muted">—</span>':`${fmtQty(r.stock)}<small>tối thiểu ${fmtQty(r.min)}</small>`}</td>
       <td class="po-r">${r.locked
-        ?`<b>${fmtQty(r.qty)}</b>${r.delta>0?`<small class="po-delta">Phát sinh +${fmtQty(r.delta)}</small>`:''}`
+        ?`<b>${fmtQty(r.qty)}</b>${r.short>0?`<small class="po-delta">Đã nhận ${fmtQty(r.recv)} · thiếu ${fmtQty(r.short)}</small>`:''}${r.delta>0?`<small class="po-delta">Phát sinh +${fmtQty(r.delta)}</small>`:''}`
         :`<input class="f-input po-qty" type="number" step="any" value="${r.qty}" onchange="poSetQty('${esc(r.name)}',this.value)">`}</td>
     </tr>`).join('');
   }).join(''):`<tr><td colspan="${cols}"><div class="empty">Không có thực phẩm phù hợp.</div></td></tr>`;
@@ -3183,83 +3352,91 @@ function poSwapSup(name,sup){
 }
 function poSetQty(name,v){PO_QTY[name]=Number(v)||0;renderPurchase();}
 
-/* ----- Phiếu đặt hàng gửi NCC phụ: chỉ có số tổng ----- */
-function poSheetData(sup,supp){
-  const rows=poRows().filter(r=>r.sup===sup);
-  const lines=rows.map(r=>({...r,order:supp?r.delta:r.qty})).filter(r=>r.order>0);
+/* ----- Nhập kho theo NCC phụ: số cần nhập lấy từ bảng tổng hợp ----- */
+/* Lần đầu: nhập theo SL báo NCC. Đã nhập rồi: chỉ phần thiếu + phần phát sinh từ đơn mới. */
+function poReceiptLines(sup){
+  const done=!!PO_SHEET[sup];
+  return poRows().filter(r=>r.sup===sup)
+    .map(r=>({...r,order:done?r.short+r.delta:r.qty}))
+    .filter(l=>l.order>0);
+}
+function poReceiptCode(sup){
   const info=poSupInfo(sup), sh=PO_SHEET[sup];
-  const base=`PDH-${PO_INFO.orderKey}-${(info.code||'NCC-00').replace('-','')}`;
-  const code=supp?`${base}-BS${(sh?sh.supp:0)+1}`:base;
-  return {info,lines,code,total:lines.reduce((s,l)=>s+l.order*l.cost,0)};
+  const base=`PNK-${PO_DATE.replace(/-/g,'')}-${(info.code||'NCC-00').replace('-','')}`;
+  return sh?`${base}-BS${sh.supp+1}`:base;
 }
-function poMessage(sup,supp){
-  const d=poSheetData(sup,supp), wh=poWh();
-  return `${sup} – Phiếu ${d.code}${supp?' (bổ sung)':''}\nGiao ngày ${PO_INFO.deliverDate}, ${PO_INFO.eta}, tại ${wh.name}: ${wh.addr}.\nNgười nhận: ${PO_INFO.receiver} · ${PO_INFO.phone}\n`
-    +d.lines.map((l,i)=>`${i+1}. ${l.name}: ${fmtQty(l.order)} ${l.unit}`).join('\n')+`\n\n${PO_REQUIRE}`;
+function poInSups(){return poGroups(poRows()).map(g=>g.sup).filter(s=>poReceiptLines(s).length);}
+let PO_RC=[]; /* các NCC phụ đang mở trong drawer nhập kho */
+function poOpenReceiptAll(){
+  const sups=poInSups();
+  if(!sups.length){toast('Không còn thực phẩm cần nhập kho');return;}
+  poOpenReceipt(sups);
 }
-function poOpenSheet(sup,supp){
-  supp=!!supp;
-  const d=poSheetData(sup,supp), wh=poWh(), st=poStatus(sup), a=esc(sup);
+function poRcvToggle(k){
+  const on=document.getElementById('rk'+k).checked;
+  document.getElementById('rr'+k).classList.toggle('off',!on);
+  document.getElementById('rq'+k).disabled=!on;
+}
+function poOpenReceipt(sups){
+  PO_RC=sups;
+  const all=sups.length>1, groups=sups.map(sup=>({sup,lines:poReceiptLines(sup)}));
+  const nItems=groups.reduce((s,g)=>s+g.lines.length,0);
+  let k=0;
   const body=`
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px">
-      <b style="font-size:15px">${d.code}</b><span class="pill ${supp?'a':PO_STATUS[st]}">${supp?'Phiếu bổ sung':st}</span>
-    </div>
-    <div class="po-info">
-      <div><span>NCC phụ</span><b>${sup}</b>${d.info.phone?`<small>${d.info.contact} · ${d.info.phone}</small>`:''}</div>
-      <div><span>Ngày đặt</span><b>${PO_INFO.orderDate}</b></div>
-      <div><span>Giao hàng</span><b>${PO_INFO.deliverLabel}, ${PO_INFO.eta}</b></div>
-      <div><span>Nơi nhận</span><b>${wh.name}</b><small>${wh.addr}</small></div>
-      <div><span>Người nhận</span><b>${PO_INFO.receiver}</b><small>${PO_INFO.phone}</small></div>
-    </div>
-    <div class="panel sup-compact" style="margin:14px 0"><table>
-      <thead><tr><th>Mã</th><th>Thực phẩm</th><th>ĐVT</th><th style="text-align:right">SL đặt</th><th style="text-align:right">Đơn giá</th><th style="text-align:right">Thành tiền</th></tr></thead>
-      <tbody>${d.lines.map(l=>`<tr><td style="color:var(--muted)">${l.code}</td><td><b>${l.name}</b></td><td>${l.unit}</td><td class="po-n"><b>${fmtQty(l.order)}</b></td><td class="po-n">${money(l.cost)}</td><td class="po-n">${money(l.order*l.cost)}</td></tr>`).join('')||'<tr><td colspan="6"><div class="empty">Không có thực phẩm cần đặt.</div></td></tr>'}
-      <tr><td colspan="5" style="text-align:right"><b>Tổng cộng</b></td><td class="po-n"><b>${money(d.total)}</b></td></tr></tbody>
-    </table></div>
-    <div class="alert info" style="margin-bottom:12px"><span class="ai">ℹ</span><div>${PO_REQUIRE}</div></div>
-    <div class="field"><label>Nội dung gửi Zalo</label><textarea rows="${d.lines.length+6}" readonly>${poMessage(sup,supp)}</textarea></div>`;
-  const common=`<button class="btn btn-ghost" onclick="poCopy('${a}',${supp})">Sao chép nội dung</button><button class="btn btn-ghost" onclick="poPrintSheet('${a}',${supp})">In phiếu</button>`;
-  let foot=common;
-  if(supp||st==='Nháp') foot+=`<button class="btn btn-ghost" onclick="poSend('${a}','Zalo')">Gửi Zalo</button><button class="btn btn-green" onclick="poSend('${a}','email')">Gửi email</button>`;
-  else if(st==='Đã gửi') foot+=`<button class="btn btn-danger" onclick="poSetStatus('${a}','Không giao được')">Không giao được</button><button class="btn btn-ghost" onclick="poSetStatus('${a}','Giao một phần')">Giao một phần</button><button class="btn btn-green" onclick="poSetStatus('${a}','NCC phụ đã xác nhận')">Xác nhận đủ</button>`;
-  else if(st==='NCC phụ đã xác nhận'||st==='Giao một phần') foot+=`<button class="btn btn-green" onclick="poReceive('${a}')">Đã nhận hàng · Tạo lô nhập</button>`;
-  openDrawer(supp?'Phiếu đặt hàng bổ sung':'Phiếu đặt hàng NCC phụ',body,foot,true);
+    <div class="field"><label>Kho nhận</label><select id="rcWh">${WAREHOUSES.map(w=>`<option value="${w.code}">${w.name}</option>`).join('')}</select></div>
+    ${all?`<p class="po-muted" style="margin:-2px 0 12px">${groups.length} NCC phụ · ${nItems} thực phẩm. Bỏ tick hoặc sửa số trước khi nhập.</p>`:''}
+    <div class="panel sup-compact"><table class="rc-table">
+      <thead><tr><th style="width:36px"></th><th>Thực phẩm</th><th style="text-align:right">Số lượng</th></tr></thead>
+      <tbody>${groups.map(g=>(all?`<tr class="rc-sup"><td colspan="3">${g.sup}${PO_SHEET[g.sup]?' <span class="pill a">Bổ sung</span>':''}</td></tr>`:'')
+        +g.lines.map(l=>{const i=k++;return `<tr id="rr${i}">
+          <td><input type="checkbox" id="rk${i}" checked onchange="poRcvToggle(${i})"></td>
+          <td><b>${l.name}</b></td>
+          <td><div class="rc-qty"><input class="f-input" id="rq${i}" type="number" step="any" value="${l.order}"><span>${l.unit}</span></div></td>
+        </tr>`;}).join('')).join('')}</tbody>
+    </table></div>`;
+  openDrawer(all?'Nhập kho tất cả':`Nhập kho · ${sups[0]}`,body,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button><button class="btn btn-green" onclick="poConfirmReceipt()">${all?`Nhập kho ${groups.length} NCC phụ`:'Xác nhận nhập kho'}</button>`);
 }
-function poCopy(sup,supp){
-  const txt=poMessage(sup,supp);
-  try{navigator.clipboard.writeText(txt);}catch(e){}
-  toast('Đã sao chép nội dung phiếu');
+function poConfirmReceipt(){
+  const wh=document.getElementById('rcWh').value;
+  let k=0, nSup=0, nItem=0;
+  /* đọc form trước rồi mới ghi, vì poReceiptLines đổi sau mỗi lần nhập */
+  const groups=PO_RC.map(sup=>({sup,lines:poReceiptLines(sup).map(l=>{const i=k++;
+    return {...l,got:document.getElementById('rk'+i).checked?(Number(document.getElementById('rq'+i).value)||0):0};})}));
+  groups.forEach(g=>{const n=poApplyReceipt(g.sup,g.lines,wh);if(n){nSup++;nItem+=n;}});
+  closeDrawer();renderPurchase();renderWarehouse();renderBatches();
+  toast(PO_RC.length>1?`Đã nhập kho ${nSup} NCC phụ · ${nItem} thực phẩm`:`Đã nhập kho ${nItem} thực phẩm từ ${PO_RC[0]}`);
 }
-function poCommit(sup){
-  const rows=poRows().filter(r=>r.sup===sup);
-  const old=PO_SHEET[sup];
-  const sh=old||{status:'Nháp',sent:{},supp:0};
-  rows.forEach(r=>{sh.sent[r.name]=r.qty+r.delta;});
-  if(old)sh.supp++;
-  sh.status='Đã gửi';
-  PO_SHEET[sup]=sh;
-}
-function poSend(sup,ch){
-  const isSupp=!!PO_SHEET[sup];
-  poCommit(sup);
-  closeDrawer();renderPurchase();
-  toast(`Đã gửi ${isSupp?'phiếu bổ sung':'phiếu'} cho ${sup} qua ${ch}`);
-}
-function poSendAll(){
-  const draft=poGroups(poRows()).filter(g=>!PO_SHEET[g.sup]&&g.rows.some(r=>r.qty>0));
-  if(!draft.length){toast('Không có phiếu cần gửi');return;}
-  confirmDialog('Gửi tất cả NCC phụ',`Gửi ${draft.length} phiếu đặt hàng cho NCC phụ, nhận hàng ${PO_INFO.deliverDate}?`,'Gửi phiếu',()=>{
-    draft.forEach(g=>poCommit(g.sup));
-    renderPurchase();
-    toast(`Đã gửi ${draft.length} phiếu đặt hàng`);
+function poApplyReceipt(sup,lines,wh){
+  if(!lines.some(l=>l.got>0))return 0; /* bỏ tick hết thì NCC phụ này coi như chưa nhập */
+  const code=poReceiptCode(sup), info=poSupInfo(sup);
+  const old=PO_SHEET[sup], sh=old||{sent:{},recv:{},supp:0};
+  /* chốt số: lần đầu = SL báo NCC của cả nhóm; nhập bổ sung = cộng phần phát sinh */
+  if(!old) poRows().filter(r=>r.sup===sup).forEach(r=>{sh.sent[r.name]=r.qty;});
+  else lines.forEach(l=>{sh.sent[l.name]=(sh.sent[l.name]||0)+l.delta;});
+  let n=0;
+  lines.forEach(l=>{
+    sh.recv[l.name]=(sh.recv[l.name]||0)+l.got;
+    if(l.got<=0)return;
+    n++;
+    const w=WAREHOUSE.find(x=>x.name===l.name);
+    if(w){w.imported+=l.got;w.stock+=l.got;w.hist.unshift([PO_INFO.deliverDate,'in',l.got,sup,`Nhập theo phiếu ${code}`]);}
+    const src=SOURCES.find(x=>x.name===l.name)||{}, cat=src.catStd||'';
+    BATCHES.push({
+      code:'LO-'+String(BATCH_SEQ++).padStart(3,'0'),
+      name:`Lô ${l.name} ${PO_INFO.deliverDate.slice(0,5)}`,
+      cat, workflow:src.workflow||catWorkflow(cat),
+      importDate:PO_INFO.deliverDate, prodDate:'', expDate:'',
+      wh, supplier:sup, purchaseAddr:info.addr||'', desc:`Nhập theo phiếu ${code}`,
+      qty:l.got, unit:l.unit, enteredBy:PO_INFO.receiver,
+      externalTraceCode:null, syncState:'PENDING', syncError:null, lastSyncedAt:null,
+      stageData:{}, photos:0,
+    });
   });
-}
-function poSetStatus(sup,st){PO_SHEET[sup].status=st;closeDrawer();renderPurchase();toast(`${sup}: ${st}`);}
-function poReceive(sup){
-  const n=poRows().filter(r=>r.sup===sup&&r.qty>0).length;
-  PO_SHEET[sup].status='Đã nhận hàng';
-  closeDrawer();renderPurchase();
-  toast(`Đã tạo ${n} lô nhập từ phiếu của ${sup}`);
+  if(old)sh.supp++;
+  sh.status=Object.keys(sh.sent).some(x=>(sh.recv[x]||0)<sh.sent[x])?'Nhập thiếu':'Đã nhập kho';
+  PO_SHEET[sup]=sh;
+  return n;
 }
 
 /* ----- In phiếu: cùng khung với phiếu giao hàng ----- */
@@ -3287,24 +3464,15 @@ function poPrint(title,body){
   </style></head><body>${body}<script>window.onload=function(){window.print();}<\/script></body></html>`);
   w.document.close();
 }
-function poPrintSheet(sup,supp){
-  const d=poSheetData(sup,supp), wh=poWh();
-  poPrint(d.code,`<div class="co">CÔNG TY TNHH PTTM VÀ DV HỒNG ANH</div>
-    <h1>PHIẾU ĐẶT HÀNG${supp?' BỔ SUNG':''}</h1>
-    <div class="meta"><span>NGÀY ĐẶT: ${PO_INFO.orderDate}</span><span>Số: ${d.code}</span></div>
-    <div class="buyer"><b>NCC PHỤ:</b> ${sup}${d.info.phone?` · ${d.info.contact} · ${d.info.phone}`:''}</div>
-    <div class="buyer"><b>Giao hàng:</b> ${PO_INFO.deliverLabel}, ${PO_INFO.eta}</div>
-    <div class="buyer"><b>Nơi nhận:</b> ${wh.name}, ${wh.addr}</div>
-    <div class="buyer"><b>Người nhận:</b> ${PO_INFO.receiver} · ${PO_INFO.phone}</div>
-    <table><thead><tr><th style="width:34px">STT</th><th>MÃ</th><th>TÊN THỰC PHẨM</th><th>ĐVT</th><th>SL ĐẶT</th><th>ĐƠN GIÁ</th><th>THÀNH TIỀN</th></tr></thead>
-    <tbody>${d.lines.map((l,i)=>`<tr><td class="c">${i+1}</td><td class="c">${l.code}</td><td>${l.name}</td><td class="c">${l.unit}</td><td class="r">${fmtQty(l.order)}</td><td class="r">${fmtNum(l.cost)}</td><td class="r">${fmtNum(l.order*l.cost)}</td></tr>`).join('')}</tbody>
-    <tfoot><tr class="tot"><td colspan="6" style="text-align:right">TỔNG CỘNG</td><td class="r">${fmtNum(d.total)}</td></tr></tfoot></table>
-    <div class="note">${PO_REQUIRE}</div>
-    <div class="sign"><div><b>BÊN ĐẶT HÀNG</b><i>(Ký, ghi rõ họ tên)</i></div><div><b>NCC PHỤ</b><i>(Ký, ghi rõ họ tên)</i></div></div>`);
-}
-
 /* ----- Phiếu chia hàng theo trường: dùng nội bộ khi hàng về kho ----- */
-function poAllocQty(school,r){const k=school+'|'+r.name;return PO_ALLOC[k]!==undefined?PO_ALLOC[k]:r.schools[school];}
+/* Nhập thiếu thì phần thiếu chia đều theo tỉ lệ số từng trường đặt; kho vẫn sửa tay được */
+function poAllocQty(school,r){
+  const k=school+'|'+r.name;
+  if(PO_ALLOC[k]!==undefined)return PO_ALLOC[k];
+  const q=r.schools[school];
+  if(!r.short||!r.total)return q;
+  return Math.round(q*Math.max(0,r.total-r.short)/r.total*10)/10;
+}
 function poOpenAlloc(school){
   const rows=poRows(), schools=poSchoolsOf(rows);
   const cur=school||document.getElementById('poSchoolFilter').value||schools[0];
@@ -3312,10 +3480,10 @@ function poOpenAlloc(school){
   const k=KITCHENS.find(x=>poShort(x.name)===cur)||{};
   openDrawer('Phiếu chia hàng theo trường',`
     <div class="field"><label>Trường</label><select onchange="poOpenAlloc(this.value)">${schools.map(s=>`<option ${s===cur?'selected':''}>${s}</option>`).join('')}</select></div>
-    <p style="font-size:13.5px;color:var(--muted);margin-bottom:12px">${k.addr||''} · Giao ngày ${PO_INFO.deliverDate}. NCC phụ giao thiếu thì sửa số ở cột Thực chia.</p>
+    <p style="font-size:13.5px;color:var(--muted);margin-bottom:12px">${k.addr||''} · Giao ngày ${PO_INFO.deliverDate}. Nhập kho thiếu thì Thực chia tự giảm theo tỉ lệ, sửa tay nếu cần.</p>
     <div class="panel sup-compact"><table>
       <thead><tr><th>Thực phẩm</th><th>ĐVT</th><th style="text-align:right">Trường đặt</th><th style="text-align:right">Thực chia</th></tr></thead>
-      <tbody>${items.map(r=>`<tr><td><b>${r.name}</b>${r.pending[cur]?' <span class="pill a">Chờ xác nhận</span>':''}<div class="po-muted" style="font-size:12px">${r.sup}</div></td><td>${r.unit}</td><td class="po-n">${fmtQty(r.schools[cur])}</td><td class="po-n"><input class="f-input po-qty" type="number" step="any" value="${poAllocQty(cur,r)}" onchange="PO_ALLOC['${esc(cur)}|${esc(r.name)}']=Number(this.value)||0"></td></tr>`).join('')}</tbody>
+      <tbody>${items.map(r=>`<tr><td><b>${r.name}</b>${r.pending[cur]?' <span class="pill a">Chờ xác nhận</span>':''}<div class="po-muted" style="font-size:12px">${r.sup}</div></td><td>${r.unit}</td><td class="po-n">${fmtQty(r.schools[cur])}</td><td class="po-n${r.short?' po-pend':''}"><input class="f-input po-qty" type="number" step="any" value="${poAllocQty(cur,r)}" onchange="PO_ALLOC['${esc(cur)}|${esc(r.name)}']=Number(this.value)||0"></td></tr>`).join('')}</tbody>
     </table></div>`,
     `<button class="btn btn-ghost" onclick="poPrintAlloc()">In tất cả trường</button><button class="btn btn-green" onclick="poPrintAlloc('${esc(cur)}')">In phiếu trường này</button>`,true);
 }
@@ -3635,8 +3803,21 @@ function openOrderDetail(i){
         <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${h.time}</div>
         <div style="font-size:13px;line-height:1.6">${h.changes.map(c=>'· '+c).join('<br>')}</div>
       </div>`).join('')}` : '';
+  const rets=orderReturns(o), rtTotal=orderReturnTotal(o);
+  const retBlock = rets.length ? `
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:22px 0 10px">
+      <b style="font-size:14px">Phiếu trả hàng</b><span style="color:var(--muted);font-size:12px">Đã trừ ${money(rtTotal)} khỏi công nợ</span>
+    </div>
+    ${rets.map(r=>`<div class="panel sup-compact" style="margin-bottom:10px">
+      <div style="padding:10px 14px;font-size:13px;border-bottom:1px solid var(--line)"><b>${r.code}</b> · ${r.date} · ${r.reason}${r.note?` <span style="color:var(--muted)">— ${r.note}</span>`:''}</div>
+      <table><thead><tr><th>Thực phẩm</th><th style="text-align:right">SL trả</th><th>Xử lý</th><th style="text-align:right">Tiền trả</th></tr></thead>
+      <tbody>${r.lines.map(l=>`<tr><td>${l.name}</td><td style="text-align:right;white-space:nowrap">${fmtQty(l.qty)} ${l.unit}</td>
+        <td><span class="pill ${RETURN_ACT[l.act].cls}">${RETURN_ACT[l.act].label}</span></td>
+        <td style="text-align:right;white-space:nowrap;color:var(--red);font-weight:700">−${money(l.qty*l.price)}</td></tr>`).join('')}</tbody></table>
+    </div>`).join('')}` : '';
   openDetailPage('🧾 Đơn '+o.code, `Số hoá đơn: ${invNo(o)} · ${o.school}`,
-    `<button class="btn btn-ghost btn-sm" onclick="openOrderEdit(${i})"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25ZM20.7 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z"/></svg>Sửa đơn</button>
+    `${RETURNABLE.includes(o.status)&&orderNet(o)>0?`<button class="btn btn-ghost btn-sm" onclick="openReturnForm(${i})"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8Z"/></svg>Trả hàng</button>`:''}
+     <button class="btn btn-ghost btn-sm" onclick="openOrderEdit(${i})"><svg class="btn-ic" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25ZM20.7 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z"/></svg>Sửa đơn</button>
      <button class="btn btn-green btn-sm" onclick="setOrderStatus(${i},'${o.status===ORDER_DONE?'Chờ xác nhận':ORDER_DONE}');openOrderDetail(${i})">${o.status===ORDER_DONE?'Chuyển về Chờ xác nhận':'✓ Giao hàng thành công'}</button>`,`
     <div class="sup-top">
       <div class="sup-card">
@@ -3654,6 +3835,8 @@ function openOrderDetail(i){
         <div class="sup-card-t">Trạng thái &amp; thanh toán</div>
         <div class="sup-stats">
           <div><div class="sk">Tổng giá trị</div><div class="sup-stat-v">${money(orderTotal(o))}</div></div>
+          ${rtTotal?`<div><div class="sk">Trả hàng</div><div class="sup-stat-v" style="color:var(--red)">−${money(rtTotal)}</div></div>
+          <div><div class="sk">Còn phải thu</div><div class="sup-stat-v">${money(orderNet(o))}</div></div>`:''}
           <div><div class="sk">Trạng thái</div><div style="margin-top:5px">
             <span class="pill ${orderStatusCls(o.status)}">${o.status}</span>
           </div></div>
@@ -3676,6 +3859,7 @@ function openOrderDetail(i){
         <tfoot><tr><td colspan="4" style="text-align:right;font-weight:700;background:#FAFBF9">Tổng cộng</td><td style="text-align:right;font-weight:800;background:#FAFBF9;white-space:nowrap">${money(orderTotal(o))}</td></tr></tfoot>
       </table>
     </div>
+    ${retBlock}
     ${histBlock}`,
     backFn);
 }
@@ -3704,10 +3888,85 @@ function openQuickProcess(i){
 }
 function saveQuickProcess(i){
   const o=ORDERS[i];
-  o.status=document.getElementById('qpStatus').value;
+  if(document.getElementById('qpStatus').value!=='Trả hàng')o.status=document.getElementById('qpStatus').value;
   o.deliverer=document.getElementById('qpDeliverer').value;
   o.procNote=document.getElementById('qpNote').value.trim();
+  const st=document.getElementById('qpStatus').value;
+  if(st==='Trả hàng'&&o.status!=='Trả hàng'){closeDrawer();renderOrders();openReturnForm(i,true);return;}
   closeDrawer();renderOrders();toast(`Đã xử lý đơn ${o.code} → ${o.status}`);
+}
+
+/* Phiếu trả hàng theo đơn. full = mở từ việc chọn trạng thái "Trả hàng" → điền sẵn trả toàn bộ.
+   Trả hết mọi dòng → đơn chuyển "Trả hàng"; trả 1 phần → giữ trạng thái, hiện nhãn "Trả 1 phần". */
+let rtOrderIdx=null;
+function openReturnForm(i,full){
+  rtOrderIdx=i;
+  const o=ORDERS[i];
+  const lines=orderLines(o).map(l=>({name:l[0],unit:l[1],qty:l[2],price:l[3],left:l[2]-returnedQty(o,l[0])}));
+  const rows=lines.map((l,k)=>{
+    const inStock=!o.meals&&whByName(l.name);
+    const acts=o.meals?['dispose']:(inStock?['stock','dispose','ncc']:['dispose','ncc']);
+    return `<tr data-k="${k}" data-price="${l.price}" data-left="${l.left}">
+      <td>${l.name}${inStock?' <span class="pill b" style="font-size:11px">có trong kho</span>':''}</td>
+      <td style="text-align:right;white-space:nowrap;color:var(--muted)">${fmtQty(l.left)}${l.left!==l.qty?` / ${fmtQty(l.qty)}`:''} ${l.unit}</td>
+      <td style="text-align:right"><input type="number" min="0" class="si-qty rt-qty" style="width:80px;padding:8px;border:1.5px solid var(--line);border-radius:10px;font:600 13px 'Be Vietnam Pro';text-align:right" value="${full?l.left:''}" placeholder="0" oninput="rtCalc()"></td>
+      <td><select class="f-input rt-act" style="padding:8px 10px">${acts.map(a=>`<option value="${a}">${RETURN_ACT[a].label}</option>`).join('')}</select></td>
+      <td class="rt-money" style="text-align:right;white-space:nowrap;font-weight:700;color:var(--red)">—</td>
+    </tr>`;}).join('');
+  openDrawer('↺ Phiếu trả hàng · '+o.code,`
+    <div class="sup-info" style="margin-bottom:14px">
+      <div><div class="sk">Trường</div><div class="sv">${o.school}</div></div>
+      <div><div class="sk">Ngày giao</div><div class="sv">${o.date}</div></div>
+      <div><div class="sk">Giá trị đơn</div><div class="sv">${money(orderTotal(o))}</div></div>
+    </div>
+    <p style="color:var(--muted);font-size:13.5px;margin-bottom:10px"><b>Nhập lại kho</b>: cộng tồn kho (chỉ thực phẩm có trong kho). <b>Hủy bỏ</b>: không dùng lại được. <b>Trả NCC phụ</b>: trả về nhà cung ứng phụ, giảm công nợ NCC phụ. Mọi dòng đều trừ công nợ của trường.</p>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-ghost btn-sm" onclick="rtFillAll()">Trả toàn bộ</button></div>
+    <div class="panel sup-compact"><table>
+      <thead><tr><th>${o.meals?'Loại suất ăn':'Thực phẩm'}</th><th style="text-align:right">Còn trả được</th><th style="text-align:right">SL trả</th><th>Xử lý</th><th style="text-align:right">Tiền trả</th></tr></thead>
+      <tbody id="rtBody">${rows}</tbody>
+      <tfoot><tr><td colspan="4" style="text-align:right;font-weight:700;background:#FAFBF9">Tổng tiền trả (trừ công nợ)</td><td id="rtTotal" style="text-align:right;font-weight:800;background:#FAFBF9;white-space:nowrap;color:var(--red)">0 đ</td></tr></tfoot>
+    </table></div>
+    <div class="field" style="margin-top:16px"><label>Lý do trả hàng</label><select id="rtReason" class="f-input">${RETURN_REASONS.map(r=>`<option>${r}</option>`).join('')}</select></div>
+    <div class="field"><label>Ngày trả</label><input type="date" id="rtDate" class="f-input" value="${TODAY_DEMO}"></div>
+    <div class="field"><label>Ghi chú</label><input id="rtNote" class="f-input" placeholder="VD: Bếp trường báo nghỉ, xe đã giao"></div>
+    <div class="field"><label>Ảnh minh chứng</label>${photoGridFor('rtPhotos',0)}</div>`,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button>
+     <button class="btn btn-green" onclick="saveReturn()">Xác nhận trả hàng</button>`,true);
+  document.getElementById('drawer').classList.add('xwide');
+  rtCalc();
+}
+function rtFillAll(){document.querySelectorAll('#rtBody tr').forEach(tr=>{tr.querySelector('.rt-qty').value=tr.dataset.left;});rtCalc();}
+function rtCalc(){
+  let t=0;
+  document.querySelectorAll('#rtBody tr').forEach(tr=>{
+    const q=parseFloat(tr.querySelector('.rt-qty').value)||0, v=q*(+tr.dataset.price); t+=v;
+    tr.querySelector('.rt-money').textContent=q?'−'+money(v):'—';
+  });
+  document.getElementById('rtTotal').textContent=(t?'−':'')+money(t);
+}
+function saveReturn(){
+  const i=rtOrderIdx, o=ORDERS[i], base=orderLines(o);
+  const dateV=document.getElementById('rtDate').value;
+  const d=dateV?dateV.split('-').reverse().join('/'):'21/08/2026';
+  const reason=document.getElementById('rtReason').value, note=document.getElementById('rtNote').value.trim();
+  const code='PT-'+String(RT_SEQ++).padStart(3,'0');
+  const lines=[];
+  document.querySelectorAll('#rtBody tr').forEach(tr=>{
+    const l=base[+tr.dataset.k], qty=parseFloat(tr.querySelector('.rt-qty').value)||0;
+    if(qty>0)lines.push({name:l[0],unit:l[1],qty,price:l[3],act:tr.querySelector('.rt-act').value});
+  });
+  if(!lines.length){closeDrawer();toast('Đã lưu (mock)');return;}
+  orderReturns(o).unshift({code,date:d,reason,note,lines});
+  let restock=0;
+  lines.filter(l=>l.act==='stock').forEach(l=>{
+    const w=whByName(l.name); if(!w)return;
+    w.stock+=l.qty; w.hist.unshift([d,'ret',l.qty,`Trả về · ${o.school} (đơn ${o.code})`,`${reason} · ${code}`]); restock++;
+  });
+  const all=base.every(l=>returnedQty(o,l[0])>=l[2]);
+  if(all)o.status='Trả hàng';
+  closeDrawer();renderOrders();
+  if(document.getElementById('page-detail').classList.contains('on'))openOrderDetail(i);
+  toast(`${code} · Trừ công nợ ${money(lines.reduce((s,l)=>s+l.qty*l.price,0))}${restock?` · nhập lại kho ${restock} thực phẩm`:''}${all?' · Đơn → Trả hàng':''}`);
 }
 
 function openOrderPanel(){

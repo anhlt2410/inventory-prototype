@@ -198,6 +198,11 @@ button{font-family:inherit;cursor:pointer}
 .stepper button{width:40px;height:40px;border-radius:12px;border:2px solid var(--line);background:#fff;font-size:22px;font-weight:700;color:var(--orange-dk);display:flex;align-items:center;justify-content:center;line-height:1}
 .stepper button:active{background:var(--orange-soft)}
 .stepper .qty{min-width:34px;text-align:center;font-weight:800;font-size:17px}
+.stepper input.qty{width:64px;height:40px;border:2px solid var(--line);border-radius:12px;font:800 17px 'Be Vietnam Pro';color:var(--ink);background:#fff;padding:0 4px;-moz-appearance:textfield}
+.stepper input.qty::-webkit-outer-spin-button,.stepper input.qty::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stepper input.qty:focus{outline:none;border-color:var(--orange)}
+.edit-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--orange-soft);border:2px solid var(--orange);border-radius:16px;padding:12px 14px;margin-bottom:16px;font-size:16px;font-weight:700;color:var(--orange-dk)}
+.edit-banner button{border:none;background:#fff;border-radius:12px;padding:10px 14px;font:800 16px 'Be Vietnam Pro';color:var(--ink);flex-shrink:0}
 .add-btn{width:44px;height:44px;border-radius:14px;border:none;background:linear-gradient(145deg,#F0793F,var(--orange-dk));color:#fff;font-size:26px;font-weight:700;flex-shrink:0;box-shadow:0 6px 16px rgba(210,87,31,.24);display:flex;align-items:center;justify-content:center;line-height:1}
 .add-btn:active{transform:translateY(1px)}
 
@@ -352,6 +357,7 @@ button{font-family:inherit;cursor:pointer}
       <p>Trường TH Nghĩa Tân · <a href="#" onclick="logout();return false" style="color:var(--orange-dk);font-weight:700">Đăng xuất</a></p>
     </div>
     <div class="content">
+      <div id="editBanner"></div>
       <div class="filter" style="margin-bottom:18px">
         <label style="font-weight:700;font-size:15px;color:var(--muted);white-space:nowrap">Giao ngày</label>
         <input type="date" id="deliverDate" value="2026-08-18">
@@ -1027,9 +1033,36 @@ const PAYMENTS=[
   {date:'15/07/2026', method:'Chuyển khoản BIDV', amount:41_800_000, note:'Thanh toán đợt 2 tháng 7'},
 ];
 
-let cart={}; // id -> qty
+let cart={}; // id -> qty (cho phép số thập phân, vd 2,5 kg)
+let editingOrder=null; // index trong ORDERS khi đang sửa đơn
 
-function vnd(n){return n.toLocaleString('vi-VN')+'₫';}
+function vnd(n){return Math.round(n).toLocaleString('vi-VN')+'₫';}
+function fq(n){return (+n).toLocaleString('vi-VN',{maximumFractionDigits:3});}
+function rq(n){return Math.round(n*1000)/1000;}
+// Ô nhập số lượng tự do — chấp nhận cả dấu phẩy và dấu chấm thập phân
+function qtyInput(id,q){
+  return `<input class="qty" type="text" inputmode="decimal" value="${String(q).replace('.',',')}"
+    onfocus="this.select()" oninput="setQty('${id}',this.value)" onchange="commitQty('${id}')">`;
+}
+function setQty(id,v){
+  const n=parseFloat(String(v).replace(',','.'));
+  cart[id]=isNaN(n)?0:rq(n);
+  const it=ITEM[id], cl=document.getElementById('cl-'+id), ct=document.getElementById('cartTot');
+  if(cl)cl.textContent=`${vnd(it.price)} × ${fq(cart[id])} ${it.unit}`;
+  if(ct)ct.innerHTML=`<span>Tổng cộng (${cartCount()} mặt hàng)</span><b>${vnd(cartTotal())}</b>`;
+  renderCartBar();
+}
+function commitQty(id){
+  if(cart[id]>0)return;
+  delete cart[id];
+  renderShop();
+  if(!document.getElementById('modal').classList.contains('on'))return;
+  if(!cartCount()){closeModal();return;}
+  // Gỡ dòng tại chỗ, không vẽ lại cả giỏ — để cú bấm Đặt/Lưu ngay sau đó không bị mất
+  const row=document.getElementById('cl-'+id)?.closest('.cart-row');
+  if(row)row.remove();
+  document.getElementById('cartTot').innerHTML=`<span>Tổng cộng (${cartCount()} mặt hàng)</span><b>${vnd(cartTotal())}</b>`;
+}
 function navShopBtn(t){return document.querySelector('#navShop button[data-tab="'+t+'"]');}
 function tabShop(t,btn){
   show('s-'+t);
@@ -1043,6 +1076,9 @@ function tabShop(t,btn){
 
 /* ----- Đặt hàng (catalog) ----- */
 function renderShop(){
+  document.getElementById('editBanner').innerHTML=editingOrder!==null
+    ? `<div class="edit-banner"><span>✏️ Đang sửa đơn ${ORDERS[editingOrder].id}</span><button onclick="cancelEdit()">Hủy sửa</button></div>`
+    : '';
   document.getElementById('catalogList').innerHTML=CATALOG.map(c=>`
     <div class="section-title" style="margin-top:8px">${c.cat}</div>
     ${c.items.map(it=>{
@@ -1050,7 +1086,7 @@ function renderShop(){
       const ctrl=q>0
         ? `<div class="stepper">
              <button onclick="dec('${it.id}')">−</button>
-             <span class="qty" id="q-${it.id}">${q}</span>
+             ${qtyInput(it.id,q)}
              <button onclick="inc('${it.id}')">+</button>
            </div>`
         : `<button class="add-btn" onclick="inc('${it.id}')">+</button>`;
@@ -1066,16 +1102,16 @@ function renderShop(){
     }).join('')}`).join('');
   renderCartBar();
 }
-function inc(id){cart[id]=(cart[id]||0)+1;renderShop();}
-function dec(id){cart[id]=(cart[id]||0)-1;if(cart[id]<=0)delete cart[id];renderShop();}
-function cartCount(){return Object.values(cart).reduce((a,b)=>a+b,0);}
+function inc(id){cart[id]=rq((cart[id]||0)+1);renderShop();}
+function dec(id){cart[id]=rq((cart[id]||0)-1);if(cart[id]<=0)delete cart[id];renderShop();}
+function cartCount(){return Object.values(cart).filter(q=>q>0).length;}
 function cartTotal(){return Object.entries(cart).reduce((s,[id,q])=>s+ITEM[id].price*q,0);}
 function renderCartBar(){
   const bar=document.getElementById('cartbar');
   const n=cartCount();
   if(!n){bar.classList.remove('on');return;}
   bar.classList.add('on');
-  bar.innerHTML=`<span>🛒 ${n} món</span><span class="cright">${vnd(cartTotal())} <span style="font-size:22px">›</span></span>`;
+  bar.innerHTML=`<span>🛒 ${n} mặt hàng</span><span class="cright">${vnd(cartTotal())} <span style="font-size:22px">›</span></span>`;
 }
 
 /* ----- Giỏ hàng (bottom sheet) ----- */
@@ -1087,7 +1123,7 @@ function openCart(){
   document.getElementById('sheet').innerHTML=`
     <div class="grab"></div>
     <div class="sheet-head">
-      <div><div class="tag">GIỎ HÀNG · GIAO NGÀY ${ddText}</div><h2>Xác nhận đặt hàng</h2></div>
+      <div><div class="tag">${editingOrder!==null?'SỬA ĐƠN '+ORDERS[editingOrder].id:'GIỎ HÀNG'} · GIAO NGÀY ${ddText}</div><h2>${editingOrder!==null?'Xác nhận sửa đơn':'Xác nhận đặt hàng'}</h2></div>
       <button class="x" onclick="closeModal()">✕</button>
     </div>
     <div style="margin-top:8px">
@@ -1095,16 +1131,16 @@ function openCart(){
         const it=ITEM[id];
         return `<div class="cart-row">
           <span style="font-size:26px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:12px;flex-shrink:0">${it.ic}</span>
-          <span class="info"><b>${it.name}</b><span class="price">${vnd(it.price)} × ${q} ${it.unit}</span></span>
+          <span class="info"><b>${it.name}</b><span class="price" id="cl-${id}">${vnd(it.price)} × ${fq(q)} ${it.unit}</span></span>
           <div class="stepper">
             <button onclick="dec('${id}');openCart()">−</button>
-            <span class="qty">${q}</span>
+            ${qtyInput(id,q)}
             <button onclick="inc('${id}');openCart()">+</button>
           </div>
         </div>`;
       }).join('')}
-      <div class="total-row"><span>Tổng cộng (${cartCount()} món)</span><b>${vnd(cartTotal())}</b></div>
-      <button class="btn btn-orange" style="margin-top:14px" onclick="placeOrder()">ĐẶT ĐƠN</button>
+      <div class="total-row" id="cartTot"><span>Tổng cộng (${cartCount()} mặt hàng)</span><b>${vnd(cartTotal())}</b></div>
+      <button class="btn btn-orange" style="margin-top:14px" onclick="placeOrder()">${editingOrder!==null?'LƯU THAY ĐỔI':'ĐẶT ĐƠN'}</button>
     </div>`;
   document.getElementById('modal').classList.add('on');
 }
@@ -1113,9 +1149,21 @@ function placeOrder(){
   const dd=document.getElementById('deliverDate').value;
   const ddText=dd?('Giao '+dd.split('-').reverse().slice(0,2).join('/')):'Giao trong ngày';
   const total=cartTotal();
+  if(editingOrder!==null){
+    const i=editingOrder, o=ORDERS[i], old=orderTotal(o);
+    o.lines=Object.entries(cart).filter(([,q])=>q>0);
+    o.deliver=ddText;
+    DEBT+=total-old;
+    editingOrder=null; cart={};
+    closeModal(); renderShop(); renderCartBar();
+    toast('✅ Đã cập nhật đơn '+o.id+' · '+vnd(total));
+    tabShop('orders',navShopBtn('orders'));
+    openOrder(i);
+    return;
+  }
   ORDERS.unshift({
     id:'DH-08'+(ODSEQ++), date:'17/08/2026', deliver:ddText, status:'Chờ duyệt',
-    lines:Object.entries(cart).map(([id,q])=>[id,q])
+    lines:Object.entries(cart).filter(([,q])=>q>0)
   });
   DEBT+=total;
   cart={};
@@ -1160,13 +1208,29 @@ function openOrder(i){
       ${o.lines.map(([id,q])=>{
         const it=ITEM[id];
         return `<div class="order-line">
-          <span>${it.ic} ${it.name}<br><span class="q">${vnd(it.price)} × ${q} ${it.unit}</span></span>
+          <span>${it.ic} ${it.name}<br><span class="q">${vnd(it.price)} × ${fq(q)} ${it.unit}</span></span>
           <b>${vnd(it.price*q)}</b>
         </div>`;
       }).join('')}
       <div class="total-row"><span>Tổng cộng</span><b>${vnd(orderTotal(o))}</b></div>
-    </div>`;
+    </div>
+    ${o.status!=='Hoàn thành'?`<button class="btn btn-orange" style="margin-top:18px" onclick="editOrder(${i})">✏️ Sửa đơn</button>`:''}`;
   show('s-orderdetail');
+}
+// Sửa đơn chưa hoàn thành: nạp lại vào giỏ, quay về màn Đặt hàng
+function editOrder(i){
+  const o=ORDERS[i];
+  editingOrder=i;
+  cart=Object.fromEntries(o.lines.map(([id,q])=>[id,q]));
+  const m=o.deliver.match(/(\d{2})\/(\d{2})/);
+  if(m)document.getElementById('deliverDate').value=`2026-${m[2]}-${m[1]}`;
+  tabShop('shop',navShopBtn('shop'));
+  toast('✏️ Đang sửa đơn '+o.id+' — chỉnh số lượng rồi bấm giỏ hàng');
+}
+function cancelEdit(){
+  editingOrder=null; cart={};
+  renderShop();
+  toast('Đã hủy sửa đơn');
 }
 
 /* ----- Công nợ ----- */

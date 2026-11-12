@@ -126,28 +126,31 @@ main{padding:28px 32px;max-width:1320px;width:100%;min-width:0;margin:0 auto}
 .po-n{text-align:right;white-space:nowrap}
 .po-n small,.po-r small{display:block;font-size:11.5px;color:var(--muted);font-weight:500}
 .po-muted{color:var(--muted);font-size:13px}
-.po-table .po-l,.po-table .po-r,.po-table .po-r2,.po-table .po-r3{position:sticky;z-index:1;background:#fff}
-.po-table .po-l{left:0;min-width:200px;box-shadow:inset -1px 0 0 var(--line)}
+.po-table .po-l,.po-table .po-l2,.po-table .po-r,.po-table .po-r2,.po-table .po-r3{position:sticky;z-index:1;background:#fff}
+.po-table .po-l{left:0;width:170px;min-width:170px;max-width:170px}
+.po-table .po-l2{left:170px;width:230px;min-width:230px;max-width:230px;box-shadow:inset -1px 0 0 var(--line)}
+.po-sup{width:100%;padding:6px 8px;font-size:12.5px}
+.po-tag{display:block;font-size:11.5px;font-weight:600;margin-top:4px}
+.po-tag.g{color:var(--green)}.po-tag.a{color:var(--amber)}
+.po-tag a{text-decoration:underline;cursor:pointer}
+.po-ok{display:block;font-size:11.5px;color:var(--green);font-weight:600}
+.po-table th small{display:block;font-size:10.5px;color:var(--amber);font-weight:600}
 /* 3 cột ghim phải: độ rộng cố định để offset right khớp nhau */
 .po-table th.po-r,.po-table td.po-r{right:0;width:124px;min-width:124px;max-width:124px;text-align:right}
 .po-table th.po-r2,.po-table td.po-r2{right:124px;width:104px;min-width:104px;max-width:104px}
 .po-table th.po-r3,.po-table td.po-r3{right:228px;width:104px;min-width:104px;max-width:104px;box-shadow:inset 1px 0 0 var(--line)}
-.po-table th.po-l,.po-table th.po-r,.po-table th.po-r2,.po-table th.po-r3{background:#FAFCF7}
+.po-table th.po-l,.po-table th.po-l2,.po-table th.po-r,.po-table th.po-r2,.po-table th.po-r3{background:#FAFCF7}
 /* phủ khe 1px giữa các cột ghim để ô cuộn bên dưới không lộ ra */
 .po-table td.po-r,.po-table td.po-r2{box-shadow:-1px 0 0 #fff}
 .po-table th.po-r,.po-table th.po-r2{box-shadow:-1px 0 0 #FAFCF7}
-.po-table .po-group td{background:var(--green-soft);padding:8px 12px}
-.po-group-in{position:sticky;left:12px;display:inline-flex;align-items:center;gap:12px;white-space:nowrap}
 .po-table td.po-pend{background:var(--amber-soft);color:#7A5410;font-weight:600}
 .po-r small.po-delta{color:var(--amber);font-weight:700}
 .po-qty{width:92px;padding:6px 8px;text-align:right;font-weight:700}
-.po-swap{display:flex;align-items:center;gap:6px;margin-top:6px}
-.po-swap .f-input{padding:5px 8px;font-size:12.5px;min-width:0}
-.po-swap .f-input.ss-trigger{min-width:112px}
 .po-info{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;font-size:13.5px}
 .po-info span{display:block;color:var(--muted);font-size:12px}
 .po-info small{display:block;color:var(--muted);font-size:12.5px}
 .rc-table .rc-sup td{background:var(--green-soft);font-weight:700;font-size:13px;padding:7px 12px}
+.rc-table th input[type=checkbox]{width:17px;height:17px;accent-color:var(--green);cursor:pointer}
 .rc-table input[type=checkbox]{width:17px;height:17px;accent-color:var(--green);cursor:pointer}
 .rc-table tr.off td:not(:first-child){opacity:.4}
 .rc-qty{display:flex;align-items:center;justify-content:flex-end;gap:6px}
@@ -775,7 +778,7 @@ tr.rp-warn td:first-child{box-shadow:inset 3px 0 0 var(--amber)}
         <div class="actions">
           <button class="btn btn-ghost btn-sm" onclick="poExport()">Xuất Excel</button>
           <button class="btn btn-ghost btn-sm" onclick="poOpenAlloc()">Phiếu chia hàng</button>
-          <button class="btn btn-green btn-sm" onclick="poOpenReceiptAll()">Nhập kho tất cả</button>
+          <button class="btn btn-green btn-sm" onclick="poOpenReceiptAll()">Nhập kho</button>
         </div>
       </div>
       <div class="tbar">
@@ -783,6 +786,7 @@ tr.rp-warn td:first-child{box-shadow:inset 3px 0 0 var(--amber)}
         <div class="tbar-right">
           <input type="date" id="poDate" class="f-input" data-tip="Ngày nhận hàng" value="2026-08-21" onchange="poChangeDate(this)">
           <select id="poSupFilter" class="f-input" onchange="renderPurchase()"><option value="">Tất cả NCC phụ</option></select>
+          <select id="poKindFilter" class="f-input" onchange="renderPurchase()"><option value="">Tất cả loại trường</option><option value="1">Trường có bếp</option><option value="0">Trường không bếp</option></select>
           <select id="poSchoolFilter" class="f-input" onchange="renderPurchase()"><option value="">Tất cả trường</option></select>
           <input class="f-input search" id="poSearch" placeholder="🔍 Tìm thực phẩm..." oninput="renderPurchase()">
         </div>
@@ -802,6 +806,11 @@ tr.rp-warn td:first-child{box-shadow:inset 3px 0 0 var(--amber)}
           <button class="btn btn-green btn-sm" onclick="openStockIn()">+ Nhập kho</button>
         </div>
       </div>
+      <div class="tabs" id="whTabs">
+        <button class="active" onclick="whTab('stock',this)">Tồn kho</button>
+        <button onclick="whTab('hist',this)">Lịch sử nhập / xuất</button>
+      </div>
+      <div class="tabpage on" id="whtab-stock">
       <div class="tbar">
         <div class="total" id="warehouseTotal"></div>
         <div class="tbar-right">
@@ -819,6 +828,39 @@ tr.rp-warn td:first-child{box-shadow:inset 3px 0 0 var(--amber)}
             <button onclick="pageStep('warehouse',-1)" title="Trang trước">‹</button>
             <span>Trang <input id="warehousePageInput" onchange="pageGoto('warehouse',this.value)"> / <b id="warehousePages"></b></span>
             <button onclick="pageStep('warehouse',1)" title="Trang sau">›</button>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="tabpage" id="whtab-hist">
+        <div class="chips" id="whHistChips">
+          <button class="chip active" onclick="whHistType('all',this)">Tất cả</button>
+          <button class="chip" onclick="whHistType('in',this)">↓ Nhập kho</button>
+          <button class="chip" onclick="whHistType('out',this)">↑ Xuất kho</button>
+          <button class="chip" onclick="whHistType('ret',this)">↺ Trả về</button>
+          <button class="chip" onclick="whHistType('loss',this)">✕ Hủy hỏng</button>
+        </div>
+        <div class="tbar">
+          <div class="total" id="whhistTotal"></div>
+          <div class="tbar-right">
+            <select id="whHistItem" class="f-input" onchange="pagerState.whhist=1;renderWhHist()"><option value="">Tất cả thực phẩm</option></select>
+            <input type="date" id="whHistFrom" class="f-input" title="Từ ngày" onchange="pagerState.whhist=1;renderWhHist()">
+            <input type="date" id="whHistTo" class="f-input" title="Đến ngày" onchange="pagerState.whhist=1;renderWhHist()">
+            <input class="f-input search" id="whHistSearch" placeholder="🔍 Tìm nguồn / nơi nhận, ghi chú..." oninput="pagerState.whhist=1;renderWhHist()">
+          </div>
+        </div>
+        <div class="panel">
+          <table>
+            <thead><tr><th style="width:110px">Ngày</th><th style="width:110px">Loại</th><th>Thực phẩm</th><th>Nguồn / Nơi nhận</th><th>Ghi chú</th><th style="text-align:right">Số lượng</th></tr></thead>
+            <tbody id="whHistBody"></tbody>
+          </table>
+          <div class="pager">
+            <span id="whhistRange"></span>
+            <div class="pager-ctrl">
+              <button onclick="pageStep('whhist',-1)" title="Trang trước">‹</button>
+              <span>Trang <input id="whhistPageInput" onchange="pageGoto('whhist',this.value)"> / <b id="whhistPages"></b></span>
+              <button onclick="pageStep('whhist',1)" title="Trang sau">›</button>
+            </div>
           </div>
         </div>
       </div>
@@ -2031,9 +2073,9 @@ function renderNotifs(){
   drawPager('notif',info,'thông báo');
 }
 /* ---- pagination dùng chung (source / kitchen / parent) ---- */
-const pagerState={notif:1,source:1,supplier:1,order:1,warehouse:1,kitchen:1,parent:1,menus:1,facilities:1,warehouses:1,stdcat:1,employees:1,workflows:1,dishes:1,batches:1};
+const pagerState={notif:1,source:1,supplier:1,order:1,warehouse:1,whhist:1,kitchen:1,parent:1,menus:1,facilities:1,warehouses:1,stdcat:1,employees:1,workflows:1,dishes:1,batches:1};
 const pagerPages={notif:1,source:1,supplier:1,order:1,warehouse:1,kitchen:1,parent:1,menus:1,facilities:1,warehouses:1,stdcat:1,employees:1,workflows:1,dishes:1,batches:1};
-const PER={notif:8,source:8,supplier:8,order:8,warehouse:8,kitchen:8,parent:8,menus:8,facilities:8,warehouses:8,stdcat:10,employees:8,workflows:8,dishes:8,batches:15};
+const PER={notif:8,source:8,supplier:8,order:8,warehouse:8,whhist:12,kitchen:8,parent:8,menus:8,facilities:8,warehouses:8,stdcat:10,employees:8,workflows:8,dishes:8,batches:15};
 function paginate(name,list){
   const per=PER[name];
   const pages=Math.max(1,Math.ceil(list.length/per));
@@ -2048,7 +2090,7 @@ function drawPager(name,info,unit){
   document.getElementById(name+'Pages').textContent=info.pages;
   document.getElementById(name+'PageInput').value=info.page;
 }
-const renderByName={notif:()=>renderNotifs(),source:()=>renderSources(),supplier:()=>renderSuppliers(),order:()=>renderOrders(),warehouse:()=>renderWarehouse(),kitchen:()=>renderKitchens(),parent:()=>renderParents(),process:()=>renderProcess(),report:()=>renderReport(),menus:()=>renderMenus(),facilities:()=>renderFacilities(),warehouses:()=>renderWarehouses(),stdcat:()=>renderStdCat(),employees:()=>renderEmployees(),workflows:()=>renderWorkflows(),dishes:()=>renderDishes(),batches:()=>renderBatches()};
+const renderByName={notif:()=>renderNotifs(),source:()=>renderSources(),supplier:()=>renderSuppliers(),order:()=>renderOrders(),warehouse:()=>renderWarehouse(),whhist:()=>renderWhHist(),kitchen:()=>renderKitchens(),parent:()=>renderParents(),process:()=>renderProcess(),report:()=>renderReport(),menus:()=>renderMenus(),facilities:()=>renderFacilities(),warehouses:()=>renderWarehouses(),stdcat:()=>renderStdCat(),employees:()=>renderEmployees(),workflows:()=>renderWorkflows(),dishes:()=>renderDishes(),batches:()=>renderBatches()};
 /* escape dấu ' để nhúng tên (trường, món...) vào onclick inline */
 function esc(v){return String(v).replace(/'/g,"\\'");}
 /* format tiền VND: 22000 -> "22.000 đ" */
@@ -2778,6 +2820,45 @@ function renderWarehouse(){
       </td>
     </tr>`;}).join('') : `<tr><td colspan="5"><div class="empty">Không tìm thấy thực phẩm trong kho.</div></td></tr>`;
   drawPager('warehouse',info,'thực phẩm');
+  renderWhHist();
+}
+/* Tab "Lịch sử nhập / xuất" — sổ kho cấp kho: gộp hist của mọi thực phẩm, mới nhất trước */
+let whHistTab='all';
+function whTab(t,btn){
+  const pg=document.getElementById('page-warehouse');
+  pg.querySelectorAll('.tabpage').forEach(x=>x.classList.toggle('on',x.id==='whtab-'+t));
+  pg.querySelectorAll('#whTabs button').forEach(b=>b.classList.toggle('active',b===btn));
+}
+function whHistType(t,btn){
+  whHistTab=t;pagerState.whhist=1;
+  document.querySelectorAll('#whHistChips .chip').forEach(c=>c.classList.toggle('active',c===btn));
+  renderWhHist();
+}
+function renderWhHist(){
+  const sel=document.getElementById('whHistItem'); if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">Tất cả thực phẩm</option>'+WAREHOUSE.map(w=>`<option ${w.name===cur?'selected':''}>${w.name}</option>`).join('');
+  const item=sel.value, q=(document.getElementById('whHistSearch').value||'').toLowerCase().trim();
+  const from=document.getElementById('whHistFrom').value, to=document.getElementById('whHistTo').value;
+  const fromD=from?new Date(from+'T00:00'):null, toD=to?new Date(to+'T00:00'):null;
+  const rows=[];
+  WAREHOUSE.forEach((w,i)=>w.hist.forEach(h=>rows.push({w,i,h,d:parseVN(h[0])})));
+  const list=rows.filter(r=>(whHistTab==='all'||r.h[1]===whHistTab)&&(!item||r.w.name===item)
+    &&(!fromD||r.d>=fromD)&&(!toD||r.d<=toD)
+    &&(!q||`${r.h[3]} ${r.h[4]||''} ${r.w.name}`.toLowerCase().includes(q)))
+    .sort((a,b)=>b.d-a.d);
+  const info=paginate('whhist',list);
+  document.getElementById('whHistBody').innerHTML = info.slice.length ? info.slice.map(({w,i,h})=>{
+    const t=HIST_TYPE[h[1]]||HIST_TYPE.out;
+    return `<tr>
+      <td style="white-space:nowrap">${h[0]}</td>
+      <td><span class="pill ${t.cls}">${t.label}</span></td>
+      <td><a class="name-link" onclick="openStockHistory(${i})">${w.name}</a></td>
+      <td>${h[3]}</td>
+      <td style="color:var(--muted)">${h[4]||'—'}</td>
+      <td style="text-align:right;white-space:nowrap;font-weight:700;color:${t.color}">${t.plus?'+':'−'}${fmtQty(h[2])} ${w.unit}</td>
+    </tr>`;}).join('') : `<tr><td colspan="6"><div class="empty">Không có phát sinh nhập / xuất phù hợp.</div></td></tr>`;
+  drawPager('whhist',info,'phát sinh');
 }
 /* Nhập kho nhiều dòng — mỗi dòng chọn 1 thực phẩm, 1 nguồn, số lượng riêng.
    prefName: mở sẵn dòng đầu với thực phẩm đó (từ nút Nhập trên bảng / cảnh báo thực đơn). */
@@ -3217,17 +3298,33 @@ const PO_INFO={cutoff:'16h00',eta:'trước 05h00',receiver:'Nguyễn Văn Kiên
 const PO_NO_SUP='Chưa gán NCC phụ';
 /* Đơn thực phẩm còn cần cấp hàng thì cộng vào tổng hợp; "Chờ xác nhận" được đánh dấu chưa chốt */
 const PO_ORDER_ST=['Chờ xác nhận','Đang chuẩn bị'];
-const PO_STATUS={'Chưa nhập kho':'n','Nhập thiếu':'a','Đã nhập kho':'g'};
+/* Thực phẩm – NCC phụ là quan hệ 1-n. Thứ tự = thứ tự ưu tiên; cost = giá nhập/ĐVT; paused = NCC tạm ngừng cung ứng thực phẩm này */
+const FOOD_SUPPLIERS={
+  'Gạo ST25':           [{sup:'Tập đoàn Lộc Trời',cost:20000,paused:true},{sup:'HTX Nông sản Gò Công',cost:20500}],
+  'Thịt lợn nạc vai':   [{sup:'CP Việt Nam',cost:115000},{sup:'Vissan',cost:118000}],
+  'Thịt gà ta':         [{sup:'CP Việt Nam',cost:95000},{sup:'Ba Huân',cost:92000}],
+  'Rau cải ngọt':       [{sup:'HTX Rau sạch Vân Nội',cost:12000},{sup:'HTX Nông sản Gò Công',cost:11500}],
+  'Bí đỏ':              [{sup:'HTX Rau sạch Vân Nội',cost:11000},{sup:'HTX Nông sản Gò Công',cost:10500}],
+  'Cà chua':            [{sup:'HTX Rau sạch Vân Nội',cost:15000},{sup:'HTX Nông sản Gò Công',cost:15500}],
+  'Trứng cút':          [{sup:'Ba Huân',cost:56000},{sup:'CP Việt Nam',cost:58000}],
+  'Tôm thẻ':            [{sup:'Minh Phú',cost:170000},{sup:'Vĩnh Hoàn',cost:176000}],
+  'Cá basa phi lê':     [{sup:'Vĩnh Hoàn',cost:68000},{sup:'Minh Phú',cost:71000}],
+  'Thịt bò':            [{sup:'Vissan',cost:245000},{sup:'CP Việt Nam',cost:252000}],
+  'Đậu phụ':            [{sup:'Cơ sở Phú Bình',cost:18000},{sup:'HTX Rau sạch Vân Nội',cost:19000}],
+  'Dưa hấu':            [{sup:'HTX Nông sản Gò Công',cost:9000},{sup:'HTX Rau sạch Vân Nội',cost:9500}],
+  'Sữa tươi học đường': [{sup:'Vinamilk',cost:6500}],
+};
 let PO_QTY={};   /* tên thực phẩm → SL báo NCC sửa tay */
-let PO_SUP={};   /* tên thực phẩm → NCC phụ thay thế */
-let PO_SHEET={}; /* NCC phụ → phiếu nhập kho: {status, sent:{tên: SL đã chốt}, recv:{tên: SL thực nhận cộng dồn}, supp: số lần nhập bổ sung} */
+let PO_SUP={};   /* tên thực phẩm → NCC phụ chọn tay (khác gợi ý) */
+let PO_SHEET={}; /* tên thực phẩm → đã nhập kho: {sup, sent: SL đã chốt, recv: SL thực nhận cộng dồn} */
+let PO_RCN={};   /* NCC phụ → số phiếu nhập đã tạo trong ngày (để đánh số -BS) */
 let PO_ALLOC={}; /* 'trường|thực phẩm' → SL thực chia */
 let PO_DATE=TODAY_DEMO;
-const PO_DAYS={}; /* ngày nhận (yyyy-mm-dd) → số sửa tay, NCC đổi, phiếu đã gửi, số chia của ngày đó */
+const PO_DAYS={}; /* ngày nhận (yyyy-mm-dd) → state riêng của ngày đó */
 function poSetDate(iso){
   PO_DATE=iso;
-  const day=PO_DAYS[iso]||(PO_DAYS[iso]={qty:{},sup:{},sheet:{},alloc:{}});
-  PO_QTY=day.qty;PO_SUP=day.sup;PO_SHEET=day.sheet;PO_ALLOC=day.alloc;
+  const day=PO_DAYS[iso]||(PO_DAYS[iso]={qty:{},sup:{},sheet:{},rcn:{},alloc:{}});
+  PO_QTY=day.qty;PO_SUP=day.sup;PO_SHEET=day.sheet;PO_RCN=day.rcn;PO_ALLOC=day.alloc;
   const [y,m,d]=iso.split('-').map(Number), ordered=new Date(y,m-1,d);
   do{ordered.setDate(ordered.getDate()-1);}while(ordered.getDay()===0||ordered.getDay()===6);/* báo NCC phụ vào ngày làm việc liền trước */
   const pad=n=>String(n).padStart(2,'0');
@@ -3254,38 +3351,53 @@ function poAgg(){
 }
 function poShort(s){return s.replace('Trường ','');}
 function poWh(){return WAREHOUSES[0];}
+/* Loại trường: true = có bếp, false = không bếp */
+function poHasKitchen(school){const k=KITCHENS.find(x=>poShort(x.name)===school);return k?k.kitchen:true;}
+/* Danh sách NCC phụ của 1 thực phẩm; chưa khai báo thì lấy NCC chính ở Quản lý thực phẩm */
+function poSupOptions(name){
+  if(FOOD_SUPPLIERS[name])return FOOD_SUPPLIERS[name];
+  const src=SOURCES.find(s=>s.name===name);
+  return src&&src.dist?[{sup:src.dist,cost:src.cost||0}]:[];
+}
+/* Gợi ý: NCC ưu tiên nếu còn cung ứng; ngừng thì lấy NCC giá thấp nhất còn lại */
+function poSuggest(name){
+  const opts=poSupOptions(name);
+  if(!opts.length)return {sup:PO_NO_SUP,why:'Chưa khai báo NCC phụ'};
+  if(!opts[0].paused)return {sup:opts[0].sup,why:'NCC ưu tiên'};
+  const alt=opts.filter(o=>!o.paused).sort((a,b)=>a.cost-b.cost)[0];
+  return alt?{sup:alt.sup,why:`${opts[0].sup} tạm ngừng · giá thấp nhất còn lại`}:{sup:opts[0].sup,why:'Mọi NCC phụ đều tạm ngừng'};
+}
 /* Mỗi dòng = 1 thực phẩm, giữ số theo từng trường; qty là số báo NCC phụ */
 function poRows(){
   const map={};
-  const add=(name,unit,sup,school,q,pending)=>{
+  const add=(name,unit,school,q,pending)=>{
     if(!schoolOk('Trường '+school))return;
-    const r=map[name]||(map[name]={name,unit,baseSup:sup,schools:{},pending:{}});
+    const r=map[name]||(map[name]={name,unit,schools:{},pending:{}});
     r.schools[school]=(r.schools[school]||0)+q;
     if(pending)r.pending[school]=true;
   };
-  poAgg().forEach(g=>g.items.forEach(it=>it.schools.forEach(([sc,q])=>add(it.name,it.unit,g.sup,sc,q,false))));
+  poAgg().forEach(g=>g.items.forEach(it=>it.schools.forEach(([sc,q])=>add(it.name,it.unit,sc,q,false))));
   ORDERS.filter(o=>o.items&&o.date===PO_INFO.deliverDate&&PO_ORDER_ST.includes(o.status)).forEach(o=>o.items.forEach(it=>{
-    const src=SOURCES.find(s=>s.name===it[0]);
-    add(it[0],it[3],src?src.dist:PO_NO_SUP,poShort(o.school),it[1],o.status==='Chờ xác nhận');
+    add(it[0],it[3],poShort(o.school),it[1],o.status==='Chờ xác nhận');
   }));
   return Object.values(map).map(r=>{
     const src=SOURCES.find(s=>s.name===r.name), w=WAREHOUSE.find(x=>x.name===r.name);
     const total=Object.values(r.schools).reduce((a,b)=>a+b,0);
-    const sup=PO_SUP[r.name]||r.baseSup, sheet=PO_SHEET[sup];
-    const recv=sheet?(sheet.recv[r.name]||0):0;
+    const sheet=PO_SHEET[r.name], recv=sheet?sheet.recv:0;
     /* tính trên tồn TRƯỚC khi nhập hàng của ngày này, để số gợi ý không tụt sau khi nhập kho */
     const need=Math.max(0,w?total-(w.stock-recv-w.min):total);
     const suggested=Math.ceil(need);
-    const sentQty=sheet?(sheet.sent[r.name]||0):null;
-    const qty=sheet?sentQty:(PO_QTY[r.name]!==undefined?PO_QTY[r.name]:suggested);
-    return {...r,sup,total,need,suggested,qty,locked:!!sheet,delta:sheet?Math.max(0,suggested-sentQty):0,
-      recv,short:sheet?Math.max(0,sentQty-recv):0,
-      stock:w?w.stock:null,min:w?w.min:null,cost:src?src.cost:0,code:src?src.code:'—',
-      paused:!PO_SUP[r.name]&&!!src&&src.supplyStatus==='Tạm ngừng'};
+    const opts=poSupOptions(r.name), sug=poSuggest(r.name);
+    const sup=sheet?sheet.sup:(PO_SUP[r.name]||sug.sup);
+    const opt=opts.find(o=>o.sup===sup)||{};
+    const qty=sheet?sheet.sent:(PO_QTY[r.name]!==undefined?PO_QTY[r.name]:suggested);
+    return {...r,sup,sug,opts,changed:!sheet&&!!PO_SUP[r.name]&&PO_SUP[r.name]!==sug.sup,
+      total,need,suggested,qty,locked:!!sheet,
+      delta:sheet?Math.max(0,suggested-sheet.sent):0,recv,short:sheet?Math.max(0,sheet.sent-recv):0,
+      stock:w?w.stock:null,min:w?w.min:null,cost:opt.cost!==undefined?opt.cost:(src?src.cost:0),code:src?src.code:'—'};
   });
 }
 function poSupInfo(sup){return SUPPLIERS.find(s=>s.name===sup)||{};}
-function poStatus(sup){return PO_SHEET[sup]?PO_SHEET[sup].status:'Chưa nhập kho';}
 function poGroups(rows){
   const out=[];
   rows.forEach(r=>{let g=out.find(x=>x.sup===r.sup);if(!g){g={sup:r.sup,rows:[]};out.push(g);}g.rows.push(r);});
@@ -3297,126 +3409,144 @@ function poFill(id,label,list){
   sel.innerHTML=`<option value="">${label}</option>`+list.map(x=>`<option>${x}</option>`).join('');
   sel.value=list.includes(v)?v:'';
 }
+/* Trường đang xem theo bộ lọc Loại trường + Trường */
+function poVisibleSchools(rows){
+  const kind=document.getElementById('poKindFilter').value;
+  return poSchoolsOf(rows).filter(s=>!kind||poHasKitchen(s)===(kind==='1'));
+}
 function renderPurchase(){
-  const all=poRows(), groupsAll=poGroups(all), schoolsAll=poSchoolsOf(all);
-  poFill('poSupFilter','Tất cả NCC phụ',groupsAll.map(g=>g.sup));
-  poFill('poSchoolFilter','Tất cả trường',schoolsAll);
+  const all=poRows();
+  poFill('poSupFilter','Tất cả NCC phụ',poGroups(all).map(g=>g.sup));
+  poFill('poSchoolFilter','Tất cả trường',poVisibleSchools(all));
   const fSup=document.getElementById('poSupFilter').value, fSchool=document.getElementById('poSchoolFilter').value;
   const q=(document.getElementById('poSearch').value||'').toLowerCase().trim();
-  const rows=all.filter(r=>(!fSup||r.sup===fSup)&&(!fSchool||r.schools[fSchool]!==undefined)&&(!q||r.name.toLowerCase().includes(q)));
-  const schools=fSchool?[fSchool]:poSchoolsOf(rows);
+  const vis=fSchool?[fSchool]:poVisibleSchools(all);
+  const rows=all.filter(r=>(!fSup||r.sup===fSup)&&vis.some(s=>r.schools[s]!==undefined)&&(!q||r.name.toLowerCase().includes(q)));
+  const schools=vis.filter(s=>rows.some(r=>r.schools[s]!==undefined));
 
   document.getElementById('poSub').textContent=`Chốt đơn ${PO_INFO.cutoff} ngày ${PO_INFO.orderDate} · Nhận hàng ${PO_INFO.deliverLabel}, ${PO_INFO.eta}`;
-
-  document.getElementById('poTotal').innerHTML=`Hiển thị <b>${rows.length}</b> / ${all.length} thực phẩm`;
+  const changed=all.filter(r=>r.changed).length, inDone=all.filter(r=>r.locked).length;
+  document.getElementById('poTotal').innerHTML=`Hiển thị <b>${rows.length}</b> / ${all.length} thực phẩm`
+    +(changed?` · <span style="color:var(--amber);font-weight:600">${changed} đã đổi NCC phụ</span>`:'')
+    +(inDone?` · ${inDone} đã nhập kho`:'');
 
   document.getElementById('poHead').innerHTML=`<tr>
-    <th class="po-l">Thực phẩm</th><th>ĐVT</th>
-    ${schools.map(s=>`<th class="po-sc">${s}</th>`).join('')}
+    <th class="po-l">Thực phẩm</th><th class="po-l2">NCC phụ</th><th>ĐVT</th>
+    ${schools.map(s=>`<th class="po-sc">${s}${poHasKitchen(s)?'':'<small>Không bếp</small>'}</th>`).join('')}
     <th class="po-sc po-r3">Tổng trường đặt</th><th class="po-sc po-r2">Tồn kho</th>
     <th class="po-r">SL báo NCC</th></tr>`;
-  const cols=schools.length+5;
-  document.getElementById('poBody').innerHTML=rows.length?poGroups(rows).map(g=>{
-    const info=poSupInfo(g.sup), st=poStatus(g.sup);
-    const full=all.filter(r=>r.sup===g.sup), done=!!PO_SHEET[g.sup];
-    const canIn=done?full.some(r=>r.delta>0||r.short>0):full.some(r=>r.qty>0);
-    const value=full.reduce((s,r)=>s+r.qty*r.cost,0);
-    const head=`<tr class="po-group"><td colspan="${cols}"><div class="po-group-in">
-      <b>${g.sup}</b>
-      ${info.phone?`<span class="po-muted">${info.contact} · ${info.phone}</span>`:''}
-      <span class="po-muted">${full.length} thực phẩm · ${money(value)}</span>
-      <span class="pill ${PO_STATUS[st]}">${st}</span>
-      ${canIn?`<button class="btn btn-green btn-sm" onclick="poOpenReceipt(['${esc(g.sup)}'])">${done?'Nhập bổ sung':'Nhập kho'}</button>`:''}
-    </div></td></tr>`;
-    return head+g.rows.map(r=>`<tr>
-      <td class="po-l"><b>${r.name}</b>${r.paused&&!r.locked?poSwapControl(r):''}</td>
+  const cols=schools.length+6;
+  document.getElementById('poBody').innerHTML=rows.length?rows.map(r=>`<tr>
+      <td class="po-l"><b>${r.name}</b><small class="po-muted" style="display:block">${r.code}</small></td>
+      <td class="po-l2">${poSupCell(r)}</td>
       <td style="color:var(--muted)">${r.unit}</td>
       ${schools.map(s=>{const v=r.schools[s];return `<td class="po-n${r.pending[s]?' po-pend':''}"${r.pending[s]?' data-tip="Có số từ đơn chờ xác nhận"':''}>${v===undefined?'<span class="po-muted">—</span>':fmtQty(v)}</td>`;}).join('')}
       <td class="po-n po-r3"><b>${fmtQty(r.total)}</b></td>
       <td class="po-n po-r2">${r.stock===null?'<span class="po-muted">—</span>':`${fmtQty(r.stock)}<small>tối thiểu ${fmtQty(r.min)}</small>`}</td>
       <td class="po-r">${r.locked
-        ?`<b>${fmtQty(r.qty)}</b>${r.short>0?`<small class="po-delta">Đã nhận ${fmtQty(r.recv)} · thiếu ${fmtQty(r.short)}</small>`:''}${r.delta>0?`<small class="po-delta">Phát sinh +${fmtQty(r.delta)}</small>`:''}`
+        ?`<b>${fmtQty(r.qty)}</b>${r.short>0?`<small class="po-delta">Đã nhận ${fmtQty(r.recv)} · thiếu ${fmtQty(r.short)}</small>`:(r.delta>0?'':'<small class="po-ok">✓ Đã nhập kho</small>')}${r.delta>0?`<small class="po-delta">Phát sinh +${fmtQty(r.delta)}</small>`:''}`
         :`<input class="f-input po-qty" type="number" step="any" value="${r.qty}" onchange="poSetQty('${esc(r.name)}',this.value)">`}</td>
-    </tr>`).join('');
-  }).join(''):`<tr><td colspan="${cols}"><div class="empty">Không có thực phẩm phù hợp.</div></td></tr>`;
+    </tr>`).join(''):`<tr><td colspan="${cols}"><div class="empty">Không có thực phẩm phù hợp.</div></td></tr>`;
 }
-function poSwapControl(r){
-  const opts=SUPPLIERS.filter(s=>s.name!==r.sup).map(s=>`<option>${s.name}</option>`).join('');
-  return `<div class="po-swap"><span class="pill r">Tạm ngừng</span><select class="f-input" onchange="poSwapSup('${esc(r.name)}',this.value)"><option value="">Đổi NCC phụ</option>${opts}</select></div>`;
+/* Ô NCC phụ: select có giá, nhãn Gợi ý / Đã đổi; khoá sau khi nhập kho */
+function poSupCell(r){
+  if(r.locked)return `<b>${r.sup}</b><small class="po-muted" style="display:block">${money(r.cost)}/${r.unit}</small>`;
+  if(!r.opts.length)return `<span class="pill r">${PO_NO_SUP}</span>`;
+  const sel=`<select class="f-input po-sup" onchange="poPickSup('${esc(r.name)}',this.value)">${r.opts.map(o=>
+    `<option value="${o.sup}" ${o.sup===r.sup?'selected':''}>${o.sup} · ${fmtNum(o.cost)}đ${o.paused?' (tạm ngừng)':''}</option>`).join('')}</select>`;
+  const price=`<span class="po-muted">${fmtNum(r.cost)}đ/${r.unit}</span> · `;
+  const tag=r.changed
+    ?`<small class="po-tag a">${price}Đã đổi · <a onclick="poPickSup('${esc(r.name)}','')">Về gợi ý</a></small>`
+    :`<small class="po-tag g">${price}<span data-tip="${r.sug.why}">✦ Gợi ý${r.sug.why==='NCC ưu tiên'?'':' ⓘ'}</span></small>`;
+  return sel+tag;
 }
-function poSwapSup(name,sup){
-  if(!sup)return;
-  PO_SUP[name]=sup;
+function poPickSup(name,sup){
+  if(!sup||sup===poSuggest(name).sup)delete PO_SUP[name];else PO_SUP[name]=sup;
   renderPurchase();
-  toast(`${name} chuyển sang ${sup}`);
 }
 function poSetQty(name,v){PO_QTY[name]=Number(v)||0;renderPurchase();}
 
-/* ----- Nhập kho theo NCC phụ: số cần nhập lấy từ bảng tổng hợp ----- */
+/* ----- Nhập kho: preview gom theo NCC phụ đã chọn (mỗi NCC giao về kho 1 chuyến) ----- */
 /* Lần đầu: nhập theo SL báo NCC. Đã nhập rồi: chỉ phần thiếu + phần phát sinh từ đơn mới. */
 function poReceiptLines(sup){
-  const done=!!PO_SHEET[sup];
-  return poRows().filter(r=>r.sup===sup)
-    .map(r=>({...r,order:done?r.short+r.delta:r.qty}))
+  return poRows().filter(r=>r.sup===sup&&r.sup!==PO_NO_SUP)
+    .map(r=>({...r,order:r.locked?r.short+r.delta:r.qty}))
     .filter(l=>l.order>0);
 }
 function poReceiptCode(sup){
-  const info=poSupInfo(sup), sh=PO_SHEET[sup];
+  const info=poSupInfo(sup), n=PO_RCN[sup]||0;
   const base=`PNK-${PO_DATE.replace(/-/g,'')}-${(info.code||'NCC-00').replace('-','')}`;
-  return sh?`${base}-BS${sh.supp+1}`:base;
+  return n?`${base}-BS${n}`:base;
 }
-function poInSups(){return poGroups(poRows()).map(g=>g.sup).filter(s=>poReceiptLines(s).length);}
+function poInSups(){
+  const f=document.getElementById('poSupFilter').value;
+  return poGroups(poRows()).map(g=>g.sup).filter(s=>(!f||s===f)&&poReceiptLines(s).length);
+}
 let PO_RC=[]; /* các NCC phụ đang mở trong drawer nhập kho */
 function poOpenReceiptAll(){
   const sups=poInSups();
   if(!sups.length){toast('Không còn thực phẩm cần nhập kho');return;}
   poOpenReceipt(sups);
 }
+/* Tick 1 thực phẩm / cả nhóm NCC (1 chuyến xe) / tất cả, rồi đồng bộ trạng thái ô nhóm, ô tổng và nút xác nhận */
 function poRcvToggle(k){
   const on=document.getElementById('rk'+k).checked;
   document.getElementById('rr'+k).classList.toggle('off',!on);
   document.getElementById('rq'+k).disabled=!on;
 }
+function poRcvSet(sel,on){
+  document.querySelectorAll(sel).forEach(cb=>{cb.checked=on;poRcvToggle(cb.dataset.k);});
+  poRcvSync();
+}
+function poRcvSync(){
+  const boxes=[...document.querySelectorAll('.rc-item')];
+  const mark=(el,list)=>{const n=list.filter(b=>b.checked).length;el.checked=n===list.length;el.indeterminate=n>0&&n<list.length;};
+  document.querySelectorAll('.rc-grp').forEach(g=>mark(g,boxes.filter(b=>b.dataset.g===g.dataset.g)));
+  mark(document.getElementById('rcAll'),boxes);
+  const on=boxes.filter(b=>b.checked), nSup=new Set(on.map(b=>b.dataset.g)).size;
+  const btn=document.getElementById('rcBtn');
+  btn.disabled=!on.length;
+  btn.textContent=on.length?`Nhập kho ${on.length} thực phẩm · ${nSup} NCC phụ`:'Chọn thực phẩm để nhập';
+}
 function poOpenReceipt(sups){
   PO_RC=sups;
-  const all=sups.length>1, groups=sups.map(sup=>({sup,lines:poReceiptLines(sup)}));
-  const nItems=groups.reduce((s,g)=>s+g.lines.length,0);
+  const groups=sups.map(sup=>({sup,lines:poReceiptLines(sup)}));
   let k=0;
   const body=`
     <div class="field"><label>Kho nhận</label><select id="rcWh">${WAREHOUSES.map(w=>`<option value="${w.code}">${w.name}</option>`).join('')}</select></div>
-    ${all?`<p class="po-muted" style="margin:-2px 0 12px">${groups.length} NCC phụ · ${nItems} thực phẩm. Bỏ tick hoặc sửa số trước khi nhập.</p>`:''}
+    <p class="po-muted" style="margin:-2px 0 12px">Tick thực phẩm đã về, hoặc tick tên NCC phụ để chọn cả chuyến. Sửa số nếu giao thiếu.</p>
     <div class="panel sup-compact"><table class="rc-table">
-      <thead><tr><th style="width:36px"></th><th>Thực phẩm</th><th style="text-align:right">Số lượng</th></tr></thead>
-      <tbody>${groups.map(g=>(all?`<tr class="rc-sup"><td colspan="3">${g.sup}${PO_SHEET[g.sup]?' <span class="pill a">Bổ sung</span>':''}</td></tr>`:'')
+      <thead><tr><th style="width:36px"><input type="checkbox" id="rcAll" checked onchange="poRcvSet('.rc-item',this.checked)" data-tip="Chọn tất cả"></th><th>Thực phẩm</th><th style="text-align:right">Số lượng</th></tr></thead>
+      <tbody>${groups.map((g,gi)=>`<tr class="rc-sup"><td><input type="checkbox" class="rc-grp" data-g="${gi}" checked onchange="poRcvSet('.rc-item[data-g=&quot;${gi}&quot;]',this.checked)"></td><td colspan="2">${g.sup} <span class="po-muted" style="font-weight:500">· ${g.lines.length} thực phẩm</span></td></tr>`
         +g.lines.map(l=>{const i=k++;return `<tr id="rr${i}">
-          <td><input type="checkbox" id="rk${i}" checked onchange="poRcvToggle(${i})"></td>
-          <td><b>${l.name}</b></td>
+          <td><input type="checkbox" class="rc-item" id="rk${i}" data-k="${i}" data-g="${gi}" checked onchange="poRcvToggle(${i});poRcvSync()"></td>
+          <td><b>${l.name}</b>${l.locked?' <span class="pill a">Bổ sung</span>':''}</td>
           <td><div class="rc-qty"><input class="f-input" id="rq${i}" type="number" step="any" value="${l.order}"><span>${l.unit}</span></div></td>
         </tr>`;}).join('')).join('')}</tbody>
     </table></div>`;
-  openDrawer(all?'Nhập kho tất cả':`Nhập kho · ${sups[0]}`,body,
-    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button><button class="btn btn-green" onclick="poConfirmReceipt()">${all?`Nhập kho ${groups.length} NCC phụ`:'Xác nhận nhập kho'}</button>`);
+  openDrawer('Nhập kho',body,
+    `<button class="btn btn-ghost" onclick="closeDrawer()">Huỷ</button><button class="btn btn-green" id="rcBtn" onclick="poConfirmReceipt()"></button>`);
+  poRcvSync();
 }
 function poConfirmReceipt(){
   const wh=document.getElementById('rcWh').value;
   let k=0, nSup=0, nItem=0;
   /* đọc form trước rồi mới ghi, vì poReceiptLines đổi sau mỗi lần nhập */
   const groups=PO_RC.map(sup=>({sup,lines:poReceiptLines(sup).map(l=>{const i=k++;
-    return {...l,got:document.getElementById('rk'+i).checked?(Number(document.getElementById('rq'+i).value)||0):0};})}));
+    return {...l,on:document.getElementById('rk'+i).checked,got:Number(document.getElementById('rq'+i).value)||0};}).filter(l=>l.on)}));
   groups.forEach(g=>{const n=poApplyReceipt(g.sup,g.lines,wh);if(n){nSup++;nItem+=n;}});
   closeDrawer();renderPurchase();renderWarehouse();renderBatches();
-  toast(PO_RC.length>1?`Đã nhập kho ${nSup} NCC phụ · ${nItem} thực phẩm`:`Đã nhập kho ${nItem} thực phẩm từ ${PO_RC[0]}`);
+  toast(`Đã nhập kho ${nItem} thực phẩm · ${nSup} NCC phụ`);
 }
 function poApplyReceipt(sup,lines,wh){
-  if(!lines.some(l=>l.got>0))return 0; /* bỏ tick hết thì NCC phụ này coi như chưa nhập */
+  if(!lines.length)return 0; /* chỉ nhận các dòng được tick; dòng bỏ tick giữ "chưa nhập kho" */
   const code=poReceiptCode(sup), info=poSupInfo(sup);
-  const old=PO_SHEET[sup], sh=old||{sent:{},recv:{},supp:0};
-  /* chốt số: lần đầu = SL báo NCC của cả nhóm; nhập bổ sung = cộng phần phát sinh */
-  if(!old) poRows().filter(r=>r.sup===sup).forEach(r=>{sh.sent[r.name]=r.qty;});
-  else lines.forEach(l=>{sh.sent[l.name]=(sh.sent[l.name]||0)+l.delta;});
   let n=0;
   lines.forEach(l=>{
-    sh.recv[l.name]=(sh.recv[l.name]||0)+l.got;
+    /* chốt số: lần đầu = SL báo NCC; nhập bổ sung = cộng phần phát sinh */
+    const sh=PO_SHEET[l.name]||(PO_SHEET[l.name]={sup,sent:l.qty,recv:0});
+    if(l.locked)sh.sent+=l.delta;
+    sh.recv+=l.got;
     if(l.got<=0)return;
     n++;
     const w=WAREHOUSE.find(x=>x.name===l.name);
@@ -3433,9 +3563,7 @@ function poApplyReceipt(sup,lines,wh){
       stageData:{}, photos:0,
     });
   });
-  if(old)sh.supp++;
-  sh.status=Object.keys(sh.sent).some(x=>(sh.recv[x]||0)<sh.sent[x])?'Nhập thiếu':'Đã nhập kho';
-  PO_SHEET[sup]=sh;
+  PO_RCN[sup]=(PO_RCN[sup]||0)+1;
   return n;
 }
 
@@ -5020,7 +5148,10 @@ function saveWarehouse(i){
 let curWarehouse=null;
 function openWarehouseStock(i){
   curWarehouse=WAREHOUSES[i];
-  pagerState.warehouse=1;
+  pagerState.warehouse=1;pagerState.whhist=1;
+  ['whHistItem','whHistFrom','whHistTo','whHistSearch'].forEach(id=>document.getElementById(id).value='');
+  whHistType('all',document.querySelector('#whHistChips .chip'));
+  whTab('stock',document.querySelector('#whTabs button'));
   go('warehouse',navBtn('warehouses'));
   renderWarehouse();
 }

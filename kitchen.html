@@ -63,6 +63,7 @@ button{font-family:inherit;cursor:pointer}
 .nav.on{display:grid}
 .nav.two{grid-template-columns:1fr 1fr}
 .nav.one{grid-template-columns:1fr}
+.nav.four{grid-template-columns:repeat(4,1fr);padding-left:4px;padding-right:4px}
 .nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;font:600 13px 'Be Vietnam Pro';color:var(--muted);padding:8px 6px;border-radius:14px;transition:.15s}
 .nav button .i{font-size:26px}
 .nav button.active{color:var(--orange);background:var(--orange-soft)}
@@ -101,6 +102,11 @@ button{font-family:inherit;cursor:pointer}
 .filter{display:flex;gap:10px;align-items:center;margin-bottom:14px}
 .filter input[type=date]{flex:1;padding:12px 14px;border:2px solid var(--line);border-radius:14px;font:600 16px 'Be Vietnam Pro';background:#fff;color:var(--ink)}
 .filter input[type=date]:focus{outline:none;border-color:var(--orange)}
+.search{position:relative;margin-bottom:16px}
+.search .si{position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:19px;pointer-events:none}
+.search input{width:100%;padding:15px 52px 15px 48px;border:2px solid var(--line);border-radius:16px;font:600 17px 'Be Vietnam Pro';background:#fff;color:var(--ink)}
+.search input:focus{outline:none;border-color:var(--orange)}
+.search .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:44px;height:44px;border:none;background:none;font-size:20px;color:var(--muted)}
 .filter .clr{background:#fff;border:2px solid var(--line);border-radius:14px;padding:0 16px;min-height:48px;font:700 15px 'Be Vietnam Pro';color:var(--muted)}
 .log-card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px;color:var(--ink);box-shadow:0 4px 16px rgba(38,34,30,.04)}
 .log-card:active{opacity:.65}
@@ -298,6 +304,7 @@ button{font-family:inherit;cursor:pointer}
           <h2 style="font-size:17px;margin:6px 0 0" id="todayHint">Thực đơn hôm nay · bấm để xem chi tiết</h2>
         </div>
         <div id="todayMeals"></div>
+        <button class="btn btn-orange" style="margin:4px 0 6px" onclick="openKOrder(0)">🛒 Tạo đơn thực phẩm</button>
       </div>
       <div class="section-title" id="weekTitle">Các ngày tiếp theo</div>
       <div class="card" id="weekList" style="padding:6px 16px"></div>
@@ -348,6 +355,30 @@ button{font-family:inherit;cursor:pointer}
     </div>
   </div>
 
+  <!-- ĐƠN THỰC PHẨM (tạo / sửa) — role Bếp -->
+  <div class="screen" id="s-korder">
+    <div class="head"><h1 id="koTitle">Tạo đơn thực phẩm</h1><p id="koSub"></p></div>
+    <div class="content">
+      <button class="back" id="koBack" onclick="koBack()">← Thực đơn</button>
+      <div id="koBody"></div>
+    </div>
+    <button class="cartbar" id="kobar" style="bottom:calc(100px + env(safe-area-inset-bottom))" onclick="submitKOrder()"></button>
+  </div>
+
+  <!-- LỊCH SỬ ĐƠN THỰC PHẨM — role Bếp -->
+  <div class="screen" id="s-history">
+    <div class="head"><h1>Lịch sử đơn</h1><p>Đơn thực phẩm gửi Kho tổng</p></div>
+    <div class="content"><div id="kHistList"></div></div>
+  </div>
+
+  <!-- CHI TIẾT ĐƠN THỰC PHẨM -->
+  <div class="screen" id="s-khistdetail">
+    <div class="content">
+      <button class="back" onclick="tab('history',navBtn('history'))">← Lịch sử đơn</button>
+      <div id="kHistBody"></div>
+    </div>
+  </div>
+
   <!-- ===== TRƯỜNG KHÔNG BẾP (shopping) ===== -->
 
   <!-- ĐẶT HÀNG -->
@@ -362,6 +393,7 @@ button{font-family:inherit;cursor:pointer}
         <label style="font-weight:700;font-size:15px;color:var(--muted);white-space:nowrap">Giao ngày</label>
         <input type="date" id="deliverDate" value="2026-08-18">
       </div>
+      <div class="search"><span class="si">🔍</span><input type="text" enterkeyhint="search" id="shopSearch" placeholder="Tìm thực phẩm…" oninput="renderShop()"><button class="sx" onclick="clearSearch('shopSearch',renderShop)">✕</button></div>
       <div id="catalogList"></div>
     </div>
     <button class="cartbar" id="cartbar" onclick="openCart()"></button>
@@ -391,6 +423,7 @@ button{font-family:inherit;cursor:pointer}
     <button class="active" data-tab="menu" onclick="tab('menu',this)"><span class="i">🍽️</span>Thực đơn</button>
     <button id="navBatch" data-tab="batch" onclick="tab('batch',this)"><span class="i">📦</span>Lô hàng</button>
     <button id="navReport" data-tab="report" onclick="tab('report',this)"><span class="i">📷</span>Báo cáo</button>
+    <button id="navHistory" data-tab="history" onclick="tab('history',this)"><span class="i">🧾</span>Lịch sử</button>
   </div>
 
   <div class="nav" id="navShop">
@@ -561,8 +594,10 @@ function setupKitchen(){
   const school = role==='school';
   const nav=document.getElementById('nav');
   nav.classList.toggle('one', school);
+  nav.classList.toggle('four', !school);
   document.getElementById('navReport').style.display = school ? 'none' : '';
   document.getElementById('navBatch').style.display = school ? 'none' : '';
+  document.getElementById('navHistory').style.display = school ? 'none' : '';
   document.getElementById('regBtnWrap').style.display = school ? 'block' : 'none';
   document.getElementById('todayBlock').style.display = school ? 'none' : '';
   if(!school) renderToday();
@@ -584,12 +619,12 @@ function logout(){
 }
 
 /* ===== Routing bằng hash — mỗi tab 1 path riêng, giữ khi reload/back ===== */
-const KITCHEN_TABS=['menu','batch','report'], SHOP_TABS=['shop','orders','debt'];
+const KITCHEN_TABS=['menu','batch','report','history'], SHOP_TABS=['shop','orders','debt'];
 function setHash(h){ if(location.hash.slice(1)!==h) location.hash=h; }
 function route(){
   const h=decodeURIComponent(location.hash.slice(1));
   if(KITCHEN_TABS.includes(h)){
-    if(h==='report'||h==='batch') role='bep';
+    if(h==='report'||h==='batch'||h==='history') role='bep';
     setupKitchen();
     tab(h,navBtn(h));
   } else if(SHOP_TABS.includes(h)){
@@ -611,6 +646,7 @@ function tab(t,btn){
   if(btn)btn.classList.add('active');
   if(t==='report')renderReportHistory();
   if(t==='batch')renderBatchList();
+  if(t==='history')renderKHist();
   setHash(t);
 }
 
@@ -673,7 +709,8 @@ function openMenu(i){
       </div>
       <button class="x" onclick="closeModal()">✕</button>
     </div>
-    <div style="margin-top:14px">${d.meals.map(m=>mealCard(m,false)).join('')}</div>`;
+    <div style="margin-top:14px">${d.meals.map(m=>mealCard(m,false)).join('')}</div>
+    ${role!=='school'?`<button class="btn btn-orange" style="margin-top:6px" onclick="openKOrder(${i})">🛒 Tạo đơn thực phẩm</button>`:''}`;
   document.getElementById('modal').classList.add('on');
 }
 function closeModal(){document.getElementById('modal').classList.remove('on');}
@@ -991,6 +1028,12 @@ const CATALOG=[
     {id:'gao',  ic:'🌾', name:'Gạo ST25', unit:'kg', sup:'Tập đoàn Lộc Trời', price:22000},
     {id:'dau',  ic:'🛢️', name:'Dầu ăn Simply', unit:'chai', sup:'Calofic', price:52000},
     {id:'mam',  ic:'🍶', name:'Nước mắm Nam Ngư', unit:'chai', sup:'Nam Ngư', price:38000},
+    {id:'nep',  ic:'🍙', name:'Gạo nếp cái hoa vàng', unit:'kg', sup:'Tập đoàn Lộc Trời', price:32000},
+    {id:'hatsen',ic:'🌰', name:'Hạt sen khô', unit:'kg', sup:'HTX Sen Tây Hồ', price:240000},
+    {id:'pho',  ic:'🍜', name:'Bánh phở', unit:'kg', sup:'Cơ sở Phú Bình', price:15000},
+    {id:'bun',  ic:'🍝', name:'Bún tươi', unit:'kg', sup:'Cơ sở Phú Bình', price:13000},
+    {id:'mi',   ic:'🍲', name:'Mì trứng', unit:'kg', sup:'Acecook', price:48000},
+    {id:'banhmi',ic:'🥖', name:'Bánh mì', unit:'ổ', sup:'Cơ sở Phú Bình', price:4000},
   ]},
   {cat:'Thịt · Cá · Trứng', items:[
     {id:'lon',  ic:'🥩', name:'Thịt lợn nạc vai', unit:'kg', sup:'CP Việt Nam', price:125000},
@@ -1000,15 +1043,24 @@ const CATALOG=[
     {id:'tom',  ic:'🦐', name:'Tôm thẻ', unit:'kg', sup:'Minh Phú', price:185000},
     {id:'cut',  ic:'🥚', name:'Trứng cút', unit:'kg', sup:'Ba Huân', price:62000},
     {id:'dauphu',ic:'🧈', name:'Đậu phụ', unit:'kg', sup:'Cơ sở Phú Bình', price:13000},
+    {id:'xay',  ic:'🥓', name:'Thịt lợn xay', unit:'kg', sup:'CP Việt Nam', price:115000},
+    {id:'trung',ic:'🥚', name:'Trứng gà', unit:'kg', sup:'Ba Huân', price:42000},
+    {id:'cua',  ic:'🦀', name:'Cua đồng', unit:'kg', sup:'HTX Vân Nội', price:120000},
   ]},
   {cat:'Rau củ quả', items:[
     {id:'cai',  ic:'🥬', name:'Rau cải ngọt', unit:'kg', sup:'HTX Vân Nội', price:15000},
     {id:'bido', ic:'🎃', name:'Bí đỏ', unit:'kg', sup:'HTX Vân Nội', price:14000},
     {id:'ca',   ic:'🍅', name:'Cà chua', unit:'kg', sup:'HTX Vân Nội', price:18000},
     {id:'dua',  ic:'🍉', name:'Dưa hấu', unit:'kg', sup:'HTX Gò Công', price:12000},
+    {id:'muong',ic:'🌿', name:'Rau muống', unit:'kg', sup:'HTX Vân Nội', price:12000},
+    {id:'gung', ic:'🫚', name:'Gừng tươi', unit:'kg', sup:'HTX Vân Nội', price:35000},
+    {id:'suplo',ic:'🥦', name:'Súp lơ xanh', unit:'kg', sup:'HTX Vân Nội', price:30000},
+    {id:'chuoi',ic:'🍌', name:'Chuối tiêu', unit:'quả', sup:'HTX Vân Nội', price:3000},
+    {id:'thanhlong',ic:'🐉', name:'Thanh long', unit:'kg', sup:'HTX Gò Công', price:25000},
   ]},
   {cat:'Sữa học đường', items:[
     {id:'sua',  ic:'🥛', name:'Sữa tươi học đường', unit:'hộp', sup:'Vinamilk', price:7500},
+    {id:'suachua',ic:'🍦', name:'Sữa chua Vinamilk', unit:'hộp', sup:'Vinamilk', price:6500},
   ]},
 ];
 const ITEM=Object.fromEntries(CATALOG.flatMap(c=>c.items).map(i=>[i.id,i]));
@@ -1036,6 +1088,11 @@ const PAYMENTS=[
 let cart={}; // id -> qty (cho phép số thập phân, vd 2,5 kg)
 let editingOrder=null; // index trong ORDERS khi đang sửa đơn
 
+// Tìm thực phẩm không phân biệt dấu (gõ "rau muong" vẫn ra "Rau muống")
+function fold(s){return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d');}
+function matchFood(it,q){q=fold(q).trim();return !q||fold(it.name+' '+it.sup).includes(q);}
+function clearSearch(id,fn){const el=document.getElementById(id);el.value='';fn();el.focus();}
+function noFound(){return '<div class="empty" style="padding:24px">Không tìm thấy thực phẩm phù hợp</div>';}
 function vnd(n){return Math.round(n).toLocaleString('vi-VN')+'₫';}
 function fq(n){return (+n).toLocaleString('vi-VN',{maximumFractionDigits:3});}
 function rq(n){return Math.round(n*1000)/1000;}
@@ -1079,7 +1136,9 @@ function renderShop(){
   document.getElementById('editBanner').innerHTML=editingOrder!==null
     ? `<div class="edit-banner"><span>✏️ Đang sửa đơn ${ORDERS[editingOrder].id}</span><button onclick="cancelEdit()">Hủy sửa</button></div>`
     : '';
-  document.getElementById('catalogList').innerHTML=CATALOG.map(c=>`
+  const sq=document.getElementById('shopSearch').value;
+  const cats=CATALOG.map(c=>({cat:c.cat, items:c.items.filter(it=>matchFood(it,sq))})).filter(c=>c.items.length);
+  document.getElementById('catalogList').innerHTML=(cats.length?'':noFound())+cats.map(c=>`
     <div class="section-title" style="margin-top:8px">${c.cat}</div>
     ${c.items.map(it=>{
       const q=cart[it.id]||0;
@@ -1253,6 +1312,179 @@ function renderDebt(){
     </div>`;
 }
 function payDebt(){toast('Đã gửi yêu cầu thanh toán tới Kho tổng');}
+
+/* ===================================================================
+   ===== TRƯỜNG CÓ BẾP · role Bếp — Đơn thực phẩm theo ngày =====
+   =================================================================== */
+// Tên thực phẩm trong thực đơn → id trong CATALOG (để tự điền đơn theo suất ăn đã đăng ký)
+const ING_MAP={
+  'Gạo ST25':'gao','Gạo tẻ':'gao','Gạo nếp':'nep','Hạt sen':'hatsen','Bánh phở':'pho','Bún':'bun','Mì trứng':'mi','Bánh mì':'banhmi',
+  'Thịt lợn nạc vai':'lon','Thịt lợn xay':'xay','Thịt gà':'ga','Gà ta làm sạch':'ga','Thịt bò':'bo','Thịt bò bằm':'bo',
+  'Cá basa phi lê':'basa','Tôm thẻ':'tom','Trứng cút':'cut','Trứng gà':'trung','Đậu phụ':'dauphu','Cua đồng':'cua',
+  'Rau cải ngọt':'cai','Rau muống':'muong','Bí đỏ':'bido','Cà chua':'ca','Gừng tươi':'gung','Súp lơ xanh':'suplo',
+  'Dưa hấu':'dua','Chuối tiêu':'chuoi','Thanh long':'thanhlong','Sữa tươi':'sua','Sữa chua':'suachua',
+};
+function parseNum(s){return parseFloat(String(s).replace(/\./g,'').replace(',','.'))||0;}
+function dayPortions(d){return d.meals.reduce((s,m)=>s+parseNum(m.portions),0);}
+// Cộng dồn thực phẩm của tất cả bữa trong ngày (thực đơn đã nhân theo số suất đăng ký)
+function autoLines(d){
+  const acc={};
+  d.meals.forEach(m=>m.ing.forEach(([n,q])=>{const id=ING_MAP[n]; if(id) acc[id]=rq((acc[id]||0)+parseNum(q));}));
+  return Object.entries(acc);
+}
+function menuBrief(d){return d.meals.map(m=>({ic:m.ic,type:m.type,dish:m.dish,portions:m.portions}));}
+
+// Đơn thực phẩm (mới nhất trước). status: 'Chờ duyệt' | 'Hoàn thành'
+let KORDERS=[
+  {id:'DTP-0228', created:'16/08/2026', dow:'Thứ Hai', date:'17/08', portions:dayPortions(WEEK[0]),
+   status:'Chờ duyệt', menu:menuBrief(WEEK[0]), lines:autoLines(WEEK[0])},
+  {id:'DTP-0227', created:'14/08/2026', dow:'Thứ Sáu', date:'15/08', portions:2275, status:'Hoàn thành',
+   menu:[{ic:'🍜',type:'Bữa sáng',dish:'Bún bò · Sữa tươi',portions:'980 suất'},
+         {ic:'🍚',type:'Trưa · Học sinh',dish:'Cơm · Trứng chiên thịt · Canh rau ngót · Xoài',portions:'1.250 suất'},
+         {ic:'🍱',type:'Trưa · Giáo viên',dish:'Cơm · Trứng chiên thịt · Canh rau ngót · Đậu xào · Xoài',portions:'45 suất'}],
+   lines:[['bun',40],['bo',16],['sua',980],['gao',99],['trung',30],['xay',22]]},
+  {id:'DTP-0226', created:'13/08/2026', dow:'Thứ Năm', date:'14/08', portions:2275, status:'Hoàn thành',
+   menu:[{ic:'🍙',type:'Bữa sáng',dish:'Xôi xéo · Sữa tươi',portions:'980 suất'},
+         {ic:'🍚',type:'Trưa · Học sinh',dish:'Cơm · Thịt gà kho · Canh mồng tơi · Sữa chua',portions:'1.250 suất'},
+         {ic:'🍱',type:'Trưa · Giáo viên',dish:'Cơm · Thịt gà kho · Canh mồng tơi · Rau luộc · Sữa chua',portions:'45 suất'}],
+   lines:[['nep',30],['sua',980],['gao',99],['ga',58],['suachua',1295]]},
+];
+let KOSEQ=229;
+let kcart={}, koDay=null, koEdit=null; // koEdit = index trong KORDERS khi đang sửa
+
+function koTotal(lines){return lines.reduce((s,[id,q])=>s+ITEM[id].price*q,0);}
+function kcartLines(){return Object.entries(kcart).filter(([,q])=>q>0);}
+function koBadge(o){return o.status==='Hoàn thành'?'<span class="badge done">Hoàn thành</span>':'<span class="badge pending">Chờ duyệt</span>';}
+function koLunch(menu){const m=menu.find(x=>x.type.includes('Học sinh'))||menu[0];return m?m.dish:'';}
+function koNavActive(t){document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));}
+
+/* ----- Tạo / sửa đơn ----- */
+function openKOrder(i){
+  closeModal();
+  const d=WEEK[i];
+  koEdit=null;
+  koDay={dow:d.dow, date:d.date, portions:dayPortions(d), menu:menuBrief(d)};
+  kcart=Object.fromEntries(autoLines(d));
+  renderKOrder(); show('s-korder');
+}
+function editKOrder(i){
+  const o=KORDERS[i];
+  koEdit=i;
+  koDay={dow:o.dow, date:o.date, portions:o.portions, menu:o.menu};
+  kcart=Object.fromEntries(o.lines);
+  renderKOrder(); show('s-korder');
+}
+function koBack(){ if(koEdit!==null) openKHist(koEdit); else tab('menu',navBtn('menu')); }
+function koQtyInput(id,q){
+  return `<input class="qty" type="text" inputmode="decimal" value="${String(q).replace('.',',')}"
+    onfocus="this.select()" oninput="koSetQty('${id}',this.value)" onchange="koCommit('${id}')">`;
+}
+function koSetQty(id,v){const n=parseFloat(String(v).replace(',','.'));kcart[id]=isNaN(n)?0:rq(n);renderKOBar();}
+function koCommit(id){if(!(kcart[id]>0)){delete kcart[id];renderKOList();}}
+function koInc(id){kcart[id]=rq((kcart[id]||0)+1);renderKOList();}
+function koDec(id){kcart[id]=rq((kcart[id]||0)-1);if(kcart[id]<=0)delete kcart[id];renderKOList();}
+function renderKOrder(){
+  const editing=koEdit!==null;
+  document.getElementById('koTitle').textContent=editing?'Sửa đơn '+KORDERS[koEdit].id:'Tạo đơn thực phẩm';
+  document.getElementById('koSub').textContent='Cho ngày '+koDay.dow+' '+koDay.date+' · '+koDay.portions.toLocaleString('vi-VN')+' suất';
+  document.getElementById('koBack').textContent=editing?'← Chi tiết đơn':'← Thực đơn';
+  document.getElementById('koBody').innerHTML=`
+    <div class="today" style="padding:16px 20px;margin-bottom:14px">
+      <div class="tag">THỰC ĐƠN · ${koDay.dow.toUpperCase()} ${koDay.date}</div>
+      ${koDay.menu.map(m=>`<div style="font-size:16px;line-height:1.45;margin-top:8px">${m.ic} <b>${m.type}</b> · ${m.dish}</div>`).join('')}
+    </div>
+    ${editing?'':`<div class="form-note">Đã tự điền theo ${koDay.portions.toLocaleString('vi-VN')} suất ăn đã đăng ký. Sửa số lượng nếu cần rồi bấm Tạo đơn.</div>`}
+    <div class="search"><span class="si">🔍</span><input type="text" enterkeyhint="search" id="koSearch" placeholder="Tìm thực phẩm…" oninput="renderKOList()"><button class="sx" onclick="clearSearch('koSearch',renderKOList)">✕</button></div>
+    <div id="koList"></div>`;
+  renderKOList();
+}
+// Chỉ vẽ lại phần danh sách — giữ nguyên ô tìm kiếm (không mất focus khi gõ)
+function renderKOList(){
+  const q=document.getElementById('koSearch').value;
+  const filt=pred=>CATALOG.map(c=>({cat:c.cat, items:c.items.filter(it=>pred(it)&&matchFood(it,q))})).filter(c=>c.items.length);
+  const picked=filt(it=>kcart[it.id]>0);
+  const rest=filt(it=>!(kcart[it.id]>0));
+  const row=it=>{
+    const q=kcart[it.id]||0;
+    const ctrl=q>0
+      ? `<div class="stepper"><button onclick="koDec('${it.id}')">−</button>${koQtyInput(it.id,q)}<button onclick="koInc('${it.id}')">+</button></div>`
+      : `<button class="add-btn" onclick="koInc('${it.id}')">+</button>`;
+    return `<div class="shop-item">
+      <span class="ic">${it.ic}</span>
+      <span class="info"><b>${it.name}</b><span class="sup">${it.sup} · /${it.unit}</span><span class="price">${vnd(it.price)}</span></span>
+      ${ctrl}
+    </div>`;
+  };
+  if(q.trim()&&!picked.length&&!rest.length){document.getElementById('koList').innerHTML=noFound();renderKOBar();return;}
+  document.getElementById('koList').innerHTML=`
+    ${picked.length||!q.trim()?`<div class="section-title" style="margin-top:4px">Thực phẩm trong đơn (${q.trim()?picked.reduce((s,c)=>s+c.items.length,0)+'/':''}${kcartLines().length})</div>
+    ${picked.length?picked.map(c=>c.items.map(row).join('')).join(''):'<div class="empty" style="padding:24px">Chưa có thực phẩm nào</div>'}`:''}
+    ${rest.length?`<div class="section-title" style="margin-top:22px">Thêm thực phẩm khác</div>
+    ${rest.map(c=>`<div class="section-title" style="margin-top:8px">${c.cat}</div>${c.items.map(row).join('')}`).join('')}`:''}`;
+  renderKOBar();
+}
+function renderKOBar(){
+  const bar=document.getElementById('kobar'), n=kcartLines().length;
+  bar.classList.add('on');
+  bar.innerHTML=`<span>${koEdit!==null?'💾 Lưu đơn':'📝 Tạo đơn'} (${n})</span><span class="cright">${vnd(koTotal(kcartLines()))} <span style="font-size:22px">›</span></span>`;
+}
+function submitKOrder(){
+  const lines=kcartLines();
+  if(koEdit!==null){
+    const i=koEdit, o=KORDERS[i];
+    o.lines=lines;
+    koEdit=null;
+    toast('✅ Đã cập nhật đơn '+o.id+' · '+vnd(koTotal(lines)));
+    openKHist(i);
+    return;
+  }
+  KORDERS.unshift({id:'DTP-0'+(KOSEQ++), created:'17/08/2026', ...koDay, status:'Chờ duyệt', lines});
+  toast('✅ Đã tạo đơn thực phẩm · '+koDay.dow+' '+koDay.date+' · chờ Kho tổng duyệt');
+  openKHist(0);
+}
+
+/* ----- Lịch sử đơn ----- */
+function renderKHist(){
+  document.getElementById('kHistList').innerHTML=KORDERS.map((o,i)=>`
+    <button class="order-card" onclick="openKHist(${i})">
+      <span class="ic">${o.status==='Hoàn thành'?'✅':'🕒'}</span>
+      <span class="info">
+        <b>${o.dow} ${o.date} · ${o.id}</b>
+        <span class="sub" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🍽️ ${koLunch(o.menu)}</span>
+        <span class="sub">${o.menu.length} bữa · ${o.portions.toLocaleString('vi-VN')} suất · ${o.lines.length} mặt hàng</span>
+        <span class="amt">${vnd(koTotal(o.lines))}</span>
+        <span>${koBadge(o)}</span>
+      </span>
+      <span class="chev">›</span>
+    </button>`).join('');
+}
+function openKHist(i){
+  const o=KORDERS[i];
+  document.getElementById('kHistBody').innerHTML=`
+    <div class="today" style="margin-bottom:16px">
+      <div class="tag">ĐƠN ${o.id} · TẠO ${o.created}</div>
+      <h2>Cho ngày ${o.dow} ${o.date}</h2>
+      ${koBadge(o)}
+    </div>
+    <div class="section-title" style="margin-top:0">Thực đơn ngày</div>
+    <div class="card" style="padding:4px 18px">
+      ${o.menu.map(m=>`<div class="order-line">
+        <span>${m.ic} <b>${m.type}</b><br><span class="q">${m.dish}</span></span>
+        <span class="q" style="white-space:nowrap">${m.portions||''}</span>
+      </div>`).join('')}
+    </div>
+    <div class="section-title">Thực phẩm đặt (${o.lines.length})</div>
+    <div class="card" style="padding:4px 18px">
+      ${o.lines.map(([id,q])=>{const it=ITEM[id];return `<div class="order-line">
+        <span>${it.ic} ${it.name}<br><span class="q">${vnd(it.price)} × ${fq(q)} ${it.unit}</span></span>
+        <b>${vnd(it.price*q)}</b>
+      </div>`;}).join('')}
+      <div class="total-row"><span>Tổng cộng</span><b>${vnd(koTotal(o.lines))}</b></div>
+    </div>
+    ${o.status!=='Hoàn thành'?`<button class="btn btn-orange" style="margin-top:18px" onclick="editKOrder(${i})">✏️ Sửa đơn</button>`:''}`;
+  show('s-khistdetail');
+  koNavActive('history');
+}
 
 let tt;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200);}

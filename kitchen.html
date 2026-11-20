@@ -375,7 +375,7 @@ button{font-family:inherit;cursor:pointer}
   <!-- LỊCH SỬ ĐƠN THỰC PHẨM — role Bếp -->
   <div class="screen" id="s-history">
     <div class="head"><h1>Lịch sử đơn</h1><p>Đơn thực phẩm gửi Kho tổng</p></div>
-    <div class="content"><div id="kHistList"></div></div>
+    <div class="content"><div style="display:flex;gap:10px;margin-bottom:12px"><input class="reg-qty" type="date" id="kHistDate" min="2026-08-01" max="2026-08-31" onchange="pickKHistDate(this.value)"><button class="btn btn-outline" id="kHistClear" style="display:none;width:auto;min-height:0;padding:0 18px" onclick="document.getElementById('kHistDate').value='';pickKHistDate('')">Xóa</button></div><div id="kHistList"></div></div>
   </div>
 
   <!-- CHI TIẾT ĐƠN THỰC PHẨM -->
@@ -1461,8 +1461,14 @@ function submitKOrder(){
 }
 
 /* ----- Lịch sử đơn ----- */
+let kHistDate=''; // dd/MM
+function pickKHistDate(v){ // v = yyyy-mm-dd từ ô chọn ngày
+  kHistDate=v?v.slice(8,10)+'/'+v.slice(5,7):'';
+  renderKHist();
+}
 function renderKHist(){
-  document.getElementById('kHistList').innerHTML=KORDERS.map((o,i)=>`
+  document.getElementById('kHistClear').style.display=kHistDate?'':'none';
+  document.getElementById('kHistList').innerHTML=KORDERS.map((o,i)=>({o,i})).filter(x=>!kHistDate||x.o.date===kHistDate).map(({o,i})=>`
     <button class="order-card" onclick="openKHist(${i})">
       <span class="ic">${o.status==='Hoàn thành'?'✅':'🕒'}</span>
       <span class="info">
@@ -1473,7 +1479,7 @@ function renderKHist(){
         <span>${koBadge(o)}</span>
       </span>
       <span class="chev">›</span>
-    </button>`).join('');
+    </button>`).join('')||'<div class="sub" style="text-align:center;padding:30px 0;color:var(--muted)">Không có đơn trong ngày này</div>';
 }
 function openKHist(i){
   const o=KORDERS[i];

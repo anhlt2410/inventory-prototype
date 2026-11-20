@@ -600,11 +600,10 @@ function setupKitchen(){
   mode='kitchen';
   const school = role==='school';
   const nav=document.getElementById('nav');
-  nav.classList.toggle('one', school);
+  nav.classList.toggle('two', school);
   nav.classList.toggle('four', !school);
   document.getElementById('navReport').style.display = school ? 'none' : '';
   document.getElementById('navBatch').style.display = school ? 'none' : '';
-  document.getElementById('navHistory').style.display = school ? 'none' : '';
   document.getElementById('regBtnWrap').style.display = school ? 'block' : 'none';
   document.getElementById('todayBlock').style.display = school ? 'none' : '';
   if(!school) renderToday();
@@ -631,7 +630,7 @@ function setHash(h){ if(location.hash.slice(1)!==h) location.hash=h; }
 function route(){
   const h=decodeURIComponent(location.hash.slice(1));
   if(KITCHEN_TABS.includes(h)){
-    if(h==='report'||h==='batch'||h==='history') role='bep';
+    if(h==='report'||h==='batch') role='bep';
     setupKitchen();
     tab(h,navBtn(h));
   } else if(SHOP_TABS.includes(h)){
